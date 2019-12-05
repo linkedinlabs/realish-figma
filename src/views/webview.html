@@ -1,0 +1,95 @@
+<div class="container padding">
+  <section class="options" id="action-options">
+    <h2>
+      Language
+    </h2>
+    <p class="select">
+      <label>
+        Language
+      </label>
+      <select id="languages" class="select-menu">
+      </select>
+    </p>
+    <h3>
+      Options
+    </h3>
+    <ul>
+      <li class="radio">
+        <input
+          class="radio__button"
+          type="radio"
+          name="text-action"
+          value="replace"
+          id="text-replace"
+          checked
+        >
+        <label
+          class="radio__label"
+          for="text-replace"
+        >
+          Replace existing text
+        </label>
+      </li>
+      <li class="radio">
+        <input
+          class="radio__button"
+          type="radio"
+          name="text-action"
+          value="duplicate"
+          id="text-duplicate"
+        >
+        <label
+          class="radio__label"
+          for="text-duplicate"
+        >
+          Duplicate selected layers
+        </label>
+      </li>
+      <li class="radio">
+        <input
+          class="radio__button"
+          type="radio"
+          name="text-action"
+          value="new-page"
+          id="text-new-page"
+        >
+        <label
+          class="radio__label"
+          for="text-new-page"
+        >
+          Create a new page
+        </label>
+      </li>
+    </ul>
+    <p class="switch">
+      <input
+        class="switch__toggle"
+        id="translate-locked"
+        name="translate-locked"
+        type="checkbox"
+        value="translate-locked"
+      >
+      <label
+        class="switch__label"
+        for="translate-locked"
+      >
+        Translate locked layers
+      </label>
+    </p>
+  </section>
+  <footer id="actions">
+    <span class="mark">
+      <svg viewBox="0 0 26 32">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M13 -7.70853e-07L19.5 8L26 4L26 19.9921C26 26.6239 20.1797 32 13 32C5.8203 32 -4.69995e-07 26.6239 -1.04976e-06 19.9921L-2.44784e-06 4L6.5 8L13 -7.70853e-07Z" fill="#666666"/>
+        <path d="M7.04165 23C9.43488 23 11.375 21.2091 11.375 19C11.375 16.7909 9.43488 15 7.04165 15C4.64841 15 2.70831 16.7909 2.70831 19C2.70831 21.2091 4.64841 23 7.04165 23Z" fill="white"/>
+        <path d="M8.125 21.5C9.02246 21.5 9.75 20.8284 9.75 20C9.75 19.1716 9.02246 18.5 8.125 18.5C7.22754 18.5 6.5 19.1716 6.5 20C6.5 20.8284 7.22754 21.5 8.125 21.5Z" fill="#666666"/>
+        <path d="M18.9583 23C21.3516 23 23.2917 21.2091 23.2917 19C23.2917 16.7909 21.3516 15 18.9583 15C16.5651 15 14.625 16.7909 14.625 19C14.625 21.2091 16.5651 23 18.9583 23Z" fill="white"/>
+        <path d="M20.0416 21.5C20.9391 21.5 21.6666 20.8284 21.6666 20C21.6666 19.1716 20.9391 18.5 20.0416 18.5C19.1442 18.5 18.4166 19.1716 18.4166 20C18.4166 20.8284 19.1442 21.5 20.0416 21.5Z" fill="#666666"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.74996 24.5L9.74982 25.4999H16.2499L16.25 24.5H17.3333V25.5V26.5V27.5H16.25L16.2499 26.4999H9.74982L9.74996 27.5H8.66663V24.5H9.74996Z" fill="white"/>
+      </svg>
+    </span>
+    <button class="button button--primary" id="submit">
+      Translate
+    </button>
+  </footer>
+</div>
