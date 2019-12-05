@@ -1,0 +1,20 @@
+{
+  "name": "Randomizer",
+  "id": "784196046919632854",
+  "api": "1.0.0",
+  "main": "dist/main.js",
+  "ui": "dist/webview.html",
+  "menu": [
+    {
+      "name": "Show Randomizer",
+      "command": "tools"
+    },
+    {
+      "separator": true
+    },
+    {
+      "name": "Run previous randomization…",
+      "command": "quick-translate-last"
+    }
+  ]
+}
