@@ -10,7 +10,14 @@ $red01: #f24822;
 
 // re-usable definitions ----- $wl = light workspace
 $wl-canvas: $white;
+$wl-accent: $black;
+
 $wl-type-01: $black;
+$wl-type-01-invert: $white;
 $wl-type-02: $grey02;
-// $wl-action-primary: ;
+$wl-type-03: $red01;
+
+// controls
+$wl-action-primary: $blue01;
 // $wl-action-secondary: ;
+$wl-action-destructive: $red01;

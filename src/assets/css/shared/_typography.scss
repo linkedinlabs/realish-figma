@@ -1,7 +1,10 @@
 // ++++++++++++++++++++++++++++++++++++++++++++++ typography
 
-@mixin type-01 {
-  font: normal 400 11px/16px Inter, Roboto, sans-serif; /* default stack from Figma */
+@mixin type-01($weight: 400) {
+  font-family: Inter, Roboto, sans-serif; // default stack from Figma
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: $weight;
   color: rgba($wl-type-01, 0.8);
   letter-spacing: 0.033333em;
 }
