@@ -57,12 +57,16 @@ const FRAME_TYPES = {
  */
 const GUI_SETTINGS = {
   default: {
+    width: 360,
+    height: 300,
+  },
+  quick: {
     width: 200,
     height: 326,
   },
   info: {
-    width: 440,
-    height: 145,
+    width: 200,
+    height: 324,
   },
 };
 
