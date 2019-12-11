@@ -1,7 +1,7 @@
 /**
  * @description A set of functions to operate the plugin GUI.
  */
-import './views/webview.scss';
+import './assets/css/main.scss';
 import './vendor/figma-select-menu';
 
 /**
