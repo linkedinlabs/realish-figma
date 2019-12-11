@@ -3,5 +3,9 @@
   "extends": [
     "stylelint-config-standard",
   ],
+  "plugins": [
+    "stylelint-scss"
+  ],
+  "syntax": "scss",
   "rules": {}
 }
