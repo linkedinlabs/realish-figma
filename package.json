@@ -1,10 +1,10 @@
 {
-  "name": "randomizer-figma",
+  "name": "realish-figma",
   "description": "A Figma plugin for easily translating text.",
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/linkedinlabs/randomizer-figma.git"
+    "url": "git+https://github.com/linkedinlabs/realish-figma.git"
   },
   "scripts": {
     "build": "npx webpack --mode=production",
