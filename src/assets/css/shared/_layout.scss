@@ -62,10 +62,11 @@ svg {
     align-items: center;
     padding: 16px;
     width: 100%;
+    background: $wl-canvas;
 
     .mark {
       width: 26px;
-      height: 32px;
+      height: 30px;
     }
   }
 
