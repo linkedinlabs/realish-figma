@@ -74,8 +74,6 @@
   }
 }
 
-.button { @include button; }
-
 .button--primary { @include button--primary; }
 .button--primary-destructive { @include button--primary-destructive; }
 
