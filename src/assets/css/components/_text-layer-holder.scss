@@ -1,0 +1,63 @@
+// ++++++++++++++++++++++++++++++++++++++++++++++ text layer line component
+
+@mixin text-widget(
+  $selectWidth: 100,
+  $iconWidthBuffered: 35
+) {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  width: calc(100% - #{em($selectWidth + 10)});
+
+  &.original-text {
+    .text {
+      @include type-02;
+    }
+  }
+
+  &.new-text {
+    width: calc(100% - #{em($iconWidthBuffered)});
+
+    .text {
+      @include type-03;
+    }
+  }
+
+  .text {
+    @include ellipsis;
+  }
+
+  .inline-control {
+    margin-left: em(3);
+  }
+}
+
+@mixin text-layer-holder {
+  $selectWidth: 105;
+  $iconWidthBuffered: 35;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    .select {
+      width: em($selectWidth);
+    }
+  }
+
+  .text-widget {
+    @include text-widget($selectWidth, $iconWidthBuffered);
+  }
+}
+
+.text-layer-holder {
+  @include text-layer-holder;
+}
