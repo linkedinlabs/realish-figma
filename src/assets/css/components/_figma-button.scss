@@ -2,7 +2,7 @@
 // a figma-style button (tries to match Figma’s UI with few modifications)
 // original source: https://www.figma.com/plugin-docs/figma-components/
 
-@mixin button {
+@mixin figma-button {
   display: inline-block;
   flex-shrink: 0;
   margin: 1px 0 1px 0;
@@ -18,8 +18,8 @@
   }
 }
 
-@mixin button--primary {
-  @include button;
+@mixin figma-button--primary {
+  @include figma-button;
   color: $wl-type-01-invert;
   letter-spacing: 0.01em;
   background-color: $wl-action-primary;
@@ -34,13 +34,13 @@
   }
 }
 
-@mixin button--primary-destructive {
-  @include button--primary;
+@mixin figma-button--primary-destructive {
+  @include figma-button--primary;
   background-color: $wl-action-destructive;
 }
 
-@mixin button--secondary {
-  @include button;
+@mixin figma-button--secondary {
+  @include figma-button;
   padding: 6px 16px 6px 16px;
   color: rgba($wl-type-01, 0.8);
   border: 1px solid rgba($wl-accent, 0.8);
@@ -59,8 +59,8 @@
   }
 }
 
-@mixin button--secondary-destructive {
-  @include button--secondary;
+@mixin figma-button--secondary-destructive {
+  @include figma-button--secondary;
   color: $wl-type-03;
   border: 1px solid $wl-action-destructive;
 
@@ -75,8 +75,8 @@
   }
 }
 
-.button--primary { @include button--primary; }
-.button--primary-destructive { @include button--primary-destructive; }
+.button--primary { @include figma-button--primary; }
+.button--primary-destructive { @include figma-button--primary-destructive; }
 
-.button--secondary { @include button--secondary; }
-.button--secondary-destructive { @include button--secondary-destructive; }
+.button--secondary { @include figma-button--secondary; }
+.button--secondary-destructive { @include figma-button--secondary-destructive; }
