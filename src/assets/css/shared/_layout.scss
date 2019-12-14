@@ -87,7 +87,11 @@ svg {
         padding: 0;
       }
     }
+
+    ul {
+      &.select-menu__list {
+        padding: 8px 0 8px 0;
+      }
+    }
   }
 }
-
-.container.padding ul.select-menu__list { padding: 8px 0 8px 0; }
