@@ -174,7 +174,7 @@ export default class App {
    * @returns {null} Shows a Toast in the UI if nothing is selected.
    */
   static refreshGUI() {
-    const { selection } = assemble(figma);
+    const { messenger, selection } = assemble(figma);
 
     const observeLocked: boolean = true;
     let consolidatedSelection: Array<SceneNode | PageNode> = selection;
@@ -187,6 +187,7 @@ export default class App {
       selected.push({
         id: textNode.id,
         originalText: textNode.characters,
+        newText: textNode.characters,
       });
     });
 
@@ -195,6 +196,8 @@ export default class App {
       action: 'refreshState',
       payload: selected,
     });
+
+    messenger.log(`Updating the UI with ${textNodes.length} ${textNodes.length === 1 ? 'layer' : 'layers'}`)
   }
 
   /** WIP
