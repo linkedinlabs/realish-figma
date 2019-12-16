@@ -202,19 +202,26 @@ const setOptions = (options: {
 const updateSelectedLayers = (layers: Array<{
   id: string,
   originalText: string,
+  newText: string,
 }>): void => {
   const layerListElement: HTMLUListElement = (<HTMLUListElement> document.getElementById('layer-list'));
+  const templateElement: HTMLLIElement = (<HTMLLIElement> document.getElementById('layer-holder-original'))
 
   if (layerListElement && layers) {
     // remove everything to start
     layerListElement.innerHTML = '';
 
     layers.forEach((layer) => {
-      const newLayerElement = document.createElement('li');
-      const textNode = document.createTextNode(layer.originalText);
+      const newLayerElement: any = templateElement.cloneNode(true);
+      newLayerElement.removeAttribute('style');
+      newLayerElement.id = layer.id;
 
-      newLayerElement.setAttribute('id', layer.id);
-      newLayerElement.appendChild(textNode);
+      const originalTextElement = newLayerElement.querySelector('.original-text .text');
+      originalTextElement.firstChild.nodeValue = layer.originalText;
+
+      const newTextElement = newLayerElement.querySelector('.new-text .text');
+      newTextElement.firstChild.nodeValue = layer.newText;
+
       layerListElement.appendChild(newLayerElement);
     });
   }

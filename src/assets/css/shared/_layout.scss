@@ -56,6 +56,16 @@ svg {
     }
   }
 
+  #layer-list {
+    li {
+      margin-bottom: em(12);
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
   footer {
     position: fixed;
     left: 0;
