@@ -161,7 +161,40 @@ export default class App {
   static showToolbar() {
     const { messenger } = assemble(figma);
 
+    App.refreshGUI();
     App.showGUI({ size: 'default', messenger });
+  }
+
+  /** WIP
+   * @description Does a thing.
+   *
+   * @kind function
+   * @name refreshGUI
+   *
+   * @returns {null} Shows a Toast in the UI if nothing is selected.
+   */
+  static refreshGUI() {
+    const { selection } = assemble(figma);
+
+    const observeLocked: boolean = true;
+    let consolidatedSelection: Array<SceneNode | PageNode> = selection;
+
+    // retrieve selection of text nodes and filter for locked/unlocked based on options
+    let textNodes = new Crawler({ for: consolidatedSelection }).text(observeLocked);
+
+    const selected = [];
+    textNodes.forEach((textNode) => {
+      selected.push({
+        id: textNode.id,
+        originalText: textNode.characters,
+      });
+    });
+
+    // send the updates to the UI
+    figma.ui.postMessage({
+      action: 'refreshState',
+      payload: selected,
+    });
   }
 
   /** WIP
@@ -190,10 +223,10 @@ export default class App {
       languages,
       translateLocked,
     } = options;
-    let consolidatedSelection: Array<SceneNode | PageNode> = selection;
+    const consolidatedSelection: Array<SceneNode | PageNode> = selection;
 
     // retrieve selection of text nodes and filter for locked/unlocked based on options
-    let textNodes = new Crawler({ for: consolidatedSelection }).text(translateLocked);
+    const textNodes = new Crawler({ for: consolidatedSelection }).text(translateLocked);
 
     /** WIP
      * @description Does a thing.

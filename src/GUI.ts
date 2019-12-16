@@ -1,7 +1,6 @@
 /**
  * @description A set of functions to operate the plugin GUI.
  */
-require("bourbon").includePaths
 import './assets/css/main.scss';
 import './vendor/figma-select-menu';
 
@@ -190,6 +189,38 @@ const setOptions = (options: {
 };
 
 /**
+ * @description Sets the plugin’s form elements in the webview DOM to the correct options.
+ *
+ * @kind function
+ * @name setOptions
+ *
+ * @param {Object} options Should include an array of languages to translate, the action to take
+ * on the text blocks, and whether or not to ignore locked layers.
+ *
+ * @returns {null}
+ */
+const updateSelectedLayers = (layers: Array<{
+  id: string,
+  originalText: string,
+}>): void => {
+  const layerListElement: HTMLUListElement = (<HTMLUListElement> document.getElementById('layer-list'));
+
+  if (layerListElement && layers) {
+    // remove everything to start
+    layerListElement.innerHTML = '';
+
+    layers.forEach((layer) => {
+      const newLayerElement = document.createElement('li');
+      const textNode = document.createTextNode(layer.originalText);
+
+      newLayerElement.setAttribute('id', layer.id);
+      newLayerElement.appendChild(textNode);
+      layerListElement.appendChild(newLayerElement);
+    });
+  }
+};
+
+/**
  * @description Watches for incoming messages from the plugin’s main thread and dispatches
  * them to the appropriate GUI actions.
  *
@@ -214,6 +245,9 @@ const watchIncomingMessages = (): void => {
     switch (pluginMessage.action) {
       case 'setOptions':
         setOptions(pluginMessage.payload);
+        break;
+      case 'refreshState':
+        updateSelectedLayers(pluginMessage.payload);
         break;
       case 'resetState':
         setButtonState('ready');
