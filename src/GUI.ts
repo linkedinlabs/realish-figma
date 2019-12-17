@@ -229,12 +229,15 @@ const updateSelectedLayers = (layers: Array<{
     }
 
     // set/reset blank state
+    const bodyElement: HTMLBodyElement = (<HTMLBodyElement> document.getElementsByTagName('BODY')[0]);
     const blankStateElement: HTMLElement = (<HTMLElement> document.getElementById('blank'));
     const actionsElement: HTMLElement = (<HTMLElement> document.getElementById('actions'));
     if (layerCount > 0) {
+      bodyElement.classList.remove('blank-state-visible');
       blankStateElement.style.display = 'none';
       actionsElement.removeAttribute('style');
     } else {
+      bodyElement.classList.add('blank-state-visible');
       blankStateElement.removeAttribute('style');
       actionsElement.style.display = 'none';
     }
