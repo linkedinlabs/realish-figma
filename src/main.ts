@@ -2,7 +2,7 @@
 import App from './App';
 import Messenger from './Messenger';
 import { awaitUIReadiness } from './Tools';
-import { DATA_KEYS } from './constants';
+// import { DATA_KEYS } from './constants';
 
 // GUI management -------------------------------------------------
 
@@ -53,15 +53,15 @@ const dispatcher = async (action: {
   // run the action in the App class based on type
   const runAction = async () => {
     // retrieve existing options
-    const lastUsedOptions: {
-      action: 'duplicate' | 'replace' | 'new-page',
-      translateLocked: boolean,
-      languages: Array<string>,
-    } = await figma.clientStorage.getAsync(DATA_KEYS.options);
+    // const lastUsedOptions: {
+    //   action: 'duplicate' | 'replace' | 'new-page',
+    //   translateLocked: boolean,
+    //   languages: Array<string>,
+    // } = await figma.clientStorage.getAsync(DATA_KEYS.options);
 
     switch (type) {
       case 'submit':
-        app.runTranslate(payload, true);
+        app.commitText(payload, true);
         break;
       default:
         App.showToolbar();

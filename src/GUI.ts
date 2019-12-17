@@ -204,26 +204,40 @@ const updateSelectedLayers = (layers: Array<{
   originalText: string,
   newText: string,
 }>): void => {
+  const layerCount = layers.length;
   const layerListElement: HTMLUListElement = (<HTMLUListElement> document.getElementById('layer-list'));
-  const templateElement: HTMLLIElement = (<HTMLLIElement> document.getElementById('layer-holder-original'))
+  const templateElement: HTMLLIElement = (<HTMLLIElement> document.getElementById('layer-holder-original'));
 
   if (layerListElement && layers) {
     // remove everything to start
     layerListElement.innerHTML = '';
 
-    layers.forEach((layer) => {
-      const newLayerElement: any = templateElement.cloneNode(true);
-      newLayerElement.removeAttribute('style');
-      newLayerElement.id = layer.id;
+    if (layerCount > 0) {
+      layers.forEach((layer) => {
+        const newLayerElement: any = templateElement.cloneNode(true);
+        newLayerElement.removeAttribute('style');
+        newLayerElement.id = layer.id;
 
-      const originalTextElement = newLayerElement.querySelector('.original-text .text');
-      originalTextElement.firstChild.nodeValue = layer.originalText;
+        const originalTextElement = newLayerElement.querySelector('.original-text .text');
+        originalTextElement.firstChild.nodeValue = layer.originalText;
 
-      const newTextElement = newLayerElement.querySelector('.new-text .text');
-      newTextElement.firstChild.nodeValue = layer.newText;
+        const newTextElement = newLayerElement.querySelector('.new-text .text');
+        newTextElement.firstChild.nodeValue = layer.newText;
 
-      layerListElement.appendChild(newLayerElement);
-    });
+        layerListElement.appendChild(newLayerElement);
+      });
+    }
+
+    // set/reset blank state
+    const blankStateElement: HTMLElement = (<HTMLElement> document.getElementById('blank'));
+    const actionsElement: HTMLElement = (<HTMLElement> document.getElementById('actions'));
+    if (layerCount > 0) {
+      blankStateElement.style.display = 'none';
+      actionsElement.removeAttribute('style');
+    } else {
+      blankStateElement.removeAttribute('style');
+      actionsElement.style.display = 'none';
+    }
   }
 };
 
