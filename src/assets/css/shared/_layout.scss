@@ -12,6 +12,10 @@ body {
   padding-bottom: em($footer-height-px);
   @include type-01;
   background: $wl-canvas;
+
+  &.blank-state-visible {
+    padding-bottom: 0;
+  }
 }
 
 svg {
