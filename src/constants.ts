@@ -58,7 +58,7 @@ const FRAME_TYPES = {
 const GUI_SETTINGS = {
   default: {
     width: 360,
-    height: 300,
+    height: 180,
   },
   quick: {
     width: 200,
