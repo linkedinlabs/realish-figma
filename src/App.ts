@@ -6,7 +6,7 @@ import {
   // loadTypefaces,
   resizeGUI,
 } from './Tools';
-import { DATA_KEYS } from './constants';
+import { DATA_KEYS, GUI_SETTINGS } from './constants';
 
 /**
  * @description A shared helper function to set up in-UI messages and the logger.
@@ -181,6 +181,7 @@ export default class App {
 
     // retrieve selection of text nodes and filter for locked/unlocked based on options
     const textNodes = new Crawler({ for: consolidatedSelection }).text(observeLocked);
+    const textNodesCount = textNodes.length;
 
     const selected = [];
     textNodes.forEach((textNode) => {
@@ -196,6 +197,17 @@ export default class App {
       action: 'refreshState',
       payload: selected,
     });
+
+    // resize the UI
+    let newGUIHeight = GUI_SETTINGS.default.height;
+    if (textNodesCount > 0) {
+      newGUIHeight = ((textNodesCount - 1) * 62) + newGUIHeight;
+    }
+
+    figma.ui.resize(
+      GUI_SETTINGS.default.width,
+      newGUIHeight,
+    );
 
     messenger.log(`Updating the UI with ${textNodes.length} selected ${textNodes.length === 1 ? 'layer' : 'layers'}`);
   }
