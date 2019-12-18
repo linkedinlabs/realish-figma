@@ -55,6 +55,8 @@
     "webpack": "^4.39.1",
     "webpack-cli": "^3.3.6"
   },
-  "dependencies": {},
+  "dependencies": {
+    "unique-names-generator": "^4.1.1"
+  },
   "author": "Grant Blakeman <gblakeman@linkedin.com>"
 }
