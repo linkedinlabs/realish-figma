@@ -16,7 +16,7 @@
   border: 0;
 
   .label {
-    @include hide-visually;
+    // @include hide-visually;
   }
 
   .icon {
@@ -66,19 +66,19 @@
 }
 
 .reset-control {
-  #{$all-buttons} {
+  button {
     @include button-icon;
   }
 }
 
 .remix-control {
-  #{$all-buttons} {
+  button {
     @include button-icon;
   }
 }
 
 .locking-control {
-  #{$all-buttons} {
+  button {
     @include button-icon($wl-action-secondary-accent, 16);
   }
 }
