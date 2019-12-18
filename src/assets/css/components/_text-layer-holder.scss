@@ -26,7 +26,7 @@
   }
 
   .text {
-    // @include ellipsis;
+    @include ellipsis;
   }
 
   .inline-control {
