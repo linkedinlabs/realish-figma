@@ -8,6 +8,8 @@ import {
 } from './Tools';
 import { DATA_KEYS, GUI_SETTINGS } from './constants';
 
+const Generator = require('unique-names-generator'); // temp
+
 /**
  * @description A shared helper function to set up in-UI messages and the logger.
  *
@@ -79,6 +81,18 @@ const assemble = (context: any = null) => {
 
 //   return uniqueTypefaces;
 // };
+
+const generateRandomName = () => {
+  const { uniqueNamesGenerator, names } = Generator; // temp
+  const capitalizedName: string = uniqueNamesGenerator({
+    dictionaries: [names, names],
+    separator: ' ',
+    length: 2,
+    style: 'capital',
+  });
+
+  return capitalizedName;
+};
 
 /**
  * @description A class to handle core app logic and dispatch work to other classes.
@@ -190,7 +204,7 @@ export default class App {
       selected.push({
         id: textNode.id,
         originalText: textNode.characters,
-        newText: textNode.characters,
+        newText: generateRandomName(),
       });
     });
 
