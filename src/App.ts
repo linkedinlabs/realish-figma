@@ -114,7 +114,7 @@ export default class App {
    * @returns {null} Shows a Toast in the UI if nothing is selected.
    */
   static async showGUI(options: {
-    size: 'default' | 'info',
+    size?: 'default' | 'info',
     messenger?: { log: Function },
   }) {
     const { size, messenger } = options;
@@ -123,7 +123,7 @@ export default class App {
       messenger.log(`Display GUI at size: ${size}`);
     }
 
-    if (size === 'default') {
+    if (size && size === 'default') {
       // retrieve existing options
       const lastUsedOptions: {
         action: 'duplicate' | 'replace' | 'new-page',
@@ -150,7 +150,9 @@ export default class App {
     }
 
     // set UI panel size
-    resizeGUI(size, figma.ui);
+    if (size) {
+      resizeGUI(size, figma.ui);
+    }
 
     // show UI
     figma.ui.show();
@@ -162,7 +164,7 @@ export default class App {
     const { messenger } = assemble(figma);
 
     App.refreshGUI();
-    App.showGUI({ size: 'default', messenger });
+    App.showGUI({ messenger });
   }
 
   /** WIP
