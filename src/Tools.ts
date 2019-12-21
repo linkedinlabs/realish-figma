@@ -1,6 +1,7 @@
 import {
   FRAME_TYPES,
   GUI_SETTINGS,
+  PLUGIN_IDENTIFIER,
 } from './constants';
 
 // --- helper functions
@@ -310,6 +311,22 @@ const resizeGUI = (
  */
 const isTextNode = (node: any): node is TextNode => node.type === 'TEXT';
 
+/** WIP
+ * @description Checks the `FEATURESET` environment variable from webpack and
+ * determines if the featureset build should be `internal` or not.
+ *
+ * @kind function
+ * @name dataNamespace
+ *
+ * @returns {string} `true` if the build is internal, `false` if it is not.
+ */
+const dataNamespace = (): string => {
+  const identifier: string = PLUGIN_IDENTIFIER;
+  const key: string = process.env.SECRET_KEY ? process.env.SECRET_KEY : '1234';
+  const namespace: string = `${identifier}:${key}`;
+  return namespace;
+};
+
 /**
  * @description Checks the `FEATURESET` environment variable from webpack and
  * determines if the featureset build should be `internal` or not.
@@ -328,6 +345,7 @@ export {
   asyncForEach,
   asyncNetworkRequest,
   awaitUIReadiness,
+  dataNamespace,
   findTopFrame,
   isInternal,
   isTextNode,
