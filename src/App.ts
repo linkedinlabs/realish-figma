@@ -3,6 +3,7 @@ import Messenger from './Messenger';
 // import Painter from './Painter';
 import {
   awaitUIReadiness,
+  dataNamespace,
   // loadTypefaces,
   resizeGUI,
 } from './Tools';
@@ -174,10 +175,10 @@ export default class App {
     return null;
   }
 
-  static showToolbar() {
+  static showToolbar(sessionKey: number) {
     const { messenger } = assemble(figma);
 
-    App.refreshGUI();
+    App.refreshGUI(sessionKey);
     App.showGUI({ messenger });
   }
 
@@ -189,7 +190,7 @@ export default class App {
    *
    * @returns {null} Shows a Toast in the UI if nothing is selected.
    */
-  static refreshGUI() {
+  static refreshGUI(sessionKey: number) {
     const { messenger, selection } = assemble(figma);
 
     const observeLocked: boolean = true;
@@ -201,11 +202,25 @@ export default class App {
 
     const selected = [];
     textNodes.forEach((textNode) => {
+      const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
+      const proposedTextData = textNode.getSharedPluginData(dataNamespace(), textProposedKey);
+      let proposedText: string = JSON.parse(proposedTextData || null);
+      if (!proposedText) {
+        proposedText = generateRandomName();
+      }
+
       selected.push({
         id: textNode.id,
         originalText: textNode.characters,
-        newText: generateRandomName(),
+        proposedText,
       });
+
+      // update the proposed text
+      textNode.setSharedPluginData(
+        dataNamespace(),
+        textProposedKey,
+        JSON.stringify(proposedText),
+      );
     });
 
     // send the updates to the UI

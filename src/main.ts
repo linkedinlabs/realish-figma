@@ -38,8 +38,14 @@ const dispatcher = async (action: {
   type: string,
   payload?: any,
   visual: boolean,
+  sessionKey: number,
 }) => {
-  const { type, payload, visual } = action;
+  const {
+    payload,
+    sessionKey,
+    type,
+    visual,
+  } = action;
 
   // if the action is not visual, close the plugin after running
   const shouldTerminate: boolean = !visual;
@@ -64,7 +70,7 @@ const dispatcher = async (action: {
         app.commitText(payload, true);
         break;
       default:
-        App.showToolbar();
+        App.showToolbar(sessionKey);
     }
   };
 
@@ -84,6 +90,10 @@ export default dispatcher;
  * @returns {null}
  */
 const main = async () => {
+  // set up rotating key (use a timestamp)
+  // this key is only used during the single run of the plugin
+  const SESSION_KEY: number = Math.round((new Date()).getTime() / 1000);
+
   // set up logging
   const messenger = new Messenger({ for: figma, in: figma.currentPage });
 
@@ -98,6 +108,7 @@ const main = async () => {
     dispatcher({
       type: figma.command,
       visual: false,
+      sessionKey: SESSION_KEY,
     });
   }
 
@@ -111,6 +122,7 @@ const main = async () => {
         type: action,
         payload,
         visual: true,
+        sessionKey: SESSION_KEY,
       });
     }
 
@@ -120,7 +132,7 @@ const main = async () => {
 
   // watch selection changes on the Figma level -------------------------------
   figma.on('selectionchange', () => {
-    App.refreshGUI();
+    App.refreshGUI(SESSION_KEY);
   });
 };
 

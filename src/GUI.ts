@@ -202,7 +202,7 @@ const setOptions = (options: {
 const updateSelectedLayers = (layers: Array<{
   id: string,
   originalText: string,
-  newText: string,
+  proposedText: string,
 }>): void => {
   const layerCount = layers.length;
   const layerListElement: HTMLUListElement = (<HTMLUListElement> document.getElementById('layer-list'));
@@ -221,8 +221,8 @@ const updateSelectedLayers = (layers: Array<{
         const originalTextElement = newLayerElement.querySelector('.original-text .text');
         originalTextElement.firstChild.nodeValue = layer.originalText;
 
-        const newTextElement = newLayerElement.querySelector('.new-text .text');
-        newTextElement.firstChild.nodeValue = layer.newText;
+        const proposedTextElement = newLayerElement.querySelector('.new-text .text');
+        proposedTextElement.firstChild.nodeValue = layer.proposedText;
 
         layerListElement.appendChild(newLayerElement);
       });
