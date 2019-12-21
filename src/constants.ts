@@ -33,6 +33,10 @@ const PLUGIN_NAME = 'Realish';
  */
 const DATA_KEYS = {
   options: `${PLUGIN_IDENTIFIER}.options-001`,
+  assignment: `${PLUGIN_IDENTIFIER}.assignment-001`,
+  textOriginal: `${PLUGIN_IDENTIFIER}.text-original-001`,
+  textProposed: `${PLUGIN_IDENTIFIER}.text-proposed-001`,
+  locked: `${PLUGIN_IDENTIFIER}.locked-001`,
 };
 
 /**
