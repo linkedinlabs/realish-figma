@@ -201,6 +201,7 @@ const setOptions = (options: {
  */
 const updateSelectedLayers = (layers: Array<{
   id: string,
+  assignment: string,
   originalText: string,
   proposedText: string,
 }>): void => {
@@ -217,6 +218,9 @@ const updateSelectedLayers = (layers: Array<{
         const newLayerElement: any = templateElement.cloneNode(true);
         newLayerElement.removeAttribute('style');
         newLayerElement.id = layer.id;
+
+        const assignmentsElement = newLayerElement.querySelector('.assignments');
+        assignmentsElement.value = layer.assignment;
 
         const originalTextElement = newLayerElement.querySelector('.original-text .text');
         originalTextElement.firstChild.nodeValue = layer.originalText;

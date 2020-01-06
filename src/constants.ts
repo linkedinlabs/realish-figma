@@ -39,6 +39,21 @@ const DATA_KEYS = {
   locked: `${PLUGIN_IDENTIFIER}.locked-001`,
 };
 
+/** WIP
+ * @description An object containing the current string constants used as keys in plugin data.
+ * Changing one of these keys will break data retrieval or reset data in any
+ * `xPluginData` getters/setters and potentially elsewhere.
+ *
+ * @kind constant
+ * @name ASSIGNMENTS
+ * @type {Object}
+ */
+const ASSIGNMENTS = {
+  unassigned: 'unassigned',
+  name: 'name',
+  not_name: 'not-name',
+};
+
 /**
  * @description An object containing the current string constants the Figma API returns for
  * top-level (`main`) layer and `group` layer types.
@@ -93,6 +108,7 @@ const TYPEFACES = {
 };
 
 export {
+  ASSIGNMENTS,
   DATA_KEYS,
   FRAME_TYPES,
   GUI_SETTINGS,
