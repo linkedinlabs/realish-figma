@@ -153,6 +153,15 @@ export default class App {
     return null;
   }
 
+  /** WIP
+   * @description Enables the plugin GUI within Figma.
+   *
+   * @kind function
+   * @name showToolbar
+   * @param {string} size An optional param calling one of the UI sizes defined in GUI_SETTINGS.
+   *
+   * @returns {null} Shows a Toast in the UI if nothing is selected.
+   */
   static showToolbar(sessionKey: number) {
     const { messenger } = assemble(figma);
 
@@ -180,11 +189,12 @@ export default class App {
 
     const selected = [];
     textNodes.forEach((textNode) => {
-      let assignment: string = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
+      const assignmentData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
+      let assignment: string = JSON.parse(assignmentData || null);
       let proposedText: string = textNode.characters;
 
       // if text is already assigned, generate/rotate the new proposed text
-      if (assignment) {
+      if (assignment && (assignment !== 'unassigned')) {
         const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
         const proposedTextData = textNode.getSharedPluginData(dataNamespace(), textProposedKey);
 
@@ -230,6 +240,50 @@ export default class App {
     );
 
     messenger.log(`Updating the UI with ${textNodes.length} selected ${textNodes.length === 1 ? 'layer' : 'layers'}`);
+  }
+
+  /** WIP
+   * @description Enables the plugin GUI within Figma.
+   *
+   * @kind function
+   * @name showToolbar
+   * @param {string} size An optional param calling one of the UI sizes defined in GUI_SETTINGS.
+   *
+   * @returns {null} Shows a Toast in the UI if nothing is selected.
+   */
+  static reassignTextNode(
+    payload: {
+      id: string,
+      assignment: 'unassigned' | 'name' | 'not-name',
+    },
+    sessionKey: number,
+  ) {
+    const { assignment, id } = payload;
+    const { messenger, selection } = assemble(figma);
+
+    const observeLocked: boolean = true;
+    const consolidatedSelection: Array<SceneNode | PageNode> = selection;
+
+    const textNodes = new Crawler({ for: consolidatedSelection }).text(observeLocked);
+
+    const index = 0;
+    const textNodesToUpdate: Array<TextNode> = textNodes.filter((node: TextNode) => node.id === id);
+    const textNodeToUpdate: TextNode = textNodesToUpdate[index];
+
+    if (textNodeToUpdate) {
+      textNodeToUpdate.setSharedPluginData(
+        dataNamespace(),
+        DATA_KEYS.assignment,
+        JSON.stringify(assignment),
+      );
+
+      messenger.log(`Updated ${id}’s assignment to: “${assignment}”`);
+
+      // update the UI
+      App.refreshGUI(sessionKey);
+    } else {
+      messenger.log(`Could not find a TextNode to update with the id: ${id}`, 'error');
+    }
   }
 
   /** WIP
