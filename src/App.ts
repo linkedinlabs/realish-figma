@@ -2,7 +2,6 @@ import Crawler from './Crawler';
 import Messenger from './Messenger';
 // import Painter from './Painter';
 import {
-  awaitUIReadiness,
   dataNamespace,
   // loadTypefaces,
   resizeGUI,
@@ -139,33 +138,8 @@ export default class App {
     const { size, messenger } = options;
 
     if (messenger) {
-      messenger.log(`Display GUI at size: ${size}`);
-    }
-
-    if (size && size === 'default') {
-      // retrieve existing options
-      const lastUsedOptions: {
-        action: 'duplicate' | 'replace' | 'new-page',
-        translateLocked: boolean,
-        languages: Array<string>,
-      } = await figma.clientStorage.getAsync(DATA_KEYS.options);
-
-      // update the UI with the existing options
-      if (lastUsedOptions
-        && lastUsedOptions.action !== undefined
-        && lastUsedOptions.translateLocked !== undefined
-        && lastUsedOptions.languages !== undefined
-      ) {
-        // set the options in the UI
-        figma.ui.postMessage({
-          action: 'setOptions',
-          payload: lastUsedOptions,
-        });
-
-        // wait for the UI to tell us it is done setting options
-        // this prevents showing the UI while changes are being drawn
-        await awaitUIReadiness(messenger);
-      }
+      const displayMessage: string = size ? ` at size: ${size}` : '';
+      messenger.log(`Display GUI${displayMessage}`);
     }
 
     // set UI panel size

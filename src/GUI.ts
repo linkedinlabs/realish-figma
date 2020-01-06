@@ -133,66 +133,11 @@ const watchActions = (): void => {
 
 /* process Messages from the plugin */
 
-/**
+/** WIP
  * @description Sets the plugin’s form elements in the webview DOM to the correct options.
  *
  * @kind function
- * @name setOptions
- *
- * @param {Object} options Should include an array of languages to translate, the action to take
- * on the text blocks, and whether or not to ignore locked layers.
- *
- * @returns {null}
- */
-const setOptions = (options: {
-  action: 'duplicate' | 'replace' | 'new-page',
-  translateLocked: boolean,
-  languages: Array<string>,
-}): void => {
-  const { languages, action, translateLocked } = options;
-
-  // remove the Figma version so it can be reset
-  // the figma-select-menu make a <select> clone, so it must be removed before selecting
-  // the menu from the DOM
-  selectMenu.destroy();
-
-  const languageIndex = 0; // currently GUI only supports 1 language at a time; take first
-  const language = languages[languageIndex];
-  const languagesElement: HTMLSelectElement = (<HTMLSelectElement> document.getElementById('languages'));
-  const languageOptionElement: HTMLOptionElement = document.querySelector(`option[value="${language}"]`);
-
-  const textActionElement: HTMLInputElement = document.querySelector(`input[value="${action}"]`);
-  const translateLockedElement: HTMLInputElement = document.querySelector('input[name="translate-locked"]');
-
-  if (languagesElement) {
-    // set the language if it exists in the menu
-    if (languageOptionElement) {
-      languagesElement.value = language;
-    }
-
-    // set the Figma version of the menu
-    selectMenu.init({ position: 'overlap' });
-  }
-
-  if (textActionElement) {
-    textActionElement.checked = true;
-  }
-
-  if (translateLockedElement) {
-    translateLockedElement.checked = translateLocked;
-  }
-
-  // tell the main thread that the plugin has loaded
-  sendLoadedMsg();
-
-  return null;
-};
-
-/**
- * @description Sets the plugin’s form elements in the webview DOM to the correct options.
- *
- * @kind function
- * @name setOptions
+ * @name updateSelectedLayers
  *
  * @param {Object} options Should include an array of languages to translate, the action to take
  * on the text blocks, and whether or not to ignore locked layers.
@@ -271,9 +216,6 @@ const watchIncomingMessages = (): void => {
     const { pluginMessage } = event.data;
 
     switch (pluginMessage.action) {
-      case 'setOptions':
-        setOptions(pluginMessage.payload);
-        break;
       case 'refreshState':
         updateSelectedLayers(pluginMessage.payload);
         break;
