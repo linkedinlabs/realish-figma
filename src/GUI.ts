@@ -3,6 +3,7 @@
  */
 import './assets/css/main.scss';
 import './vendor/figma-select-menu';
+import { ASSIGNMENTS } from './constants';
 
 /**
  * @description Sends a message and applicable payload to the main thread.
@@ -226,6 +227,7 @@ const updateSelectedLayers = (layers: Array<{
   assignment: string,
   originalText: string,
   proposedText: string,
+  locked: boolean,
 }>): void => {
   const layerCount = layers.length;
   const layerListElement: HTMLUListElement = (<HTMLUListElement> document.getElementById('layer-list'));
@@ -243,6 +245,18 @@ const updateSelectedLayers = (layers: Array<{
 
         const assignmentsElement: HTMLSelectElement = newLayerElement.querySelector('.assignments');
         assignmentsElement.value = layer.assignment;
+
+        if (layer.assignment !== ASSIGNMENTS.unassigned && !layer.locked) {
+          const resetButtonElement: HTMLButtonElement = newLayerElement.querySelector('.reset-control button');
+          if (resetButtonElement) {
+            resetButtonElement.disabled = false;
+          }
+
+          const remixButtonElement: HTMLButtonElement = newLayerElement.querySelector('.remix-control button');
+          if (remixButtonElement) {
+            remixButtonElement.disabled = false;
+          }
+        }
 
         const originalTextElement = newLayerElement.querySelector('.original-text .text');
         originalTextElement.firstChild.nodeValue = layer.originalText;
