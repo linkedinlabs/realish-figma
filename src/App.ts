@@ -7,7 +7,11 @@ import {
   // loadTypefaces,
   resizeGUI,
 } from './Tools';
-import { DATA_KEYS, GUI_SETTINGS } from './constants';
+import {
+  ASSIGNMENTS,
+  DATA_KEYS,
+  GUI_SETTINGS,
+} from './constants';
 
 const Generator = require('unique-names-generator'); // temp
 
@@ -202,25 +206,36 @@ export default class App {
 
     const selected = [];
     textNodes.forEach((textNode) => {
-      const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
-      const proposedTextData = textNode.getSharedPluginData(dataNamespace(), textProposedKey);
-      let proposedText: string = JSON.parse(proposedTextData || null);
-      if (!proposedText) {
-        proposedText = generateRandomName();
+      let assignment: string = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
+      let proposedText: string = textNode.characters;
+
+      // if text is already assigned, generate/rotate the new proposed text
+      if (assignment) {
+        const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
+        const proposedTextData = textNode.getSharedPluginData(dataNamespace(), textProposedKey);
+
+        proposedText = JSON.parse(proposedTextData || null);
+        if (!proposedText) {
+          proposedText = generateRandomName();
+        }
+
+        // update the proposed text
+        textNode.setSharedPluginData(
+          dataNamespace(),
+          textProposedKey,
+          JSON.stringify(proposedText),
+        );
+      } else {
+        assignment = ASSIGNMENTS.unassigned;
       }
 
+      // update the bundle of info for the current `textNode` in the selection
       selected.push({
         id: textNode.id,
+        assignment,
         originalText: textNode.characters,
         proposedText,
       });
-
-      // update the proposed text
-      textNode.setSharedPluginData(
-        dataNamespace(),
-        textProposedKey,
-        JSON.stringify(proposedText),
-      );
     });
 
     // send the updates to the UI
