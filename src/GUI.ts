@@ -5,6 +5,29 @@ import './assets/css/main.scss';
 import './vendor/figma-select-menu';
 
 /**
+ * @description Sends a message and applicable payload to the main thread.
+ *
+ * @kind function
+ * @name sendMsgToMain
+ *
+ * @returns {null}
+ */
+const sendMsgToMain = (
+  action: string,
+  payload: any,
+): void => {
+  // send message to main thread indicating UI has loaded
+  parent.postMessage({
+    pluginMessage: {
+      action,
+      payload,
+    },
+  }, '*');
+
+  return null;
+};
+
+/**
  * @description Posts a message to the main thread with `loaded` set to `true`. Used in the
  * main thread to indicate the GUI is listening.
  *
@@ -115,17 +138,71 @@ const watchActions = (): void => {
           const payload = readOptions();
 
           // bubble action to main
-          parent.postMessage({
-            pluginMessage: {
-              action,
-              payload,
-            },
-          }, '*');
+          sendMsgToMain(action, payload);
         }
       }
     };
 
     actionsElement.addEventListener('click', onClick);
+  }
+
+  return null;
+};
+
+/** WIP
+ * @description Watch UI clicks for actions to pass on to the main plugin thread.
+ *
+ * @kind function
+ * @name watchLayer
+ *
+ * @returns {null}
+ */
+const watchLayer = (layerElement: HTMLElement): void => {
+  if (layerElement) {
+    const onClick = (e: MouseEvent) => {
+      const target = e.target as HTMLTextAreaElement;
+      const button: HTMLButtonElement = target.closest('button:enabled');
+      if (button) {
+        // find action by element class
+        const action = button.classList[0].replace('action-', '');
+
+        if (action) {
+          const payload: {
+            id: string
+          } = {
+            id: layerElement.id,
+          };
+
+          // bubble action to main
+          sendMsgToMain(action, payload);
+        }
+      }
+    };
+
+    const onChange = (e: Event) => {
+      const newAssignment: string = (<HTMLSelectElement>e.target).value;
+
+      if (newAssignment) {
+        const action: string = 'reassign';
+        const payload: {
+          id: string,
+          assignment: string,
+        } = {
+          id: layerElement.id,
+          assignment: newAssignment,
+        };
+
+        // bubble action to main
+        sendMsgToMain(action, payload);
+      }
+    };
+
+
+    const assignmentsElement: HTMLSelectElement = layerElement.querySelector('.assignments');
+    if (assignmentsElement) {
+      assignmentsElement.addEventListener('input', onChange);
+    }
+    layerElement.addEventListener('click', onClick);
   }
 
   return null;
@@ -164,7 +241,7 @@ const updateSelectedLayers = (layers: Array<{
         newLayerElement.removeAttribute('style');
         newLayerElement.id = layer.id;
 
-        const assignmentsElement = newLayerElement.querySelector('.assignments');
+        const assignmentsElement: HTMLSelectElement = newLayerElement.querySelector('.assignments');
         assignmentsElement.value = layer.assignment;
 
         const originalTextElement = newLayerElement.querySelector('.original-text .text');
@@ -173,7 +250,11 @@ const updateSelectedLayers = (layers: Array<{
         const proposedTextElement = newLayerElement.querySelector('.new-text .text');
         proposedTextElement.firstChild.nodeValue = layer.proposedText;
 
+        // add the layer to the list
         layerListElement.appendChild(newLayerElement);
+
+        // set control watchers
+        watchLayer(newLayerElement);
       });
     }
 

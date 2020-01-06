@@ -66,12 +66,20 @@ const dispatcher = async (action: {
     // } = await figma.clientStorage.getAsync(DATA_KEYS.options);
 
     switch (type) {
+      case 'reassign':
+        App.reassignTextNode(payload, sessionKey);
+        break;
       case 'submit':
         app.commitText(payload, true);
         break;
-      default:
+      case 'tools':
         App.showToolbar(sessionKey);
+        break;
+      default:
+        return null;
     }
+
+    return null;
   };
 
   runAction();
