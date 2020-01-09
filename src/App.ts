@@ -330,6 +330,8 @@ export default class App {
         textProposedKey,
         JSON.stringify(proposedText),
       );
+
+      messenger.log(`Remixed ${id}’s proposed text`);
     };
 
     /** WIP
@@ -353,6 +355,8 @@ export default class App {
         textProposedKey,
         JSON.stringify(proposedText),
       );
+
+      messenger.log(`Restored ${id} to the original text`);
     };
 
     const textNode = retrieveTextNode();
