@@ -201,14 +201,14 @@ export default class App {
         proposedText = JSON.parse(proposedTextData || null);
         if (!proposedText) {
           proposedText = generateRandomName();
-        }
 
-        // update the proposed text
-        textNode.setSharedPluginData(
-          dataNamespace(),
-          textProposedKey,
-          JSON.stringify(proposedText),
-        );
+          // update the proposed text
+          textNode.setSharedPluginData(
+            dataNamespace(),
+            textProposedKey,
+            JSON.stringify(proposedText),
+          );
+        }
       } else {
         assignment = ASSIGNMENTS.unassigned;
       }
@@ -252,7 +252,7 @@ export default class App {
    * @returns {null} Shows a Toast in the UI if nothing is selected.
    */
   static actOnNode(
-    actionType: 'reassign' | 'remix',
+    actionType: 'reassign' | 'remix' | 'restore',
     payload: {
       id: string,
       assignment?: 'unassigned' | 'name' | 'not-name',
@@ -320,10 +320,35 @@ export default class App {
      */
     const remixProposedText = (textNodeToRemix): void => {
       const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
+
+      // new randomization based on assignment
       const proposedText = generateRandomName();
 
-      // update the proposed text
+      // commit the proposed text to settings
       textNodeToRemix.setSharedPluginData(
+        dataNamespace(),
+        textProposedKey,
+        JSON.stringify(proposedText),
+      );
+    };
+
+    /** WIP
+     * @description Enables the plugin GUI within Figma.
+     *
+     * @kind function
+     * @name restoreText
+     * @param {string} size An optional param calling one of the UI sizes defined in GUI_SETTINGS.
+     *
+     * @returns {null} Shows a Toast in the UI if nothing is selected.
+     */
+    const restoreText = (textNodeToRestore): void => {
+      const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
+
+      // set to the current (original) text
+      const proposedText = textNodeToRestore.characters;
+
+      // commit the proposed text to settings
+      textNodeToRestore.setSharedPluginData(
         dataNamespace(),
         textProposedKey,
         JSON.stringify(proposedText),
@@ -338,6 +363,9 @@ export default class App {
           break;
         case 'remix':
           remixProposedText(textNode);
+          break;
+        case 'restore':
+          restoreText(textNode);
           break;
         default:
           return null;
