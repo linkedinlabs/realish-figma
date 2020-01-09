@@ -51,7 +51,7 @@ const DATA_KEYS = {
 const ASSIGNMENTS = {
   unassigned: 'unassigned',
   name: 'name',
-  not_name: 'not-name',
+  animal: 'animal',
 };
 
 /**

@@ -98,6 +98,33 @@ const generateRandomName = () => {
   return capitalizedName;
 };
 
+const generateRandomAnimal = () => {
+  const { uniqueNamesGenerator, animals } = Generator; // temp
+  const capitalizedName: string = uniqueNamesGenerator({
+    dictionaries: [animals],
+    length: 1,
+    style: 'capital',
+  });
+
+  return capitalizedName;
+};
+
+const generateRandomText = (textNode: TextNode): string => {
+  const assignmentData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
+  const assignment: string = JSON.parse(assignmentData || null);
+  let randomText: string = null;
+
+  if (assignment) {
+    if (assignment === ASSIGNMENTS.name) {
+      randomText = generateRandomName();
+    } else {
+      randomText = generateRandomAnimal();
+    }
+  }
+
+  return randomText;
+};
+
 /**
  * @description A class to handle core app logic and dispatch work to other classes.
  *
@@ -200,7 +227,7 @@ export default class App {
 
         proposedText = JSON.parse(proposedTextData || null);
         if (!proposedText) {
-          proposedText = generateRandomName();
+          proposedText = generateRandomText(textNode);
 
           // update the proposed text
           textNode.setSharedPluginData(
@@ -255,7 +282,7 @@ export default class App {
     actionType: 'reassign' | 'remix' | 'restore',
     payload: {
       id: string,
-      assignment?: 'unassigned' | 'name' | 'not-name',
+      assignment?: 'unassigned' | 'name' | 'animal',
     },
     sessionKey: number,
   ) {
@@ -332,7 +359,7 @@ export default class App {
      */
     const remixProposedText = (textNodeToRemix): void => {
       // new randomization based on assignment
-      const proposedText = generateRandomName();
+      const proposedText = generateRandomText(textNodeToRemix);
 
       // commit the proposed text
       textNodeToRemix.setSharedPluginData(
