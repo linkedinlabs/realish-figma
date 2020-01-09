@@ -246,44 +246,86 @@ export default class App {
    * @description Enables the plugin GUI within Figma.
    *
    * @kind function
-   * @name showToolbar
+   * @name actOnNode
    * @param {string} size An optional param calling one of the UI sizes defined in GUI_SETTINGS.
    *
    * @returns {null} Shows a Toast in the UI if nothing is selected.
    */
-  static reassignTextNode(
+  static actOnNode(
+    actionType: 'reassign' | 'remix',
     payload: {
       id: string,
-      assignment: 'unassigned' | 'name' | 'not-name',
+      assignment?: 'unassigned' | 'name' | 'not-name',
     },
     sessionKey: number,
   ) {
-    const { assignment, id } = payload;
+    const { id } = payload;
     const { messenger, selection } = assemble(figma);
 
-    const observeLocked: boolean = true;
-    const consolidatedSelection: Array<SceneNode | PageNode> = selection;
+    /** WIP
+     * @description Enables the plugin GUI within Figma.
+     *
+     * @kind function
+     * @name retrieveTextNode
+     * @param {string} size An optional param calling one of the UI sizes defined in GUI_SETTINGS.
+     *
+     * @returns {null} Shows a Toast in the UI if nothing is selected.
+     */
+    const retrieveTextNode = (): TextNode => {
+      const observeLocked: boolean = true;
+      const consolidatedSelection: Array<SceneNode | PageNode> = selection;
 
-    const textNodes = new Crawler({ for: consolidatedSelection }).text(observeLocked);
+      const textNodes = new Crawler({ for: consolidatedSelection }).text(observeLocked);
 
-    const index = 0;
-    const textNodesToUpdate: Array<TextNode> = textNodes.filter((node: TextNode) => node.id === id);
-    const textNodeToUpdate: TextNode = textNodesToUpdate[index];
-
-    if (textNodeToUpdate) {
-      textNodeToUpdate.setSharedPluginData(
-        dataNamespace(),
-        DATA_KEYS.assignment,
-        JSON.stringify(assignment),
+      const index = 0;
+      const textNodesToUpdate: Array<TextNode> = textNodes.filter(
+        (node: TextNode) => node.id === id,
       );
+      const textNodeToUpdate: TextNode = textNodesToUpdate[index];
 
-      messenger.log(`Updated ${id}’s assignment to: “${assignment}”`);
+      return textNodeToUpdate;
+    };
+
+    /** WIP
+     * @description Enables the plugin GUI within Figma.
+     *
+     * @kind function
+     * @name reassignTextNode
+     * @param {string} size An optional param calling one of the UI sizes defined in GUI_SETTINGS.
+     *
+     * @returns {null} Shows a Toast in the UI if nothing is selected.
+     */
+    const reassignTextNode = (textNodeToReassign): void => {
+      const { assignment } = payload;
+
+      if (assignment) {
+        textNodeToReassign.setSharedPluginData(
+          dataNamespace(),
+          DATA_KEYS.assignment,
+          JSON.stringify(assignment),
+        );
+
+        messenger.log(`Updated ${id}’s assignment to: “${assignment}”`);
+      }
+    };
+
+    const textNode = retrieveTextNode();
+    if (textNode) {
+      switch (actionType) {
+        case 'reassign':
+          reassignTextNode(textNode);
+          break;
+        default:
+          return null;
+      }
 
       // update the UI
       App.refreshGUI(sessionKey);
     } else {
       messenger.log(`Could not find a TextNode to update with the id: ${id}`, 'error');
     }
+
+    return null;
   }
 
   /** WIP
