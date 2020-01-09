@@ -248,7 +248,7 @@ const updateSelectedLayers = (layers: Array<{
 
         if (layer.assignment !== ASSIGNMENTS.unassigned && !layer.locked) {
           const resetButtonElement: HTMLButtonElement = newLayerElement.querySelector('.reset-control button');
-          if (resetButtonElement) {
+          if (resetButtonElement && (layer.originalText !== layer.proposedText)) {
             resetButtonElement.disabled = false;
           }
 
