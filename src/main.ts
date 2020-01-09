@@ -67,7 +67,7 @@ const dispatcher = async (action: {
 
     switch (type) {
       case 'reassign':
-        App.reassignTextNode(payload, sessionKey);
+        App.actOnNode(type, payload, sessionKey);
         break;
       case 'submit':
         app.commitText(payload, true);
