@@ -261,6 +261,7 @@ export default class App {
   ) {
     const { id } = payload;
     const { messenger, selection } = assemble(figma);
+    const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
 
     /** WIP
      * @description Enables the plugin GUI within Figma.
@@ -299,10 +300,21 @@ export default class App {
       const { assignment } = payload;
 
       if (assignment) {
+        // commit the new assignment
         textNodeToReassign.setSharedPluginData(
           dataNamespace(),
           DATA_KEYS.assignment,
           JSON.stringify(assignment),
+        );
+
+        // empty the proposed text
+        const proposedText = null;
+
+        // commit the proposed text
+        textNodeToReassign.setSharedPluginData(
+          dataNamespace(),
+          textProposedKey,
+          JSON.stringify(proposedText),
         );
 
         messenger.log(`Updated ${id}’s assignment to: “${assignment}”`);
@@ -319,12 +331,10 @@ export default class App {
      * @returns {null} Shows a Toast in the UI if nothing is selected.
      */
     const remixProposedText = (textNodeToRemix): void => {
-      const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
-
       // new randomization based on assignment
       const proposedText = generateRandomName();
 
-      // commit the proposed text to settings
+      // commit the proposed text
       textNodeToRemix.setSharedPluginData(
         dataNamespace(),
         textProposedKey,
@@ -344,12 +354,10 @@ export default class App {
      * @returns {null} Shows a Toast in the UI if nothing is selected.
      */
     const restoreText = (textNodeToRestore): void => {
-      const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
-
       // set to the current (original) text
       const proposedText = textNodeToRestore.characters;
 
-      // commit the proposed text to settings
+      // commit the proposed text
       textNodeToRestore.setSharedPluginData(
         dataNamespace(),
         textProposedKey,
