@@ -67,6 +67,7 @@ const dispatcher = async (action: {
 
     switch (type) {
       case 'reassign':
+      case 'remix':
         App.actOnNode(type, payload, sessionKey);
         break;
       case 'submit':
