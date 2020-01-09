@@ -309,11 +309,35 @@ export default class App {
       }
     };
 
+    /** WIP
+     * @description Enables the plugin GUI within Figma.
+     *
+     * @kind function
+     * @name remixProposedText
+     * @param {string} size An optional param calling one of the UI sizes defined in GUI_SETTINGS.
+     *
+     * @returns {null} Shows a Toast in the UI if nothing is selected.
+     */
+    const remixProposedText = (textNodeToRemix): void => {
+      const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
+      const proposedText = generateRandomName();
+
+      // update the proposed text
+      textNodeToRemix.setSharedPluginData(
+        dataNamespace(),
+        textProposedKey,
+        JSON.stringify(proposedText),
+      );
+    };
+
     const textNode = retrieveTextNode();
     if (textNode) {
       switch (actionType) {
         case 'reassign':
           reassignTextNode(textNode);
+          break;
+        case 'remix':
+          remixProposedText(textNode);
           break;
         default:
           return null;
