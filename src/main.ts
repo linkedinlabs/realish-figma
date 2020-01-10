@@ -71,6 +71,9 @@ const dispatcher = async (action: {
       case 'restore':
         App.actOnNode(type, payload, sessionKey);
         break;
+      case 'remix-all':
+        App.remixAll(sessionKey);
+        break;
       case 'submit':
         app.commitText(payload, true);
         break;
