@@ -219,6 +219,8 @@ export default class App {
       const assignmentData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
       let assignment: string = JSON.parse(assignmentData || null);
       let proposedText: string = textNode.characters;
+      const lockedData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
+      const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
 
       // if text is already assigned, generate/rotate the new proposed text
       if (assignment && (assignment !== 'unassigned')) {
@@ -246,6 +248,7 @@ export default class App {
         assignment,
         originalText: textNode.characters,
         proposedText,
+        locked,
       });
     });
 
@@ -279,7 +282,7 @@ export default class App {
    * @returns {null} Shows a Toast in the UI if nothing is selected.
    */
   static actOnNode(
-    actionType: 'reassign' | 'remix' | 'restore',
+    actionType: 'lock-toggle' | 'reassign' | 'remix' | 'restore',
     payload: {
       id: string,
       assignment?: 'unassigned' | 'name' | 'animal',
@@ -394,6 +397,42 @@ export default class App {
       messenger.log(`Restored ${id} to the original text`);
     };
 
+    /** WIP
+     * @description Enables the plugin GUI within Figma.
+     *
+     * @kind function
+     * @name toggleNodeLock
+     * @param {string} size An optional param calling one of the UI sizes defined in GUI_SETTINGS.
+     *
+     * @returns {null} Shows a Toast in the UI if nothing is selected.
+     */
+    const toggleNodeLock = (textNodeToSecure): void => {
+      const lockedData = textNodeToSecure.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
+      const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
+
+      // commit the new assignment
+      textNodeToSecure.setSharedPluginData(
+        dataNamespace(),
+        DATA_KEYS.locked,
+        JSON.stringify(!locked), // toggle the opposite of whatever was read from the layer data
+      );
+
+      // new randomization based on assignment if layer was previously locked
+      // otherwise the proposed text should remain the same if locking the layer
+      if (locked) {
+        const proposedText = generateRandomText(textNodeToSecure);
+
+        // commit the proposed text
+        textNodeToSecure.setSharedPluginData(
+          dataNamespace(),
+          textProposedKey,
+          JSON.stringify(proposedText),
+        );
+      }
+
+      messenger.log(`Updated ${id}’s locking to: “${locked}”`);
+    };
+
     const textNode = retrieveTextNode();
     if (textNode) {
       switch (actionType) {
@@ -405,6 +444,9 @@ export default class App {
           break;
         case 'restore':
           restoreText(textNode);
+          break;
+        case 'lock-toggle':
+          toggleNodeLock(textNode);
           break;
         default:
           return null;

@@ -163,7 +163,7 @@ const watchLayer = (layerElement: HTMLElement): void => {
     const onClick = (e: MouseEvent) => {
       const target = e.target as HTMLTextAreaElement;
       const button: HTMLButtonElement = target.closest('button:enabled');
-      if (button) {
+      if ((button && !button.disabled) || (button && button.classList.contains('action-lock-toggle'))) {
         // find action by element class
         const action = button.classList[0].replace('action-', '');
 
@@ -246,6 +246,7 @@ const updateSelectedLayers = (layers: Array<{
         const assignmentsElement: HTMLSelectElement = newLayerElement.querySelector('.assignments');
         assignmentsElement.value = layer.assignment;
 
+        // set reset / remix button states
         if (layer.assignment !== ASSIGNMENTS.unassigned && !layer.locked) {
           const resetButtonElement: HTMLButtonElement = newLayerElement.querySelector('.reset-control button');
           if (resetButtonElement && (layer.originalText !== layer.proposedText)) {
@@ -258,6 +259,13 @@ const updateSelectedLayers = (layers: Array<{
           }
         }
 
+        // set locking toggle state
+        const lockingButtonElement: HTMLButtonElement = newLayerElement.querySelector('.locking-control button');
+        if (lockingButtonElement && !layer.locked) {
+          newLayerElement.classList.remove('locked');
+        }
+
+        // set text
         const originalTextElement = newLayerElement.querySelector('.original-text .text');
         originalTextElement.firstChild.nodeValue = layer.originalText;
 

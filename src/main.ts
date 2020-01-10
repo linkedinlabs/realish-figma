@@ -64,8 +64,8 @@ const dispatcher = async (action: {
     //   translateLocked: boolean,
     //   languages: Array<string>,
     // } = await figma.clientStorage.getAsync(DATA_KEYS.options);
-
     switch (type) {
+      case 'lock-toggle':
       case 'reassign':
       case 'remix':
       case 'restore':
