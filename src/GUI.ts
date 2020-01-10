@@ -246,6 +246,10 @@ const updateSelectedLayers = (layers: Array<{
         const assignmentsElement: HTMLSelectElement = newLayerElement.querySelector('.assignments');
         assignmentsElement.value = layer.assignment;
 
+        if (!layer.locked) {
+          assignmentsElement.disabled = false;
+        }
+
         // set reset / remix button states
         if (layer.assignment !== ASSIGNMENTS.unassigned && !layer.locked) {
           const resetButtonElement: HTMLButtonElement = newLayerElement.querySelector('.reset-control button');
