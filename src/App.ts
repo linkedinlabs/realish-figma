@@ -1,9 +1,9 @@
 import Crawler from './Crawler';
 import Messenger from './Messenger';
-// import Painter from './Painter';
+import Painter from './Painter';
 import {
   dataNamespace,
-  // loadTypefaces,
+  loadTypefaces,
   resizeGUI,
 } from './Tools';
 import {
@@ -35,56 +35,56 @@ const assemble = (context: any = null) => {
   };
 };
 
-// /**
-//  * @description Retrieves all of the typefaces (`FontName`) from a selection of text nodes
-//  * and returns them as a unique array (without repeats).
-//  *
-//  * @kind function
-//  * @name readTypefaces
-//  *
-//  * @param {Array} textNodes Array of the text next (`TextNode`) to retrieve typefaces from.
-//  *
-//  * @returns {Array} Returns an array of unique `FontName` entries (no repeats).
-//  */
-// const readTypefaces = (textNodes: Array<TextNode>) => {
-//   const uniqueTypefaces: Array<FontName> = [];
+/**
+ * @description Retrieves all of the typefaces (`FontName`) from a selection of text nodes
+ * and returns them as a unique array (without repeats).
+ *
+ * @kind function
+ * @name readTypefaces
+ *
+ * @param {Array} textNodes Array of the text next (`TextNode`) to retrieve typefaces from.
+ *
+ * @returns {Array} Returns an array of unique `FontName` entries (no repeats).
+ */
+const readTypefaces = (textNodes: Array<TextNode>) => {
+  const uniqueTypefaces: Array<FontName> = [];
 
-//   // take the typeface and, if new/unique, add it to the `uniqueTypefaces` array
-//   const setTypeFace = (typeface: FontName) => {
-//     const itemIndex: number = uniqueTypefaces.findIndex(
-//       (foundItem: FontName) => (
-//         (foundItem.family === typeface.family)
-//         && foundItem.style === typeface.style),
-//     );
+  // take the typeface and, if new/unique, add it to the `uniqueTypefaces` array
+  const setTypeFace = (typeface: FontName) => {
+    const itemIndex: number = uniqueTypefaces.findIndex(
+      (foundItem: FontName) => (
+        (foundItem.family === typeface.family)
+        && foundItem.style === typeface.style),
+    );
 
-//     // typeface is not present; add it to the array
-//     if (itemIndex < 0) {
-//       uniqueTypefaces.push(typeface);
-//     }
-//   };
+    // typeface is not present; add it to the array
+    if (itemIndex < 0) {
+      uniqueTypefaces.push(typeface);
+    }
+  };
 
-//   // iterate through each text node
-//   textNodes.forEach((textNode: TextNode) => {
-//     if (!textNode.hasMissingFont) {
-//       // some text nodes have multiple typefaces and the API returns a `figma.mixed` Symbol
-//       if (typeof textNode.fontName !== 'symbol') {
-//         // if a node does not return `fontName` as a Symbol, we can use the result directly
-//         const typeface: any = textNode.fontName;
-//         setTypeFace(typeface);
-//       } else {
-//         // use `getRangeFontName` to check each character (based on index) for its typeface
-//         const { characters } = textNode;
-//         const length: number = characters.length; // eslint-disable-line prefer-destructuring
-//         for (let i = 0; i < length; i += 1) {
-//           const typeface: any = textNode.getRangeFontName(i, i + 1);
-//           setTypeFace(typeface);
-//         }
-//       }
-//     }
-//   });
+  // iterate through each text node
+  textNodes.forEach((textNode: TextNode) => {
+    if (!textNode.hasMissingFont) {
+      // some text nodes have multiple typefaces and the API returns a `figma.mixed` Symbol
+      if (typeof textNode.fontName !== 'symbol') {
+        // if a node does not return `fontName` as a Symbol, we can use the result directly
+        const typeface: any = textNode.fontName;
+        setTypeFace(typeface);
+      } else {
+        // use `getRangeFontName` to check each character (based on index) for its typeface
+        const { characters } = textNode;
+        const length: number = characters.length; // eslint-disable-line prefer-destructuring
+        for (let i = 0; i < length; i += 1) {
+          const typeface: any = textNode.getRangeFontName(i, i + 1);
+          setTypeFace(typeface);
+        }
+      }
+    }
+  });
 
-//   return uniqueTypefaces;
-// };
+  return uniqueTypefaces;
+};
 
 const generateRandomName = () => {
   const { uniqueNamesGenerator, names } = Generator; // temp
@@ -210,7 +210,7 @@ export default class App {
     const observeLocked: boolean = true;
     const consolidatedSelection: Array<SceneNode | PageNode> = selection;
 
-    // retrieve selection of text nodes and filter for locked/unlocked based on options
+    // retrieve selection of text nodes and filter for unlocked
     const textNodes: Array<TextNode> = new Crawler(
       { for: consolidatedSelection },
     ).text(observeLocked);
@@ -486,7 +486,7 @@ export default class App {
     const observeLocked: boolean = true;
     const consolidatedSelection: Array<SceneNode | PageNode> = selection;
 
-    // retrieve selection of text nodes and filter for locked/unlocked based on options
+    // retrieve selection of text nodes and filter for unlocked
     const textNodes: Array<TextNode> = new Crawler(
       { for: consolidatedSelection },
     ).text(observeLocked);
@@ -513,50 +513,35 @@ export default class App {
    *
    * @returns {null} Shows a Toast in the UI if nothing is selected.
    */
-  async commitText(
-    options: {
-      languages: Array<string>,
-      action: 'duplicate' | 'replace' | 'new-page',
-      translateLocked: boolean,
-    },
-    savePrefs: boolean,
-  ) {
-    // const {
-    //   messenger,
-    //   page,
-    //   selection,
-    // } = assemble(figma);
-    // const {
-    //   action,
-    //   languages,
-    //   translateLocked,
-    // } = options;
-    // let consolidatedSelection: Array<SceneNode | PageNode> = selection;
+  async commitText(sessionKey: number) {
+    const { messenger, selection } = assemble(figma);
+    // retrieve selection of text nodes and filter for unlocked
+    const observeLocked: boolean = true;
+    const consolidatedSelection: Array<SceneNode | PageNode> = selection;
+    const textNodes: Array<TextNode> = new Crawler(
+      { for: consolidatedSelection },
+    ).text(observeLocked);
 
-    // // retrieve selection of text nodes and filter for locked/unlocked based on options
-    // let textNodes = new Crawler({ for: consolidatedSelection }).text(translateLocked);
+    /** WIP
+     * @description Does a thing.
+     *
+     * @kind function
+     * @name manipulateText
+     *
+     * @returns {null} Shows a Toast in the UI if nothing is selected.
+     */
+    const manipulateText = (textNodesToPaint) => {
+      messenger.log('Begin manipulating text');
+      textNodesToPaint.forEach((textNode: SceneNode) => {
+        // set up Painter instance for the layer
+        const painter = new Painter({ layer: textNode, sessionKey });
 
-    // /** WIP
-    //  * @description Does a thing.
-    //  *
-    //  * @kind function
-    //  * @name manipulateText
-    //  *
-    //  * @returns {null} Shows a Toast in the UI if nothing is selected.
-    //  */
-    // const manipulateText = (textNodesToPaint) => {
-    //   messenger.log('Begin manipulating text');
-    //   textNodesToPaint.forEach((textNode: SceneNode) => {
-    //     // set up Painter instance for the layer
-    //     // const painter = new Painter({ for: textNode, in: page });
-
-    //     // replace the existing text with the translation
-    //     // TKTK handle error result
-    //     // painter.replaceText();
-    //     messenger.toast('Do a thing!');
-    //   });
-    //   messenger.log('End manipulating text');
-    // };
+        // replace the existing text with the proposed text
+        const paintResult = painter.replaceText();
+        messenger.handleResult(paintResult);
+      });
+      messenger.log('End manipulating text');
+    };
 
     /**
      * @description Resets the plugin GUI back to the original state or closes it entirely,
@@ -585,85 +570,48 @@ export default class App {
 
     // begin main thread of action ------------------------------------------------------
 
-    // save current options
-    if (savePrefs) {
-      figma.clientStorage.setAsync(DATA_KEYS.options, options);
+    // translate if text nodes are available and fonts are not missing
+    const missingTypefaces: Array<TextNode> = textNodes.filter(
+      (node: TextNode) => node.hasMissingFont,
+    );
+    if ((textNodes.length > 0) && (missingTypefaces.length < 1)) {
+      // run the main thread this sets everything else in motion
+      const typefaces: Array<FontName> = readTypefaces(textNodes);
+      const languageTypefaces: Array<FontName> = null;
+
+      // load typefaces
+      if (languageTypefaces) {
+        languageTypefaces.forEach(languageTypeface => typefaces.push(languageTypeface));
+      }
+      await loadTypefaces(typefaces, messenger);
+
+      // replace existing text with proposed text
+      manipulateText(textNodes);
+
+      // update the UI to reflect changes
+      App.refreshGUI(sessionKey);
+
+      return closeOrReset();
     }
 
-    // // if action is `new-page`, need to create a new page first
-    // let newPage = null;
-    // if (textNodes.length > 0 && action === 'new-page') {
-    //   newPage = figma.createPage();
-    // }
+    // otherwise set/display appropriate error messages
+    let toastErrorMessage = 'Something went wrong 😬';
 
-    // // if action is `duplicate`, need to duplicate the layers first
-    // if (
-    //   textNodes.length > 0
-    //   && (action === 'duplicate' || action === 'new-page')
-    // ) {
-    //   consolidatedSelection = [];
+    // set the message + log
+    if (missingTypefaces.length > 0) {
+      toastErrorMessage = textNodes.length > 1
+        ? '❌ One or more select text layers contain missing fonts'
+        : '❌ This text layer contains a missing font';
+      messenger.log('Text node(s) contained missing fonts');
+    } else {
+      toastErrorMessage = observeLocked
+        ? '❌ You need to select at least one text layer'
+        : '❌ You need to select at least one unlocked text layer';
+      messenger.log('No text nodes were selected/found');
+    }
 
-    //   selection.forEach((node) => {
-    //     messenger.log('Do a thing!')
-    //     messenger.toast('Do a thing!')
-    //     // set up Painter instance for the layer
-    //     // const painter = new Painter({ for: node, in: page });
-
-    //     // duplicate the layer
-    //     // const newNodeResult = painter.duplicate(newPage);
-    //     // if (newNodeResult.status === 'success') {
-    //     //   const newNode = newNodeResult.node;
-    //     //   consolidatedSelection.push(newNode);
-    //     // }
-    //   });
-
-    //   if (newPage && action === 'new-page') {
-    //     figma.currentPage = newPage;
-    //     figma.currentPage.selection = newPage.children;
-    //   }
-
-    //   // reset and retrieve selection of text nodes
-    //   textNodes = new Crawler({ for: consolidatedSelection }).text(translateLocked);
-    // }
-
-    // // translate if text nodes are available and fonts are not missing
-    // const missingTypefaces: Array<TextNode> = textNodes.filter(
-    //   (node: TextNode) => node.hasMissingFont,
-    // );
-    // if ((textNodes.length > 0) && (missingTypefaces.length < 1)) {
-    //   // run the main thread this sets everything else in motion
-    //   const typefaces: Array<FontName> = readTypefaces(textNodes);
-    //   const languageTypefaces: Array<FontName> = null;
-
-    //   // load typefaces
-    //   if (languageTypefaces) {
-    //     languageTypefaces.forEach(languageTypeface => typefaces.push(languageTypeface));
-    //   }
-    //   await loadTypefaces(typefaces, messenger);
-
-    //   // do the text stuff TKTK
-
-    //   return closeOrReset();
-    // }
-
-    // // otherwise set/display appropriate error messages
-    // let toastErrorMessage = 'Something went wrong 😬';
-
-    // // set the message + log
-    // if (missingTypefaces.length > 0) {
-    //   toastErrorMessage = textNodes.length > 1
-    //     ? '❌ One or more select text layers contain missing fonts'
-    //     : '❌ This text layer contains a missing font';
-    //   messenger.log('Text node(s) contained missing fonts');
-    // } else {
-    //   toastErrorMessage = translateLocked
-    //     ? '❌ You need to select at least one text layer'
-    //     : '❌ You need to select at least one unlocked text layer';
-    //   messenger.log('No text nodes were selected/found');
-    // }
-
-    // // display the message and terminate the plugin
-    // messenger.toast(toastErrorMessage);
+    // display the message and terminate the plugin
+    messenger.toast(toastErrorMessage);
     return closeOrReset();
   }
 }
