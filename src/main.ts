@@ -75,7 +75,7 @@ const dispatcher = async (action: {
         App.remixAll(sessionKey);
         break;
       case 'submit':
-        app.commitText(payload, true);
+        app.commitText(sessionKey);
         break;
       case 'tools':
         App.showToolbar(sessionKey);
