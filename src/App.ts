@@ -227,16 +227,18 @@ export default class App {
         const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
         const proposedTextData = textNode.getSharedPluginData(dataNamespace(), textProposedKey);
 
-        proposedText = JSON.parse(proposedTextData || null);
-        if (!proposedText) {
-          proposedText = generateRandomText(textNode);
+        if (!locked) {
+          proposedText = JSON.parse(proposedTextData || null);
+          if (!proposedText) {
+            proposedText = generateRandomText(textNode);
 
-          // update the proposed text
-          textNode.setSharedPluginData(
-            dataNamespace(),
-            textProposedKey,
-            JSON.stringify(proposedText),
-          );
+            // update the proposed text
+            textNode.setSharedPluginData(
+              dataNamespace(),
+              textProposedKey,
+              JSON.stringify(proposedText),
+            );
+          }
         }
       } else {
         assignment = ASSIGNMENTS.unassigned;
@@ -326,7 +328,7 @@ export default class App {
      *
      * @returns {null} Shows a Toast in the UI if nothing is selected.
      */
-    const reassignTextNode = (textNodeToReassign): void => {
+    const reassignTextNode = (textNodeToReassign: TextNode): void => {
       const { assignment } = payload;
 
       if (assignment) {
@@ -360,7 +362,7 @@ export default class App {
      *
      * @returns {null} Shows a Toast in the UI if nothing is selected.
      */
-    const remixProposedText = (textNodeToRemix): void => {
+    const remixProposedText = (textNodeToRemix: TextNode): void => {
       // new randomization based on assignment
       const proposedText = generateRandomText(textNodeToRemix);
 
@@ -383,7 +385,7 @@ export default class App {
      *
      * @returns {null} Shows a Toast in the UI if nothing is selected.
      */
-    const restoreText = (textNodeToRestore): void => {
+    const restoreText = (textNodeToRestore: TextNode): void => {
       // set to the current (original) text
       const proposedText = textNodeToRestore.characters;
 
@@ -406,10 +408,10 @@ export default class App {
      *
      * @returns {null} Shows a Toast in the UI if nothing is selected.
      */
-    const toggleNodeLock = (textNodeToSecure): void => {
-      const lockedData = textNodeToSecure.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
-      const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
-
+    const toggleNodeLock = (
+      textNodeToSecure: TextNode,
+      locked: boolean,
+    ): void => {
       // commit the new assignment
       textNodeToSecure.setSharedPluginData(
         dataNamespace(),
@@ -418,35 +420,39 @@ export default class App {
       );
 
       // new randomization based on assignment if layer was previously locked
-      // otherwise the proposed text should remain the same if locking the layer
+      // otherwise the proposed text should restore to the original text if locking the layer
+      let proposedText = textNodeToSecure.characters;
       if (locked) {
-        const proposedText = generateRandomText(textNodeToSecure);
-
-        // commit the proposed text
-        textNodeToSecure.setSharedPluginData(
-          dataNamespace(),
-          textProposedKey,
-          JSON.stringify(proposedText),
-        );
+        proposedText = generateRandomText(textNodeToSecure);
       }
+
+      // commit the proposed text
+      textNodeToSecure.setSharedPluginData(
+        dataNamespace(),
+        textProposedKey,
+        JSON.stringify(proposedText),
+      );
 
       messenger.log(`Updated ${id}’s locking to: “${locked}”`);
     };
 
     const textNode = retrieveTextNode();
     if (textNode) {
+      const lockedData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
+      const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
+
       switch (actionType) {
         case 'reassign':
-          reassignTextNode(textNode);
+          if (!locked) { reassignTextNode(textNode); }
           break;
         case 'remix':
-          remixProposedText(textNode);
+          if (!locked) { remixProposedText(textNode); }
           break;
         case 'restore':
-          restoreText(textNode);
+          if (!locked) { restoreText(textNode); }
           break;
         case 'lock-toggle':
-          toggleNodeLock(textNode);
+          toggleNodeLock(textNode, locked);
           break;
         default:
           return null;
