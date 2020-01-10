@@ -62,7 +62,7 @@ const setButtonState = (
   // define the button
   let buttonElement: HTMLButtonElement = null;
   if (!button) {
-    buttonElement = (<HTMLButtonElement> document.getElementById('submit'));
+    buttonElement = (<HTMLButtonElement> document.querySelector('button.working'));
   } else {
     buttonElement = button;
   }
@@ -70,10 +70,11 @@ const setButtonState = (
   // update the button
   if (buttonElement) {
     if (action === 'working') {
+      buttonElement.setAttribute('data-original-text', buttonElement.innerHTML);
       buttonElement.innerHTML = 'Working…';
       buttonElement.classList.add('working');
     } else {
-      buttonElement.innerHTML = 'Translate';
+      buttonElement.innerHTML = buttonElement.getAttribute('data-original-text');
       buttonElement.classList.remove('working');
     }
   }
@@ -81,33 +82,35 @@ const setButtonState = (
   return null;
 };
 
-/**
- * @description Compiles the plugin options form elements in the webview DOM into an object
- * formatted for consumption in the main thread.
- *
- * @kind function
- * @name readOptions
- *
- * @returns {Object} options Includes an array of languages to translate, the action to take
- * on the text blocks, and whether or not to ignore locked layers.
- */
-const readOptions = () => {
-  const languagesElement: HTMLSelectElement = (<HTMLSelectElement> document.getElementById('languages'));
-  const textActionElement: HTMLInputElement = document.querySelector('input[name="text-action"]:checked');
-  const translateLockedElement: HTMLInputElement = document.querySelector('input[name="translate-locked"]');
+/* eslint-disable max-len */
+// /**
+//  * @description Compiles the plugin options form elements in the webview DOM into an object
+//  * formatted for consumption in the main thread.
+//  *
+//  * @kind function
+//  * @name readOptions
+//  *
+//  * @returns {Object} options Includes an array of languages to translate, the action to take
+//  * on the text blocks, and whether or not to ignore locked layers.
+//  */
+// const readOptions = () => {
+//   const languagesElement: HTMLSelectElement = (<HTMLSelectElement> document.getElementById('languages'));
+//   const textActionElement: HTMLInputElement = document.querySelector('input[name="text-action"]:checked');
+//   const translateLockedElement: HTMLInputElement = document.querySelector('input[name="translate-locked"]');
 
-  const languages: Array<string> = [languagesElement.value]; // array here; eventually multi-lang
-  const textAction: string = textActionElement.value;
-  const translateLocked: boolean = translateLockedElement.checked;
+//   const languages: Array<string> = [languagesElement.value]; // array here; eventually multi-lang
+//   const textAction: string = textActionElement.value;
+//   const translateLocked: boolean = translateLockedElement.checked;
 
-  const options = {
-    languages,
-    action: textAction,
-    translateLocked,
-  };
+//   const options = {
+//     languages,
+//     action: textAction,
+//     translateLocked,
+//   };
 
-  return options;
-};
+//   return options;
+// };
+/* eslint-enable max-len */
 
 /**
  * @description Watch UI clicks for actions to pass on to the main plugin thread.
@@ -129,14 +132,15 @@ const watchActions = (): void => {
         const action = button.id;
 
         if (
-          action === 'submit'
+          (action === 'submit' || action === 'remix-all')
           && !button.classList.contains('working')
         ) {
           // GUI - show we are working
           setButtonState('working', button);
 
           // read the form options
-          const payload = readOptions();
+          // const payload = readOptions();
+          const payload = null;
 
           // bubble action to main
           sendMsgToMain(action, payload);

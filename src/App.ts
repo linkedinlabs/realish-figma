@@ -211,11 +211,13 @@ export default class App {
     const consolidatedSelection: Array<SceneNode | PageNode> = selection;
 
     // retrieve selection of text nodes and filter for locked/unlocked based on options
-    const textNodes = new Crawler({ for: consolidatedSelection }).text(observeLocked);
+    const textNodes: Array<TextNode> = new Crawler(
+      { for: consolidatedSelection },
+    ).text(observeLocked);
     const textNodesCount = textNodes.length;
 
     const selected = [];
-    textNodes.forEach((textNode) => {
+    textNodes.forEach((textNode: TextNode) => {
       const assignmentData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
       let assignment: string = JSON.parse(assignmentData || null);
       let proposedText: string = textNode.characters;
@@ -308,7 +310,9 @@ export default class App {
       const observeLocked: boolean = true;
       const consolidatedSelection: Array<SceneNode | PageNode> = selection;
 
-      const textNodes = new Crawler({ for: consolidatedSelection }).text(observeLocked);
+      const textNodes: Array<TextNode> = new Crawler(
+        { for: consolidatedSelection },
+      ).text(observeLocked);
 
       const index = 0;
       const textNodesToUpdate: Array<TextNode> = textNodes.filter(
@@ -465,6 +469,40 @@ export default class App {
     }
 
     return null;
+  }
+
+  /** WIP
+   * @description Enables the plugin GUI within Figma.
+   *
+   * @kind function
+   * @name actOnNode
+   * @param {string} size An optional param calling one of the UI sizes defined in GUI_SETTINGS.
+   *
+   * @returns {null} Shows a Toast in the UI if nothing is selected.
+   */
+  static remixAll(sessionKey: number) {
+    const { messenger, selection } = assemble(figma);
+
+    const observeLocked: boolean = true;
+    const consolidatedSelection: Array<SceneNode | PageNode> = selection;
+
+    // retrieve selection of text nodes and filter for locked/unlocked based on options
+    const textNodes: Array<TextNode> = new Crawler(
+      { for: consolidatedSelection },
+    ).text(observeLocked);
+
+    // iterate through each selected layer and apply the `remix` action
+    textNodes.forEach((textNode: TextNode) => App.actOnNode('remix', { id: textNode.id }, sessionKey));
+
+    // reset the working state
+    const message: {
+      action: string,
+    } = {
+      action: 'resetState',
+    };
+    figma.ui.postMessage(message);
+
+    messenger.log('Remix all selected TextNodes');
   }
 
   /** WIP
