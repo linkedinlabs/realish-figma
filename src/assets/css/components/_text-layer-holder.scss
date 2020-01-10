@@ -56,6 +56,42 @@
   .text-widget {
     @include text-widget($selectWidth, $iconWidthBuffered);
   }
+
+  .locking-control {
+    span {
+      &.unlocked { display: inline-block; }
+      &.locked { display: none; }
+
+      svg {
+        path {
+          fill: $wl-action-tertiary;
+        }
+      }
+    }
+  }
+
+  &.locked {
+    .text-widget {
+      &.new-text {
+        .text {
+          color: $wl-type-02;
+        }
+      }
+    }
+
+    .locking-control {
+      span {
+        &.unlocked { display: none; }
+        &.locked { display: inline-block; }
+
+        svg {
+          path {
+            fill: $wl-action-secondary-accent;
+          }
+        }
+      }
+    }
+  }
 }
 
 .text-layer-holder {
