@@ -226,13 +226,13 @@ export default class App {
   static refreshGUI(sessionKey: number) {
     const { messenger, selection } = assemble(figma);
 
-    const observeLocked: boolean = true;
+    const includeLocked: boolean = false;
     const consolidatedSelection: Array<SceneNode | PageNode> = selection;
 
     // retrieve selection of text nodes and filter for unlocked
     const textNodes: Array<TextNode> = new Crawler(
       { for: consolidatedSelection },
-    ).text(observeLocked);
+    ).text(includeLocked);
     const textNodesCount = textNodes.length;
 
     const selected = [];
@@ -326,12 +326,12 @@ export default class App {
      * @returns {null} Shows a Toast in the UI if nothing is selected.
      */
     const retrieveTextNode = (): TextNode => {
-      const observeLocked: boolean = true;
+      const includeLocked: boolean = false;
       const consolidatedSelection: Array<SceneNode | PageNode> = selection;
 
       const textNodes: Array<TextNode> = new Crawler(
         { for: consolidatedSelection },
-      ).text(observeLocked);
+      ).text(includeLocked);
 
       const index = 0;
       const textNodesToUpdate: Array<TextNode> = textNodes.filter(
@@ -502,13 +502,13 @@ export default class App {
   static remixAll(sessionKey: number) {
     const { messenger, selection } = assemble(figma);
 
-    const observeLocked: boolean = true;
+    const includeLocked: boolean = false;
     const consolidatedSelection: Array<SceneNode | PageNode> = selection;
 
     // retrieve selection of text nodes and filter for unlocked
     const textNodes: Array<TextNode> = new Crawler(
       { for: consolidatedSelection },
-    ).text(observeLocked);
+    ).text(includeLocked);
 
     // iterate through each selected layer and apply the `remix` action
     textNodes.forEach((textNode: TextNode) => App.actOnNode('remix', { id: textNode.id }, sessionKey));
@@ -535,11 +535,11 @@ export default class App {
   async commitText(sessionKey: number) {
     const { messenger, selection } = assemble(figma);
     // retrieve selection of text nodes and filter for unlocked
-    const observeLocked: boolean = true;
+    const includeLocked: boolean = false;
     const consolidatedSelection: Array<SceneNode | PageNode> = selection;
     const textNodes: Array<TextNode> = new Crawler(
       { for: consolidatedSelection },
-    ).text(observeLocked);
+    ).text(includeLocked);
 
     /** WIP
      * @description Does a thing.
@@ -623,7 +623,7 @@ export default class App {
         : '❌ This text layer contains a missing font';
       messenger.log('Text node(s) contained missing fonts');
     } else {
-      toastErrorMessage = observeLocked
+      toastErrorMessage = includeLocked
         ? '❌ You need to select at least one text layer'
         : '❌ You need to select at least one unlocked text layer';
       messenger.log('No text nodes were selected/found');
