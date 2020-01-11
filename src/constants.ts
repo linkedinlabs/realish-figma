@@ -52,6 +52,7 @@ const ASSIGNMENTS = {
   unassigned: 'unassigned',
   name: 'name',
   animal: 'animal',
+  color: 'color',
 };
 
 /**

@@ -109,16 +109,35 @@ const generateRandomAnimal = () => {
   return capitalizedName;
 };
 
+const generateRandomColor = () => {
+  const { uniqueNamesGenerator, colors } = Generator; // temp
+  const capitalizedName: string = uniqueNamesGenerator({
+    dictionaries: [colors],
+    length: 1,
+    style: 'capital',
+  });
+
+  return capitalizedName;
+};
+
 const generateRandomText = (textNode: TextNode): string => {
   const assignmentData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
   const assignment: string = JSON.parse(assignmentData || null);
   let randomText: string = null;
 
   if (assignment) {
-    if (assignment === ASSIGNMENTS.name) {
-      randomText = generateRandomName();
-    } else {
-      randomText = generateRandomAnimal();
+    switch (assignment) {
+      case ASSIGNMENTS.name:
+        randomText = generateRandomName();
+        break;
+      case ASSIGNMENTS.animal:
+        randomText = generateRandomAnimal();
+        break;
+      case ASSIGNMENTS.color:
+        randomText = generateRandomColor();
+        break;
+      default:
+        return null;
     }
   }
 
@@ -289,7 +308,7 @@ export default class App {
     actionType: 'lock-toggle' | 'reassign' | 'remix' | 'restore',
     payload: {
       id: string,
-      assignment?: 'unassigned' | 'name' | 'animal',
+      assignment?: 'unassigned' | 'name' | 'animal' | 'color',
     },
     sessionKey: number,
   ) {
