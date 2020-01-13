@@ -1,40 +1,57 @@
 import { dataNamespace } from './Tools';
 import { ASSIGNMENTS, DATA_KEYS } from './constants';
 
-const Generator = require('unique-names-generator'); // temp
+const Generator = require('unique-names-generator');
 
-const generateRandomName = () => {
-  const { uniqueNamesGenerator, names } = Generator; // temp
-  const capitalizedName: string = uniqueNamesGenerator({
-    dictionaries: [names, names],
-    separator: ' ',
-    length: 2,
-    style: 'capital',
+/** WIP
+ * @description Takes a string message and logs it at one of 2 levels (normal or error).
+ *
+ * @kind function
+ * @name generateRandom
+ * @param {string} message The string containing the message to be logged.
+ * @param {string} type The optional string declaring the type of log: error or normal (default).
+ */
+const generateRandom = (assignment): string => {
+  const { uniqueNamesGenerator } = Generator;
+  const dictionaries = [];
+  const style: 'lowerCase' | 'upperCase' | 'capital' = 'capital';
+  let separator: string = null;
+  let length: number = 1;
+  let newRandomString = null;
+
+  switch (assignment) {
+    case ASSIGNMENTS.animal: {
+      const { animals } = Generator;
+      dictionaries.push(animals);
+      break;
+    }
+    case ASSIGNMENTS.color: {
+      const { colors } = Generator;
+      dictionaries.push(colors);
+      break;
+    }
+    case ASSIGNMENTS.name: {
+      const { names } = Generator;
+      // names, twice for a first/last
+      dictionaries.push(names);
+      dictionaries.push(names);
+      separator = ' ';
+      length = 2;
+      break;
+    }
+    default:
+      return newRandomString;
+  }
+
+  // generate the random text
+  newRandomString = uniqueNamesGenerator({
+    dictionaries,
+    length,
+    separator,
+    style,
   });
 
-  return capitalizedName;
-};
-
-const generateRandomAnimal = () => {
-  const { uniqueNamesGenerator, animals } = Generator; // temp
-  const capitalizedName: string = uniqueNamesGenerator({
-    dictionaries: [animals],
-    length: 1,
-    style: 'capital',
-  });
-
-  return capitalizedName;
-};
-
-const generateRandomColor = () => {
-  const { uniqueNamesGenerator, colors } = Generator; // temp
-  const capitalizedName: string = uniqueNamesGenerator({
-    dictionaries: [colors],
-    length: 1,
-    style: 'capital',
-  });
-
-  return capitalizedName;
+  return newRandomString;
 };
 
 /** WIP
@@ -62,29 +79,17 @@ export default class Data {
    * @description Takes a string message and logs it at one of 2 levels (normal or error).
    *
    * @kind function
-   * @name generateRandomText
+   * @name randomText
    * @param {string} message The string containing the message to be logged.
    * @param {string} type The optional string declaring the type of log: error or normal (default).
    */
-  generateRandomText() {
+  randomText() {
     const assignmentData = this.textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
     const assignment: string = JSON.parse(assignmentData || null);
     let randomText: string = null;
 
     if (assignment) {
-      switch (assignment) {
-        case ASSIGNMENTS.name:
-          randomText = generateRandomName();
-          break;
-        case ASSIGNMENTS.animal:
-          randomText = generateRandomAnimal();
-          break;
-        case ASSIGNMENTS.color:
-          randomText = generateRandomColor();
-          break;
-        default:
-          return null;
-      }
+      randomText = generateRandom(assignment);
     }
 
     return randomText;
