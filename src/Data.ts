@@ -1,5 +1,7 @@
 import companies from './data/companies';
+import degreeBadges from './data/degree-badges';
 import jobTitles from './data/job-titles';
+import timestamps from './data/timestamps';
 import { dataNamespace } from './Tools';
 import { ASSIGNMENTS, DATA_KEYS } from './constants';
 
@@ -35,6 +37,9 @@ const generateRandom = (assignment): string => {
     case ASSIGNMENTS.company:
       dictionaries.push(companies);
       break;
+    case ASSIGNMENTS.degreeBadge:
+      dictionaries.push(degreeBadges);
+      break;
     case ASSIGNMENTS.jobTitle:
       dictionaries.push(jobTitles);
       break;
@@ -47,6 +52,9 @@ const generateRandom = (assignment): string => {
       length = 2;
       break;
     }
+    case ASSIGNMENTS.timestamp:
+      dictionaries.push(timestamps);
+      break;
     default:
       return newRandomString;
   }
