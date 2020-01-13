@@ -497,7 +497,7 @@ export default class App {
       messenger.log('Begin manipulating text');
       textNodesToPaint.forEach((textNode: SceneNode) => {
         // set up Painter instance for the layer
-        const painter = new Painter({ layer: textNode, sessionKey });
+        const painter = new Painter({ node: textNode, sessionKey });
 
         // replace the existing text with the proposed text
         const paintResult = painter.replaceText();
