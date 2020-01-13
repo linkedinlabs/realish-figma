@@ -257,6 +257,7 @@ export default class App {
         | 'color'
         | 'company'
         | 'country'
+        | 'date'
         | 'degree-badge'
         | 'job-title'
         | 'timestamp',

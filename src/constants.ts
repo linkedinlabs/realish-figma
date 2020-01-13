@@ -54,6 +54,7 @@ const ASSIGNMENTS = {
   color: 'color',
   company: 'company',
   country: 'country',
+  date: 'date',
   degreeBadge: 'degree-badge',
   jobTitle: 'job-title',
   name: 'name',
