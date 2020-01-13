@@ -54,6 +54,7 @@ const ASSIGNMENTS = {
   animal: 'animal',
   color: 'color',
   company: 'company',
+  jobTitle: 'job-title',
 };
 
 /**
