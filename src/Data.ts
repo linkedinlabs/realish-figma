@@ -2,6 +2,7 @@ import companies from './data/companies';
 import countries from './data/countries';
 import degreeBadges from './data/degree-badges';
 import jobTitles from './data/job-titles';
+import names from './data/names';
 import timestamps from './data/timestamps';
 import { dataNamespace } from './Tools';
 import { ASSIGNMENTS, DATA_KEYS } from './constants';
@@ -48,7 +49,6 @@ const generateRandom = (assignment): string => {
       dictionaries.push(jobTitles);
       break;
     case ASSIGNMENTS.name: {
-      const { names } = Generator;
       // names, twice for a first/last
       dictionaries.push(names);
       dictionaries.push(names);
