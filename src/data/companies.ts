@@ -1,3 +1,10 @@
+/**
+ * @description Company names.
+ *
+ * @kind constant
+ * @name companies
+ * @type {Array}
+ */
 export default [
   'Zoomjax',
   'Codelane',

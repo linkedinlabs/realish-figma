@@ -1,3 +1,10 @@
+/**
+ * @description Job titles.
+ *
+ * @kind constant
+ * @name jobTitles
+ * @type {Array}
+ */
 export default [
   'Designer',
   'Senior Designer',
