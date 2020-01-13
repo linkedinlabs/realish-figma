@@ -1,4 +1,5 @@
 import companies from './data/companies';
+import countries from './data/countries';
 import degreeBadges from './data/degree-badges';
 import jobTitles from './data/job-titles';
 import timestamps from './data/timestamps';
@@ -36,6 +37,9 @@ const generateRandom = (assignment): string => {
     }
     case ASSIGNMENTS.company:
       dictionaries.push(companies);
+      break;
+    case ASSIGNMENTS.country:
+      dictionaries.push(countries);
       break;
     case ASSIGNMENTS.degreeBadge:
       dictionaries.push(degreeBadges);

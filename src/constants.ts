@@ -53,6 +53,7 @@ const ASSIGNMENTS = {
   animal: 'animal',
   color: 'color',
   company: 'company',
+  country: 'country',
   degreeBadge: 'degree-badge',
   jobTitle: 'job-title',
   name: 'name',
