@@ -50,11 +50,13 @@ const DATA_KEYS = {
  */
 const ASSIGNMENTS = {
   unassigned: 'unassigned',
-  name: 'name',
   animal: 'animal',
   color: 'color',
   company: 'company',
+  degreeBadge: 'degree-badge',
   jobTitle: 'job-title',
+  name: 'name',
+  timestamp: 'timestamp',
 };
 
 /**
