@@ -1,3 +1,4 @@
+import companies from './data/companies';
 import { dataNamespace } from './Tools';
 import { ASSIGNMENTS, DATA_KEYS } from './constants';
 
@@ -30,6 +31,9 @@ const generateRandom = (assignment): string => {
       dictionaries.push(colors);
       break;
     }
+    case ASSIGNMENTS.company:
+      dictionaries.push(companies);
+      break;
     case ASSIGNMENTS.name: {
       const { names } = Generator;
       // names, twice for a first/last

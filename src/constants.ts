@@ -53,6 +53,7 @@ const ASSIGNMENTS = {
   name: 'name',
   animal: 'animal',
   color: 'color',
+  company: 'company',
 };
 
 /**

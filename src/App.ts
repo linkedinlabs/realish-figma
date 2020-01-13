@@ -250,7 +250,7 @@ export default class App {
     actionType: 'lock-toggle' | 'reassign' | 'remix' | 'restore',
     payload: {
       id: string,
-      assignment?: 'unassigned' | 'name' | 'animal' | 'color',
+      assignment?: 'unassigned' | 'name' | 'animal' | 'color' | 'company',
     },
     sessionKey: number,
   ) {
