@@ -1,4 +1,5 @@
 import companies from './data/companies';
+import jobTitles from './data/job-titles';
 import { dataNamespace } from './Tools';
 import { ASSIGNMENTS, DATA_KEYS } from './constants';
 
@@ -33,6 +34,9 @@ const generateRandom = (assignment): string => {
     }
     case ASSIGNMENTS.company:
       dictionaries.push(companies);
+      break;
+    case ASSIGNMENTS.jobTitle:
+      dictionaries.push(jobTitles);
       break;
     case ASSIGNMENTS.name: {
       const { names } = Generator;
