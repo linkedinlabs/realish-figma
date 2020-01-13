@@ -1,0 +1,15 @@
+export default [
+  'Zoomjax',
+  'Codelane',
+  'Flexis',
+  'Fixedex',
+  'Freshing',
+  'GoldenPhase',
+  'Laminae',
+  'Mintome',
+  'Oustia',
+  'Runity',
+  'Techcore',
+  'Trustway',
+  'Ventofase',
+];
