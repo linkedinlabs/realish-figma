@@ -1,3 +1,10 @@
+/**
+ * @description Timestamps.
+ *
+ * @kind constant
+ * @name timestamps
+ * @type {Array}
+ */
 export default [
   '3 d',
   '6 hrs',
