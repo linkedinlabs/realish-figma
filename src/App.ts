@@ -1,4 +1,5 @@
 import Crawler from './Crawler';
+import Data from './Data';
 import Messenger from './Messenger';
 import Painter from './Painter';
 import {
@@ -11,8 +12,6 @@ import {
   DATA_KEYS,
   GUI_SETTINGS,
 } from './constants';
-
-const Generator = require('unique-names-generator'); // temp
 
 /**
  * @description A shared helper function to set up in-UI messages and the logger.
@@ -84,64 +83,6 @@ const readTypefaces = (textNodes: Array<TextNode>) => {
   });
 
   return uniqueTypefaces;
-};
-
-const generateRandomName = () => {
-  const { uniqueNamesGenerator, names } = Generator; // temp
-  const capitalizedName: string = uniqueNamesGenerator({
-    dictionaries: [names, names],
-    separator: ' ',
-    length: 2,
-    style: 'capital',
-  });
-
-  return capitalizedName;
-};
-
-const generateRandomAnimal = () => {
-  const { uniqueNamesGenerator, animals } = Generator; // temp
-  const capitalizedName: string = uniqueNamesGenerator({
-    dictionaries: [animals],
-    length: 1,
-    style: 'capital',
-  });
-
-  return capitalizedName;
-};
-
-const generateRandomColor = () => {
-  const { uniqueNamesGenerator, colors } = Generator; // temp
-  const capitalizedName: string = uniqueNamesGenerator({
-    dictionaries: [colors],
-    length: 1,
-    style: 'capital',
-  });
-
-  return capitalizedName;
-};
-
-const generateRandomText = (textNode: TextNode): string => {
-  const assignmentData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
-  const assignment: string = JSON.parse(assignmentData || null);
-  let randomText: string = null;
-
-  if (assignment) {
-    switch (assignment) {
-      case ASSIGNMENTS.name:
-        randomText = generateRandomName();
-        break;
-      case ASSIGNMENTS.animal:
-        randomText = generateRandomAnimal();
-        break;
-      case ASSIGNMENTS.color:
-        randomText = generateRandomColor();
-        break;
-      default:
-        return null;
-    }
-  }
-
-  return randomText;
 };
 
 /**
@@ -251,7 +192,8 @@ export default class App {
         if (!locked) {
           proposedText = JSON.parse(proposedTextData || null);
           if (!proposedText) {
-            proposedText = generateRandomText(textNode);
+            const data = new Data({ for: textNode });
+            proposedText = data.generateRandomText();
 
             // update the proposed text
             textNode.setSharedPluginData(
@@ -387,7 +329,8 @@ export default class App {
      */
     const remixProposedText = (textNodeToRemix: TextNode): void => {
       // new randomization based on assignment
-      const proposedText = generateRandomText(textNodeToRemix);
+      const data = new Data({ for: textNodeToRemix });
+      const proposedText: string = data.generateRandomText();
 
       // commit the proposed text
       textNodeToRemix.setSharedPluginData(
@@ -444,9 +387,10 @@ export default class App {
 
       // new randomization based on assignment if layer was previously locked
       // otherwise the proposed text should restore to the original text if locking the layer
-      let proposedText = textNodeToSecure.characters;
+      let proposedText: string = textNodeToSecure.characters;
       if (locked) {
-        proposedText = generateRandomText(textNodeToSecure);
+        const data = new Data({ for: textNodeToSecure });
+        proposedText = data.generateRandomText();
       }
 
       // commit the proposed text
