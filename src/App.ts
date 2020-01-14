@@ -253,8 +253,6 @@ export default class App {
       assignment?:
         'unassigned'
         | 'name'
-        | 'animal'
-        | 'color'
         | 'company'
         | 'country'
         | 'date'

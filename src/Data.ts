@@ -202,16 +202,6 @@ const generateRandom = (assignment): string => {
   let newRandomString = null;
 
   switch (assignment) {
-    case ASSIGNMENTS.animal: {
-      const { animals } = Generator;
-      dictionaries.push(animals);
-      break;
-    }
-    case ASSIGNMENTS.color: {
-      const { colors } = Generator;
-      dictionaries.push(colors);
-      break;
-    }
     case ASSIGNMENTS.company:
       dictionaries.push(companies);
       break;
