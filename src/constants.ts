@@ -50,8 +50,6 @@ const DATA_KEYS = {
  */
 const ASSIGNMENTS = {
   unassigned: 'unassigned',
-  animal: 'animal',
-  color: 'color',
   company: 'company',
   country: 'country',
   date: 'date',
