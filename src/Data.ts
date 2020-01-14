@@ -1,6 +1,7 @@
 import companies from './data/companies';
 import countries from './data/countries';
 import degreeBadges from './data/degree-badges';
+import domainTLDs from './data/domain-tlds';
 import jobTitles from './data/job-titles';
 import names from './data/names';
 import { dataNamespace } from './Tools';
@@ -12,20 +13,30 @@ const Generator = require('unique-names-generator');
  * @description Takes a string message and logs it at one of 2 levels (normal or error).
  *
  * @kind function
+ * @name getRandomInt
+ * @param {string} message The string containing the message to be logged.
+ * @param {string} type The optional string declaring the type of log: error or normal (default).
+ */
+const getRandomInt = (min, max): number => {
+  const convertedMin = Math.ceil(min);
+  const convertedMax = Math.floor(max);
+
+  // The maximum is inclusive and the minimum is inclusive
+  const randomInt: number = Math.floor(
+    Math.random() * (convertedMax - convertedMin + 1),
+  ) + convertedMin;
+  return randomInt;
+};
+
+/** WIP
+ * @description Takes a string message and logs it at one of 2 levels (normal or error).
+ *
+ * @kind function
  * @name generateTimestamp
  * @param {string} message The string containing the message to be logged.
  * @param {string} type The optional string declaring the type of log: error or normal (default).
  */
 const generateTimestamp = (): string => {
-  const getRandomInt = (min, max): number => {
-    const convertedMin = Math.ceil(min);
-    const convertedMax = Math.floor(max);
-
-    // The maximum is inclusive and the minimum is inclusive
-    const randomInt = Math.floor(Math.random() * (convertedMin - convertedMax + 1)) + convertedMin;
-    return randomInt;
-  };
-
   const timeDeclarations = ['mins', 'hrs', 'd', 'w', 'mo'];
 
   let randomTimeInteger = 0;
@@ -105,6 +116,76 @@ const generateDate = (): string => {
 };
 
 /** WIP
+ * @description Generates a formatted, random date between now and `X` days in the future (set
+ * as a constant in the function.
+ *
+ * @kind function
+ * @name generateEmail
+ *
+ * @returns {string} The formatted date as a string.
+ */
+const generateDomain = (): string => {
+  const { uniqueNamesGenerator } = Generator;
+
+  let randomTLD = 'com';
+  const weightedTLDPick = getRandomInt(1, 8);
+  switch (weightedTLDPick) {
+    case 5:
+    case 6:
+      randomTLD = 'org';
+      break;
+    case 7:
+      randomTLD = 'net';
+      break;
+    case 8:
+      randomTLD = uniqueNamesGenerator({
+        dictionaries: [domainTLDs],
+        length: 1,
+        style: 'lowerCase',
+      });
+      break;
+    default:
+      randomTLD = 'com';
+  }
+
+  const randomCompany = uniqueNamesGenerator({
+    dictionaries: [companies],
+    length: 1,
+  });
+
+  const generatedDomain = `${randomCompany}.${randomTLD}`;
+  return generatedDomain;
+};
+
+/** WIP
+ * @description Generates a formatted, random date between now and `X` days in the future (set
+ * as a constant in the function.
+ *
+ * @kind function
+ * @name generateEmail
+ *
+ * @returns {string} The formatted date as a string.
+ */
+const generateEmail = (): string => {
+  const { uniqueNamesGenerator } = Generator;
+  const emailSeparators = ['.', '_'];
+  const emailSeparatorIndex = getRandomInt(0, 1);
+
+  const randomSeparator = emailSeparators[emailSeparatorIndex];
+
+  const randomNameLength = getRandomInt(1, 2);
+  const randomName = uniqueNamesGenerator({
+    dictionaries: [names, names],
+    length: randomNameLength,
+    separator: randomSeparator,
+    style: 'lowerCase',
+  }).replace(' ', randomSeparator);
+
+  const generatedEmail = `${randomName}@${generateDomain()}`;
+  return generatedEmail;
+};
+
+/** WIP
  * @description Takes a string message and logs it at one of 2 levels (normal or error).
  *
  * @kind function
@@ -115,7 +196,7 @@ const generateDate = (): string => {
 const generateRandom = (assignment): string => {
   const { uniqueNamesGenerator } = Generator;
   const dictionaries = [];
-  const style: 'lowerCase' | 'upperCase' | 'capital' = 'capital';
+  let style: 'lowerCase' | 'upperCase' | 'capital' = 'capital';
   let separator: string = null;
   let length: number = 1;
   let newRandomString = null;
@@ -145,6 +226,18 @@ const generateRandom = (assignment): string => {
     case ASSIGNMENTS.degreeBadge:
       dictionaries.push(degreeBadges);
       break;
+    case ASSIGNMENTS.domain: {
+      const domain = [generateDomain()];
+      dictionaries.push(domain);
+      style = 'lowerCase';
+      break;
+    }
+    case ASSIGNMENTS.email: {
+      const email = [generateEmail()];
+      dictionaries.push(email);
+      style = 'lowerCase';
+      break;
+    }
     case ASSIGNMENTS.jobTitle:
       dictionaries.push(jobTitles);
       break;

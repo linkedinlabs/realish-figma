@@ -56,6 +56,8 @@ const ASSIGNMENTS = {
   country: 'country',
   date: 'date',
   degreeBadge: 'degree-badge',
+  domain: 'domain',
+  email: 'email',
   jobTitle: 'job-title',
   name: 'name',
   timestamp: 'timestamp',
