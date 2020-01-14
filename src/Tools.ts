@@ -1,5 +1,5 @@
 import {
-  FRAME_TYPES,
+  CONTAINER_NODE_TYPES,
   GUI_SETTINGS,
   PLUGIN_IDENTIFIER,
 } from './constants';
@@ -229,13 +229,13 @@ const updateArray = (
 
 /**
  * @description Takes a layer object and traverses parent relationships until the top-level
- * `FRAME_TYPES.main` layer is found. Returns the frame layer.
+ * `CONTAINER_NODE_TYPES.frame` layer is found. Returns the frame layer.
  *
  * @kind function
  * @name findTopFrame
  * @param {Object} layer A Figma layer object.
  *
- * @returns {Object} The top-level `FRAME_TYPES.main` layer.
+ * @returns {Object} The top-level `CONTAINER_NODE_TYPES.frame` layer.
  */
 const findTopFrame = (layer: any) => {
   let { parent } = layer;
@@ -247,7 +247,7 @@ const findTopFrame = (layer: any) => {
 
   // loop through each parent until we find the outermost FRAME
   if (parent) {
-    while (parent && parent.type !== FRAME_TYPES.main) {
+    while (parent && parent.type !== CONTAINER_NODE_TYPES.frame) {
       parent = parent.parent;
     }
   }

@@ -68,12 +68,14 @@ const ASSIGNMENTS = {
  * top-level (`main`) layer and `group` layer types.
  *
  * @kind constant
- * @name FRAME_TYPES
+ * @name CONTAINER_NODE_TYPES
  * @type {Object}
  */
-const FRAME_TYPES = {
+const CONTAINER_NODE_TYPES = {
+  component: 'COMPONENT',
+  frame: 'FRAME',
   group: 'GROUP',
-  main: 'FRAME',
+  instance: 'INSTANCE',
 };
 
 /**
@@ -118,8 +120,8 @@ const TYPEFACES = {
 
 export {
   ASSIGNMENTS,
+  CONTAINER_NODE_TYPES,
   DATA_KEYS,
-  FRAME_TYPES,
   GUI_SETTINGS,
   PLUGIN_IDENTIFIER,
   PLUGIN_NAME,

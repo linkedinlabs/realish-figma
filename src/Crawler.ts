@@ -1,4 +1,4 @@
-import { FRAME_TYPES } from './constants';
+import { CONTAINER_NODE_TYPES } from './constants';
 
 /**
  * @description A class to handle traversing an array of selected items and return useful items
@@ -45,8 +45,10 @@ export default class Crawler {
     // iterate through initial selection
     initialSelection.forEach((layer: any) => {
       if (
-        layer.type !== FRAME_TYPES.group
-        && layer.type !== FRAME_TYPES.main
+        layer.type !== CONTAINER_NODE_TYPES.group
+        && layer.type !== CONTAINER_NODE_TYPES.frame
+        && layer.type !== CONTAINER_NODE_TYPES.component
+        && layer.type !== CONTAINER_NODE_TYPES.instance
       ) {
         // non-frame or -group layers get added to the final selection
         flatSelection.push(layer);
@@ -78,8 +80,10 @@ export default class Crawler {
             },
           ) => {
             if (
-              innerLayer.type !== FRAME_TYPES.group
-              && innerLayer.type !== FRAME_TYPES.main
+              innerLayer.type !== CONTAINER_NODE_TYPES.group
+              && innerLayer.type !== CONTAINER_NODE_TYPES.frame
+              && innerLayer.type !== CONTAINER_NODE_TYPES.component
+              && innerLayer.type !== CONTAINER_NODE_TYPES.instance
             ) {
               // non-frame or -group layers get added to the final selection
               flatSelection.push(innerLayer);
@@ -107,7 +111,36 @@ export default class Crawler {
         }
       }
     });
+
     return flatSelection;
+  }
+
+  /**
+   * @description Looks into the selection array for any groups and pulls out individual layers,
+   * effectively flattening the selection.
+   *
+   * @kind function
+   * @name allSorted
+   *
+   * @returns {Object} All items (including children) individual in an updated array.
+   */
+  allSorted() {
+    // start with flattened selection of all layers
+    const layers = this.all();
+
+    // sort by `x` and `y`, weighted toward preferring `y`
+    const sortByPosition = (nodeA, nodeB) => {
+      const aPos = { x: nodeA.absoluteTransform[0][2], y: nodeA.absoluteTransform[1][2] };
+      const bPos = { x: nodeB.absoluteTransform[0][2], y: nodeB.absoluteTransform[1][2] };
+
+      if (Math.abs(aPos.y - bPos.y) > Math.abs(aPos.x - bPos.x)) {
+        return aPos.y - bPos.y;
+      }
+      return aPos.x - bPos.x;
+    };
+
+    const sortedLayers = layers.sort(sortByPosition);
+    return sortedLayers;
   }
 
   /**
@@ -122,8 +155,8 @@ export default class Crawler {
    * @returns {Array} All TextNode items in an array.
    */
   text(includeLocked: boolean = false): Array<TextNode> {
-    // start with flattened selection of all layers
-    const layers = this.all();
+    // start with flattened selection of all layers, ordered by position on the artboard
+    const layers = this.allSorted();
 
     // filter and retain immediate text nodes
     let textNodes: Array<TextNode> = layers.filter((node: SceneNode) => node.type === 'TEXT');
