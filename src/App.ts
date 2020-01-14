@@ -259,6 +259,8 @@ export default class App {
         | 'country'
         | 'date'
         | 'degree-badge'
+        | 'domain'
+        | 'email'
         | 'job-title'
         | 'timestamp',
     },
