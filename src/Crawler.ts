@@ -128,15 +128,15 @@ export default class Crawler {
     // start with flattened selection of all layers
     const layers = this.all();
 
-    // sort by `x` and `y`, weighted toward preferring `y`
+    // sort by `y` position and then `x` if `y` values are equal
     const sortByPosition = (nodeA, nodeB) => {
       const aPos = { x: nodeA.absoluteTransform[0][2], y: nodeA.absoluteTransform[1][2] };
       const bPos = { x: nodeB.absoluteTransform[0][2], y: nodeB.absoluteTransform[1][2] };
 
-      if (Math.abs(aPos.y - bPos.y) > Math.abs(aPos.x - bPos.x)) {
-        return aPos.y - bPos.y;
+      if (aPos.y === bPos.y) {
+        return aPos.x - bPos.x;
       }
-      return aPos.x - bPos.x;
+      return aPos.y - bPos.y;
     };
 
     const sortedLayers = layers.sort(sortByPosition);
