@@ -49,6 +49,7 @@ export default class Crawler {
         && layer.type !== CONTAINER_NODE_TYPES.frame
         && layer.type !== CONTAINER_NODE_TYPES.component
         && layer.type !== CONTAINER_NODE_TYPES.instance
+        && layer.visible
       ) {
         // non-frame or -group layers get added to the final selection
         flatSelection.push(layer);
@@ -57,7 +58,13 @@ export default class Crawler {
 
         // set initial holding array and add first level of children
         let innerLayers = [];
-        layer.children.forEach(child => innerLayers.push(child));
+        if (layer.visible) {
+          layer.children.forEach((child) => {
+            if (child.visible) {
+              innerLayers.push(child);
+            }
+          });
+        }
 
         /**
          * @description Iterates through `innerLayers`, adding normal layers to the `flatSelection`
@@ -77,6 +84,7 @@ export default class Crawler {
               children: any,
               id: string,
               type: string,
+              visible: boolean,
             },
           ) => {
             if (
@@ -84,11 +92,16 @@ export default class Crawler {
               && innerLayer.type !== CONTAINER_NODE_TYPES.frame
               && innerLayer.type !== CONTAINER_NODE_TYPES.component
               && innerLayer.type !== CONTAINER_NODE_TYPES.instance
+              && innerLayer.visible
             ) {
               // non-frame or -group layers get added to the final selection
               flatSelection.push(innerLayer);
-            } else {
-              innerLayer.children.forEach(child => innerLayers.push(child));
+            } else if (innerLayer.visible) {
+              innerLayer.children.forEach((child) => {
+                if (child.visible) {
+                  innerLayers.push(child);
+                }
+              });
             }
 
             // update the overall list of child layers, removing the layer that was just examined.
