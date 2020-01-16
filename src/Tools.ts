@@ -254,6 +254,38 @@ const findTopFrame = (layer: any) => {
   return parent;
 };
 
+/**
+ * @description Reverse iterates the node tree to determin the top-level master component
+ * (if one exists) for the node.
+ *
+ * @kind function
+ * @name getMasterComponent
+ *
+ * @returns {object} Returns the master component or `null`.
+ */
+const getMasterComponent = (node: any) => {
+  let { parent } = node;
+  let currentNode = node;
+  let currentMasterComponent = null;
+
+  if (parent) {
+    // iterate until the parent is a page
+    while (parent && parent.type !== 'PAGE') {
+      currentNode = parent;
+      if (currentNode.type === CONTAINER_NODE_TYPES.instance) {
+        // update the top-most master component with the current one
+        currentMasterComponent = currentNode.masterComponent;
+      }
+      parent = parent.parent;
+    }
+  }
+
+  if (currentMasterComponent) {
+    return currentMasterComponent;
+  }
+  return null;
+};
+
 /** WIP
  * @description An approximation of `forEach` but run in an async manner.
  *
@@ -348,6 +380,7 @@ export {
   awaitUIReadiness,
   dataNamespace,
   findTopFrame,
+  getMasterComponent,
   isInternal,
   isTextNode,
   loadTypefaces,
