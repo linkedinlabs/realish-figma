@@ -1,5 +1,6 @@
 import {
   CONTAINER_NODE_TYPES,
+  DATA_KEYS,
   GUI_SETTINGS,
   PLUGIN_IDENTIFIER,
 } from './constants';
@@ -259,14 +260,14 @@ const findTopFrame = (layer: any) => {
  * (if one exists) for the node.
  *
  * @kind function
- * @name getMasterComponent
+ * @name findTopInstance
  *
  * @returns {object} Returns the master component or `null`.
  */
-const getMasterComponent = (node: any) => {
+const findTopInstance = (node: any) => {
   let { parent } = node;
   let currentNode = node;
-  let currentMasterComponent = null;
+  let currentTopInstance = null;
 
   if (parent) {
     // iterate until the parent is a page
@@ -274,16 +275,113 @@ const getMasterComponent = (node: any) => {
       currentNode = parent;
       if (currentNode.type === CONTAINER_NODE_TYPES.instance) {
         // update the top-most master component with the current one
-        currentMasterComponent = currentNode.masterComponent;
+        currentTopInstance = currentNode;
       }
       parent = parent.parent;
     }
   }
 
-  if (currentMasterComponent) {
-    return currentMasterComponent;
+  if (currentTopInstance) {
+    return currentTopInstance;
   }
   return null;
+};
+
+/** WIP
+ * @description Reverse iterates the node tree to determin the top-level master component
+ * (if one exists) for the node.
+ *
+ * @kind function
+ * @name matchMasterPeerNode
+ *
+ * @returns {object} Returns the master component or `null`.
+ */
+const matchMasterPeerNode = (node: any, topNode: InstanceNode) => {
+  // finds the `index` of self in the parent’s children list
+  const indexAtParent = (childNode: any): number => childNode.parent.children.findIndex(
+    child => child.id === childNode.id,
+  );
+
+  // set some defaults
+  let { parent } = node;
+  const childIndices = [];
+  const masterComponentNode = topNode.masterComponent;
+  let masterPeerNode = null;
+  let currentNode = node;
+
+  // iterate up the chain, collecting indices in each child list
+  if (parent) {
+    childIndices.push(indexAtParent(node));
+    while (parent && parent.id !== topNode.id) {
+      currentNode = parent;
+      parent = parent.parent;
+      childIndices.push(indexAtParent(currentNode));
+    }
+  }
+
+  // navigate down the chain of the corresponding master component using the
+  // collected child indices to locate the peer node
+  if (childIndices.length > 0 && masterComponentNode) {
+    const childIndicesReversed = childIndices.reverse();
+    let { children } = masterComponentNode;
+    let selectedChild = null;
+
+    childIndicesReversed.forEach((childIndex, index) => {
+      selectedChild = children[childIndex];
+      if ((childIndicesReversed.length - 1) > index) {
+        children = selectedChild.children;
+      }
+    });
+
+    // the last selected child should be the peer node
+    if (selectedChild) {
+      masterPeerNode = selectedChild;
+    }
+  }
+
+  return masterPeerNode;
+};
+
+/** WIP
+ * @description Checks the `FEATURESET` environment variable from webpack and
+ * determines if the featureset build should be `internal` or not.
+ *
+ * @kind function
+ * @name dataNamespace
+ *
+ * @returns {string} `true` if the build is internal, `false` if it is not.
+ */
+const dataNamespace = (): string => {
+  const identifier: string = PLUGIN_IDENTIFIER;
+  const key: string = process.env.SECRET_KEY ? process.env.SECRET_KEY : '1234';
+  let namespace: string = `${identifier.toLowerCase()}${key.toLowerCase()}`;
+  namespace = namespace.replace(/[^0-9a-z]/gi, '');
+  return namespace;
+};
+
+/**
+ * @description A shared helper function to set up in-UI messages and the logger.
+ *
+ * @kind function
+ * @name getNodeAssignmentData
+ * @param {Object} context The current context (event) received from Figma.
+ * @returns {Object} Contains an object with the current page as a javascript object,
+ * a messenger instance, and a selection array (if applicable).
+ */
+const getNodeAssignmentData = (node: TextNode) => {
+  let assignmentData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
+
+  if (!assignmentData) {
+    const topInstanceNode = findTopInstance(node);
+    if (topInstanceNode) {
+      const peerNode = matchMasterPeerNode(node, topInstanceNode);
+      if (peerNode) {
+        assignmentData = peerNode.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
+      }
+    }
+  }
+
+  return assignmentData;
 };
 
 /** WIP
@@ -343,23 +441,6 @@ const resizeGUI = (
  */
 const isTextNode = (node: any): node is TextNode => node.type === 'TEXT';
 
-/** WIP
- * @description Checks the `FEATURESET` environment variable from webpack and
- * determines if the featureset build should be `internal` or not.
- *
- * @kind function
- * @name dataNamespace
- *
- * @returns {string} `true` if the build is internal, `false` if it is not.
- */
-const dataNamespace = (): string => {
-  const identifier: string = PLUGIN_IDENTIFIER;
-  const key: string = process.env.SECRET_KEY ? process.env.SECRET_KEY : '1234';
-  let namespace: string = `${identifier.toLowerCase()}${key.toLowerCase()}`;
-  namespace = namespace.replace(/[^0-9a-z]/gi, '');
-  return namespace;
-};
-
 /**
  * @description Checks the `FEATURESET` environment variable from webpack and
  * determines if the featureset build should be `internal` or not.
@@ -380,11 +461,13 @@ export {
   awaitUIReadiness,
   dataNamespace,
   findTopFrame,
-  getMasterComponent,
+  findTopInstance,
+  getNodeAssignmentData,
   isInternal,
   isTextNode,
   loadTypefaces,
   makeNetworkRequest,
+  matchMasterPeerNode,
   pollWithPromise,
   resizeGUI,
   updateArray,

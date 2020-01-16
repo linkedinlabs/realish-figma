@@ -1,4 +1,8 @@
-import { dataNamespace, isTextNode } from './Tools';
+import {
+  dataNamespace,
+  getNodeAssignmentData,
+  isTextNode,
+} from './Tools';
 import { DATA_KEYS } from './constants';
 
 // --- main Painter class function
@@ -46,7 +50,7 @@ export default class Painter {
     };
 
     // load basic node data
-    const assignmentData = this.node.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
+    const assignmentData = getNodeAssignmentData(this.node);
     const assignment: string = JSON.parse(assignmentData || null);
     const lockedData = this.node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
     const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
