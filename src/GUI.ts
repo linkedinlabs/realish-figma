@@ -202,10 +202,9 @@ const watchLayer = (layerElement: HTMLElement): void => {
       }
     };
 
-
     const assignmentsElement: HTMLSelectElement = layerElement.querySelector('.assignments');
     if (assignmentsElement) {
-      assignmentsElement.addEventListener('input', onChange);
+      assignmentsElement.addEventListener('change', onChange);
     }
     layerElement.addEventListener('click', onClick);
   }
@@ -300,8 +299,10 @@ const updateSelectedLayers = (layers: Array<{
       actionsElement.removeAttribute('style');
 
       // set the Figma version of the menu
-      // selectMenu.init({ position: 'overlap' });
-      selectMenu.init({ selector: 'styled-select' });
+      selectMenu.init({
+        position: 'overlap',
+        selector: 'styled-select',
+      });
     } else {
       bodyElement.classList.add('blank-state-visible');
       blankStateElement.removeAttribute('style');

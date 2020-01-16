@@ -128,17 +128,22 @@
   function createWrapper(selectWrapper, count) {
     let element = targets[count];
 
-        //handle the select menu
+    //handle the select menu
     element.style.display = 'none'; //hide the select menu
-    
+
     //set the selected option to the correct element if not set
         element.options[element.selectedIndex].selected = true;
 
 
         //create the div wrapper
         element.parentNode.insertBefore(selectWrapper, element);
-        selectWrapper.appendChild(element);
+        // selectWrapper.appendChild(element);
         selectWrapper.className = selector;
+
+        // create unique ID and add it to both wrapper and original select element
+        var wrapperId = ('id-' + Date.now() + Math.random()).replace('.', '-');
+        selectWrapper.setAttribute('data-select-id', wrapperId);
+        element.classList.add(wrapperId);
 
         //create the new button element
         let selectButton = document.createElement('button');
@@ -251,7 +256,8 @@
             element.classList.add(selector + '__list-item--active');
 
             //update the value of the select menu
-            let select = dropdown.parentNode.querySelector('SELECT');
+            var wrapperId = dropdown.parentNode.getAttribute('data-select-id');
+            let select = document.querySelector('.' + wrapperId);
       let selectedValue = element.getAttribute('data-value');
       let selectItems = select.querySelectorAll('option');
       let selectItemsLen = selectItems.length;
