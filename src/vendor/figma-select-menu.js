@@ -267,8 +267,10 @@
         item.removeAttribute("selected");
       });
 
-      select.value = selectedValue;
-      select.dispatchEvent(event);
+      if (select && !select.disabled) {
+        select.value = selectedValue;
+        select.dispatchEvent(event);
+      }
 
       for (let i = 0; i < selectItemsLen; i++) {
         let value = selectItems[i].value;
