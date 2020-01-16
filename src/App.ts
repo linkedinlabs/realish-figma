@@ -4,6 +4,7 @@ import Messenger from './Messenger';
 import Painter from './Painter';
 import {
   dataNamespace,
+  getNodeAssignmentData,
   loadTypefaces,
   resizeGUI,
 } from './Tools';
@@ -178,7 +179,7 @@ export default class App {
 
     const selected = [];
     textNodes.forEach((textNode: TextNode) => {
-      const assignmentData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
+      const assignmentData = getNodeAssignmentData(textNode);
       let assignment: string = JSON.parse(assignmentData || null);
       let proposedText: string = textNode.characters;
       const lockedData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
@@ -323,6 +324,15 @@ export default class App {
           textProposedKey,
           JSON.stringify(proposedText),
         );
+
+        // rename the layer, and then rename it back, to trigger Figma's changes watcher
+        // this is used to allow master components to be republished with changes
+        const randomName = `${Date.now()}`;
+        const originalName = textNodeToReassign.name;
+        /* eslint-disable no-param-reassign */
+        textNodeToReassign.name = randomName;
+        textNodeToReassign.name = originalName;
+        /* eslint-enable no-param-reassign */
 
         messenger.log(`Updated ${id}’s assignment to: “${assignment}”`);
       }

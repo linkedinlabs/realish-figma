@@ -4,8 +4,8 @@ import degreeBadges from './data/degree-badges';
 import domainTLDs from './data/domain-tlds';
 import jobTitles from './data/job-titles';
 import names from './data/names';
-import { dataNamespace } from './Tools';
-import { ASSIGNMENTS, DATA_KEYS } from './constants';
+import { getNodeAssignmentData } from './Tools';
+import { ASSIGNMENTS } from './constants';
 
 const Generator = require('unique-names-generator');
 
@@ -289,7 +289,7 @@ export default class Data {
    * @param {string} type The optional string declaring the type of log: error or normal (default).
    */
   randomText() {
-    const assignmentData = this.textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
+    const assignmentData = getNodeAssignmentData(this.textNode);
     const assignment: string = JSON.parse(assignmentData || null);
     let randomText: string = null;
 
