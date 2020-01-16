@@ -327,11 +327,13 @@ export default class App {
 
         // rename the layer, and then rename it back, to trigger Figma's changes watcher
         // this is used to allow master components to be republished with changes
-        const randomName = `${Date.now()}`;
-        const originalName = textNodeToReassign.name;
+        const randomName: string = `${Date.now()}`;
+        const originalName: string = textNodeToReassign.name;
+        const originalAutoRename: boolean = textNodeToReassign.autoRename;
         /* eslint-disable no-param-reassign */
         textNodeToReassign.name = randomName;
         textNodeToReassign.name = originalName;
+        textNodeToReassign.autoRename = originalAutoRename;
         /* eslint-enable no-param-reassign */
 
         messenger.log(`Updated ${id}’s assignment to: “${assignment}”`);
