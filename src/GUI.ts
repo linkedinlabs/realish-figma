@@ -254,6 +254,8 @@ const updateSelectedLayers = (layers: Array<{
           assignmentsElement.disabled = false;
         }
 
+        assignmentsElement.classList.add('styled-select');
+
         // set reset / remix button states
         if (layer.assignment !== ASSIGNMENTS.unassigned && !layer.locked) {
           const resetButtonElement: HTMLButtonElement = newLayerElement.querySelector('.reset-control button');
@@ -296,6 +298,10 @@ const updateSelectedLayers = (layers: Array<{
       bodyElement.classList.remove('blank-state-visible');
       blankStateElement.style.display = 'none';
       actionsElement.removeAttribute('style');
+
+      // set the Figma version of the menu
+      // selectMenu.init({ position: 'overlap' });
+      selectMenu.init({ selector: 'styled-select' });
     } else {
       bodyElement.classList.add('blank-state-visible');
       blankStateElement.removeAttribute('style');

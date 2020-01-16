@@ -3,7 +3,7 @@
 // original source: https://www.figma.com/plugin-docs/figma-components/
 // requires use of src/vendor/figma-select-menu.js
 
-.select-menu {
+.styled-select {
   position: relative;
   display: block;
   box-sizing: border-box;
@@ -15,7 +15,7 @@
   }
 }
 
-.select-menu__button {
+.styled-select__button {
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -38,7 +38,7 @@
       }
     }
 
-    .select-menu__icon {
+    .styled-select__icon {
       opacity: 1;
     }
   }
@@ -56,7 +56,7 @@
       }
     }
 
-    .select-menu__icon {
+    .styled-select__icon {
       top: -1px;
       right: -1px;
       opacity: 1;
@@ -64,7 +64,7 @@
   }
 }
 
-.select-menu__button--active {
+.styled-select__button--active {
   @include hover {
     padding: 5px 0 5px 7px;
     border: 2px solid #18a0fb;
@@ -73,7 +73,7 @@
   }
 }
 
-.select-menu__button-label {
+.styled-select__button-label {
   display: inline-block;
   text-align: left;
 
@@ -89,7 +89,7 @@
   }
 }
 
-.select-menu__icon {
+.styled-select__icon {
   position: absolute;
   top: 0;
   right: 0;
@@ -101,7 +101,7 @@
   background-position: center center;
 }
 
-.select-menu__list {
+.styled-select__list {
   position: absolute;
   z-index: 2;
   display: none;
@@ -114,7 +114,7 @@
   box-shadow: 0 5px 17px rgba(0, 0, 0, 0.2), 0 2px 7px rgba(0, 0, 0, 0.15);
 }
 
-.select-menu__list-item {
+.styled-select__list-item {
   display: flex;
   align-items: center;
   padding: 0 8px 0 4px;
@@ -130,17 +130,17 @@
   }
 }
 
-.select-menu__list--active {
+.styled-select__list--active {
   display: block;
   overflow-y: scroll;
   height: 206px;
 
-  .select-menu__list-item-icon {
+  .styled-select__list-item-icon {
     opacity: 1 !important; // stylelint-disable-line declaration-no-important
   }
 }
 
-.select-menu__list-item-text {
+.styled-select__list-item-text {
   display: flex;
   align-items: center;
   padding: 0 0 0 4px;
@@ -148,7 +148,7 @@
   height: 100%;
 }
 
-.select-menu__list-item-icon {
+.styled-select__list-item-icon {
   display: block;
   flex-shrink: 0;
   width: 24px;
@@ -159,18 +159,18 @@
   background-position: center center;
 }
 
-.select-menu__divider {
+.styled-select__divider {
   margin: 0;
 }
 
-.select-menu__divider-line {
+.styled-select__divider-line {
   display: block;
   height: 1px;
   margin: 8px 0 7px;
   background-color: rgba($wl-accent-invert, 0.2);
 }
 
-.select-menu__divider-label {
+.styled-select__divider-label {
   display: flex;
   align-items: center;
   padding: 8px 8px 0 32px;
@@ -182,7 +182,7 @@
   border-top: 1px solid rgba($wl-accent-invert, 0.2);
 }
 
-.select-menu__divider-label--first {
+.styled-select__divider-label--first {
   padding: 0 8px 0 32px;
   height: 24px;
   margin-top: 0;
