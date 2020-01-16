@@ -68,6 +68,10 @@
 .reset-control {
   #{$all-buttons} {
     @include button-icon;
+
+    &:disabled {
+      opacity: 0;
+    }
   }
 }
 
