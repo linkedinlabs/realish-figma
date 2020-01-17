@@ -49,6 +49,21 @@ const filterTextNodes = (
   return textNodes;
 };
 
+const triggerFigmaChangeWatcher = (textNode: TextNode): void => {
+  // rename the layer, and then rename it back, to trigger Figma's changes watcher
+  // this is used to allow master components to be republished with changes
+  const randomName: string = `${Date.now()}`;
+  const originalName: string = textNode.name;
+  const originalAutoRename: boolean = textNode.autoRename;
+  /* eslint-disable no-param-reassign */
+  textNode.name = randomName;
+  textNode.name = originalName;
+  textNode.autoRename = originalAutoRename;
+  /* eslint-enable no-param-reassign */
+
+  return null;
+};
+
 /**
  * @description Retrieves all of the typefaces (`FontName`) from a selection of text nodes
  * and returns them as a unique array (without repeats).
@@ -327,16 +342,7 @@ export default class App {
           JSON.stringify(proposedText),
         );
 
-        // rename the layer, and then rename it back, to trigger Figma's changes watcher
-        // this is used to allow master components to be republished with changes
-        const randomName: string = `${Date.now()}`;
-        const originalName: string = textNodeToReassign.name;
-        const originalAutoRename: boolean = textNodeToReassign.autoRename;
-        /* eslint-disable no-param-reassign */
-        textNodeToReassign.name = randomName;
-        textNodeToReassign.name = originalName;
-        textNodeToReassign.autoRename = originalAutoRename;
-        /* eslint-enable no-param-reassign */
+        triggerFigmaChangeWatcher(textNodeToReassign);
 
         messenger.log(`Updated ${id}’s assignment to: “${assignment}”`);
       }
@@ -494,7 +500,7 @@ export default class App {
    *
    * @returns {null} Shows a Toast in the UI if nothing is selected.
    */
-  quickRandomize(assignmentType: string, sessionKey: number) {
+  quickRandomize(assignment: string, sessionKey: number) {
     const { messenger, selection } = assemble(figma);
     const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
     const textNodes: Array<TextNode> = filterTextNodes(selection, false);
@@ -506,7 +512,7 @@ export default class App {
 
       if (!locked) {
         const data = new Data({ for: textNode });
-        const proposedText: string = data.randomText(assignmentType);
+        const proposedText: string = data.randomText(assignment);
 
         // commit the proposed text
         textNode.setSharedPluginData(
@@ -515,15 +521,79 @@ export default class App {
           JSON.stringify(proposedText),
         );
 
-        messenger.log(`Set ${textNode.id}’s proposed text for: ${assignmentType}`);
+        messenger.log(`Set ${textNode.id}’s proposed text for: ${assignment}`);
       } else {
         messenger.log(`Ignored ${textNode.id}: locked`);
       }
     });
 
-    messenger.log(`Quickly randomize all selected TextNodes for ${assignmentType}`);
+    messenger.log(`Quickly randomize all selected TextNodes for ${assignment}`);
 
     this.commitText(sessionKey);
+  }
+
+  /** WIP
+   * @description Enables the plugin GUI within Figma.
+   *
+   * @kind function
+   * @name quickRandomize
+   * @param {string} size An optional param calling one of the UI sizes defined in GUI_SETTINGS.
+   *
+   * @returns {null} Shows a Toast in the UI if nothing is selected.
+   */
+  quickAssign(assignment: string) {
+    const { messenger, selection } = assemble(figma);
+    const textNodes: Array<TextNode> = filterTextNodes(selection, false);
+
+    // iterate through each selected layer and apply the `remix` action
+    textNodes.forEach((textNode: TextNode) => {
+      const lockedData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
+      const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
+
+      if (!locked) {
+        // commit the new assignment
+        textNode.setSharedPluginData(
+          dataNamespace(),
+          DATA_KEYS.assignment,
+          JSON.stringify(assignment),
+        );
+
+        triggerFigmaChangeWatcher(textNode);
+
+        messenger.log(`Updated ${textNode.id}’s assignment to: “${assignment}”`);
+      } else {
+        messenger.log(`Ignored ${textNode.id}: locked`);
+      }
+    });
+
+    messenger.log(`Quickly reassign all selected TextNodes to: “${assignment}”`);
+
+    /**
+     * @description Resets the plugin GUI back to the original state or closes it entirely,
+     * terminating the plugin.
+     *
+     * @kind function
+     * @name closeOrReset
+     *
+     * @returns {null}
+     */
+    const closeOrReset = () => {
+      if (this.shouldTerminate) {
+        return this.terminatePlugin();
+      }
+
+      // reset the working state
+      const message: {
+        action: string,
+      } = {
+        action: 'resetState',
+      };
+      figma.ui.postMessage(message);
+      figma.ui.show();
+      return null;
+    };
+
+    return closeOrReset();
   }
 
   /** WIP
@@ -536,12 +606,8 @@ export default class App {
    */
   async commitText(sessionKey: number) {
     const { messenger, selection } = assemble(figma);
-    // retrieve selection of text nodes and filter for unlocked
     const includeLocked: boolean = false;
-    const consolidatedSelection: Array<SceneNode | PageNode> = selection;
-    const textNodes: Array<TextNode> = new Crawler(
-      { for: consolidatedSelection },
-    ).text(includeLocked);
+    const textNodes: Array<TextNode> = filterTextNodes(selection, includeLocked);
 
     /** WIP
      * @description Does a thing.

@@ -69,8 +69,7 @@ const dispatcher = async (action: {
     const verifyQuickType = (kind: string, quickType: string): boolean => {
       const typeSimplified = quickType.replace(`quick-${kind}-`, '');
       let isVerified = false;
-
-      if (typeSimplified && ASSIGNMENTS.hasOwnProperty.call(ASSIGNMENTS, typeSimplified)) {
+      if (typeSimplified && Object.values(ASSIGNMENTS).includes(typeSimplified)) {
         isVerified = true;
       }
       return isVerified;
@@ -99,8 +98,7 @@ const dispatcher = async (action: {
         break;
       case String(type.match(/^quick-assign-.*/)):
         if (verifyQuickType('assign', type)) {
-          console.log(`do ${type}`); /* eslint-disable-line no-console */
-          // app.quickAssign(type.replace('quick-assign-', ''), sessionKey);
+          app.quickAssign(type.replace('quick-assign-', ''));
         }
         break;
       default:
