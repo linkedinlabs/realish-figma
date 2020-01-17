@@ -137,8 +137,10 @@
 
     //create the div wrapper
     element.parentNode.insertBefore(selectWrapper, element);
-    // selectWrapper.appendChild(element);
     selectWrapper.className = selector;
+    if (element.disabled) {
+      // selectWrapper.classList.add(selector + '--disabled')
+    }
 
     // create unique ID and add it to both wrapper and original select element
     var wrapperId = ('id-' + Date.now() + Math.random()).replace('.', '-');
@@ -165,6 +167,10 @@
     selectButtonLabel.className = selector + '__button-label';
     selectButtonIcon.className = selector + '__icon';
     optionList.className = selector + '__list';
+
+    if (element.disabled) {
+      selectButton.disabled = true;
+    }
     
     //add button to dom
     selectWrapper.appendChild(selectButton);
