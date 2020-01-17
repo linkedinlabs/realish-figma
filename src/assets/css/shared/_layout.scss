@@ -36,6 +36,18 @@ svg {
     list-style-type: none;
   }
 
+  ul#layer-list {
+    li {
+      &.text-layer-holder {
+        margin-bottom: em(12);
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
   .options {
     display: block;
     width: 100%;
@@ -57,18 +69,6 @@ svg {
   .button {
     &.working {
       opacity: 0.5;
-    }
-  }
-
-  #layer-list {
-    li {
-      &.text-layer-holder {
-        margin-bottom: em(12);
-
-        &:last-child {
-          margin-bottom: 0;
-        }
-      }
     }
   }
 
@@ -105,6 +105,9 @@ svg {
     }
 
     .styled-select {
+      margin-top: -4px;
+      margin-bottom: -4px;
+
       ul {
         padding: 8px 0 8px 0;
       }
