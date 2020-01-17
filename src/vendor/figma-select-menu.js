@@ -161,26 +161,26 @@
     }
 
     //assign class names
-        selectButton.className = selector + '__button';
-        selectButtonLabel.className = selector + '__button-label';
-        selectButtonIcon.className = selector + '__icon';
+    selectButton.className = selector + '__button';
+    selectButtonLabel.className = selector + '__button-label';
+    selectButtonIcon.className = selector + '__icon';
     optionList.className = selector + '__list';
     
     //add button to dom
-        selectWrapper.appendChild(selectButton);
-        selectWrapper.appendChild(optionList);
-        selectButton.appendChild(selectButtonLabel);
-        selectButton.appendChild(selectButtonIcon);
+    selectWrapper.appendChild(selectButton);
+    selectWrapper.appendChild(optionList);
+    selectButton.appendChild(selectButtonLabel);
+    selectButton.appendChild(selectButtonIcon);
     selectButtonLabel.appendChild(selectButtonLabelText);
     
     //overlap the position of the menu if setting selected
-        if (settings.position == 'overlap') {
-            optionList.style.top = 0;
+    if (settings.position == 'overlap') {
+        optionList.style.top = 0;
     }
 
     if (settings.position == 'alignBottom') {
       //let height = optionList.offsetHeight + 32;
-            optionList.style.bottom = '0px';
+      optionList.style.bottom = '0px';
     }
     
     //add event listener    
@@ -190,9 +190,9 @@
   //create list item
   function createListItem(item) {
     if (item.value != "") {
-      let listItem =  document.createElement("li");
+      let listItem = document.createElement("li");
       let listIcon = document.createElement("span");
-      let listText= document.createElement("span");
+      let listText = document.createElement("span");
 
       listItem.className = selector + '__list-item';
       listIcon.className = selector + '__list-item-icon';
@@ -215,11 +215,10 @@
             if (item.index == selectedItem) {
                 listItem.classList.add(selector + '__list-item--active');
                 
-                if (settings.position == 'positionToSelection') {
-                    let menuPosition = -Math.abs(parseInt(listItem.getAttribute('position')));
-                    optionList.style.top = menuPosition + 'px';
-                }
-                
+              if (settings.position == 'positionToSelection') {
+                let menuPosition = -Math.abs(parseInt(listItem.getAttribute('position')));
+                optionList.style.top = menuPosition + 'px';
+              }
             }
 
       //event listener      
@@ -242,6 +241,29 @@
             let dropdown = element.parentNode.querySelector('UL');
             dropdown.classList.toggle(selector + '__list--active');
 
+            const docHeight = document.body.offsetHeight;
+            let menuHeight = dropdown.offsetHeight;
+
+            if (menuHeight > docHeight) {
+              menuHeight = docHeight - 10;
+              dropdown.style.height = menuHeight + 'px';
+            }
+
+            const buttonTopOffset = this.getBoundingClientRect().top + window.scrollY;
+            const menuTopOffset = dropdown.getBoundingClientRect().top + window.scrollY;
+            const menuTopInnerOffset = parseInt(dropdown.style.top.replace('px', ''));
+            let newMenuTopOffset = null;
+            // console.log(`docHeight ${docHeight}; menuHeight ${menuHeight}; menuTopOffset ${menuTopOffset}; menuTopInnerOffset ${menuTopInnerOffset}`)
+
+            if (menuTopOffset < 5) {
+              // move menu down
+              newMenuTopOffset = menuTopInnerOffset - menuTopOffset + 5;
+              dropdown.style.top = newMenuTopOffset + 'px';
+            } else if ((menuTopOffset + menuHeight) > docHeight) {
+              // move menu up
+              newMenuTopOffset = (docHeight - 8) - menuHeight;
+              dropdown.style.top = (newMenuTopOffset - buttonTopOffset) + 'px';
+            }
         } else if (element.tagName == 'LI') {
       
             let dropdown = element.parentNode.parentNode.querySelector('UL');

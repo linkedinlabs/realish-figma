@@ -29,8 +29,8 @@ svg {
   justify-content: flex-start;
   flex-direction: column;
 
-  ul,
-  ul li {
+  ul#layer-list,
+  ul#layer-list li.text-layer-holder {
     margin: 0;
     padding: 0;
     list-style-type: none;
@@ -62,10 +62,12 @@ svg {
 
   #layer-list {
     li {
-      margin-bottom: em(12);
+      &.text-layer-holder {
+        margin-bottom: em(12);
 
-      &:last-child {
-        margin-bottom: 0;
+        &:last-child {
+          margin-bottom: 0;
+        }
       }
     }
   }
@@ -91,7 +93,7 @@ svg {
   &.padding {
     padding: 16px 8px 16px 8px;
 
-    h2, h3, p, ul {
+    h2, h3, p, ul#layer-list {
       padding-left: 8px;
       padding-right: 8px;
     }
@@ -102,8 +104,8 @@ svg {
       }
     }
 
-    ul {
-      &.select-menu__list {
+    .styled-select {
+      ul {
         padding: 8px 0 8px 0;
       }
     }
