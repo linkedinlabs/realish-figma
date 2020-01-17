@@ -511,17 +511,21 @@ export default class App {
       const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
 
       if (!locked) {
-        const data = new Data({ for: textNode });
-        const proposedText: string = data.randomText(assignment);
+        if (assignment === 'assigned') {
+          App.actOnNode('remix', { id: textNode.id }, sessionKey);
+        } else {
+          const data = new Data({ for: textNode });
+          const proposedText: string = data.randomText(assignment);
 
-        // commit the proposed text
-        textNode.setSharedPluginData(
-          dataNamespace(),
-          textProposedKey,
-          JSON.stringify(proposedText),
-        );
+          // commit the proposed text
+          textNode.setSharedPluginData(
+            dataNamespace(),
+            textProposedKey,
+            JSON.stringify(proposedText),
+          );
 
-        messenger.log(`Set ${textNode.id}’s proposed text for: ${assignment}`);
+          messenger.log(`Set ${textNode.id}’s proposed text for: ${assignment}`);
+        }
       } else {
         messenger.log(`Ignored ${textNode.id}: locked`);
       }
