@@ -49,16 +49,16 @@ const DATA_KEYS = {
  * @type {Object}
  */
 const ASSIGNMENTS = {
-  unassigned: 'unassigned',
-  company: 'company',
-  country: 'country',
-  date: 'date',
-  degreeBadge: 'degree-badge',
-  domain: 'domain',
-  email: 'email',
-  jobTitle: 'job-title',
-  name: 'name',
-  timestamp: 'timestamp',
+  unassigned: { id: 'unassigned', text: 'Unassigned' },
+  company: { id: 'company', text: 'Company' },
+  country: { id: 'country', text: 'Country' },
+  date: { id: 'date', text: 'Date' },
+  degreeBadge: { id: 'degree-badge', text: 'Degree Badge' },
+  domain: { id: 'domain', text: 'Domain Name' },
+  email: { id: 'email', text: 'Email' },
+  jobTitle: { id: 'job-title', text: 'Job Title' },
+  name: { id: 'name', text: 'Name' },
+  timestamp: { id: 'timestamp', text: 'Timestamp' },
 };
 
 /**

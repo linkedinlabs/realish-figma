@@ -202,36 +202,36 @@ const generateRandom = (assignment): string => {
   let newRandomString = null;
 
   switch (assignment) {
-    case ASSIGNMENTS.company:
+    case ASSIGNMENTS.company.id:
       dictionaries.push(companies);
       break;
-    case ASSIGNMENTS.country:
+    case ASSIGNMENTS.country.id:
       dictionaries.push(countries);
       break;
-    case ASSIGNMENTS.date: {
+    case ASSIGNMENTS.date.id: {
       const date = [generateDate()];
       dictionaries.push(date);
       break;
     }
-    case ASSIGNMENTS.degreeBadge:
+    case ASSIGNMENTS.degreeBadge.id:
       dictionaries.push(degreeBadges);
       break;
-    case ASSIGNMENTS.domain: {
+    case ASSIGNMENTS.domain.id: {
       const domain = [generateDomain()];
       dictionaries.push(domain);
       style = 'lowerCase';
       break;
     }
-    case ASSIGNMENTS.email: {
+    case ASSIGNMENTS.email.id: {
       const email = [generateEmail()];
       dictionaries.push(email);
       style = 'lowerCase';
       break;
     }
-    case ASSIGNMENTS.jobTitle:
+    case ASSIGNMENTS.jobTitle.id:
       dictionaries.push(jobTitles);
       break;
-    case ASSIGNMENTS.name: {
+    case ASSIGNMENTS.name.id: {
       // names, twice for a first/last
       dictionaries.push(names);
       dictionaries.push(names);
@@ -239,7 +239,7 @@ const generateRandom = (assignment): string => {
       length = 2;
       break;
     }
-    case ASSIGNMENTS.timestamp: {
+    case ASSIGNMENTS.timestamp.id: {
       const timestamp = [generateTimestamp()];
       dictionaries.push(timestamp);
       break;

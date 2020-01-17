@@ -256,7 +256,7 @@ const updateSelectedLayers = (layers: Array<{
         assignmentsElement.classList.add('styled-select');
 
         // set reset / remix button states
-        if (layer.assignment !== ASSIGNMENTS.unassigned && !layer.locked) {
+        if (layer.assignment !== ASSIGNMENTS.unassigned.id && !layer.locked) {
           const resetButtonElement: HTMLButtonElement = newLayerElement.querySelector('.reset-control button');
           if (resetButtonElement && (layer.originalText !== layer.proposedText)) {
             resetButtonElement.disabled = false;
