@@ -70,6 +70,11 @@ const dispatcher = async (action: {
       const typeSimplified = quickType.replace(`quick-${kind}-`, '');
       let isVerified = false;
 
+      if (typeSimplified === 'assigned') {
+        isVerified = true;
+        return isVerified;
+      }
+
       Object.keys(ASSIGNMENTS).forEach((key) => {
         if (ASSIGNMENTS[key].id === typeSimplified) {
           isVerified = true;
