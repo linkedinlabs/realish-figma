@@ -175,7 +175,7 @@
     
     //overlap the position of the menu if setting selected
     if (settings.position == 'overlap') {
-        optionList.style.top = 0;
+      optionList.style.top = 0;
     }
 
     if (settings.position == 'alignBottom') {
@@ -241,11 +241,13 @@
       const docHeight = document.body.offsetHeight;
       let menuHeight = dropdown.offsetHeight;
 
+      // adjust menu height based on plugin container
       if (menuHeight > docHeight) {
         menuHeight = docHeight - 10;
         dropdown.style.height = menuHeight + 'px';
       }
 
+      // adjust menu position
       const buttonTopOffset = this.getBoundingClientRect().top + window.scrollY;
       const menuTopOffset = dropdown.getBoundingClientRect().top + window.scrollY;
       const menuTopInnerOffset = parseInt(dropdown.style.top.replace('px', ''));
@@ -261,6 +263,18 @@
         newMenuTopOffset = (docHeight - 8) - menuHeight;
         dropdown.style.top = (newMenuTopOffset - buttonTopOffset) + 'px';
       }
+
+      // scroll menu so that selected item is visible
+      const selectedItem = dropdown.querySelector('.' + selector + '__list-item--active');
+      const selectedItemTopOffset = selectedItem.getBoundingClientRect().top + window.scrollY
+      const selectedItemHeight = selectedItem.offsetHeight;
+      const refreshedMenuTopInnerOffset = dropdown.getBoundingClientRect().top + window.scrollY;
+
+      if ((selectedItemTopOffset - 8) > buttonTopOffset) {
+        const scrollPoint = selectedItemTopOffset - (buttonTopOffset - refreshedMenuTopInnerOffset);
+        dropdown.scrollTop = scrollPoint;
+      }
+
     } else if (element.tagName == 'LI') {
       let dropdown = element.parentNode.parentNode.querySelector('UL');
 
