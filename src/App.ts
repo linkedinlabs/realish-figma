@@ -568,32 +568,15 @@ export default class App {
 
     messenger.log(`Quickly reassign all selected TextNodes to: “${assignment}”`);
 
-    /**
-     * @description Resets the plugin GUI back to the original state or closes it entirely,
-     * terminating the plugin.
-     *
-     * @kind function
-     * @name closeOrReset
-     *
-     * @returns {null}
-     */
-    const closeOrReset = () => {
-      if (this.shouldTerminate) {
-        return this.terminatePlugin();
-      }
+    // give the user some feedback via toast
+    const layerCount = textNodes.length;
+    if (assignment !== 'unassigned') {
+      messenger.toast(`Layer${layerCount > 1 ? 's were' : ' was'} assigned to: “${assignment}” 🥳`);
+    } else {
+      messenger.toast(`Layer assignment${layerCount > 1 ? 's were' : ' was'} removed 🥳`);
+    }
 
-      // reset the working state
-      const message: {
-        action: string,
-      } = {
-        action: 'resetState',
-      };
-      figma.ui.postMessage(message);
-      figma.ui.show();
-      return null;
-    };
-
-    return closeOrReset();
+    return this.closeOrReset();
   }
 
   /** WIP
@@ -630,31 +613,6 @@ export default class App {
       messenger.log('End manipulating text');
     };
 
-    /**
-     * @description Resets the plugin GUI back to the original state or closes it entirely,
-     * terminating the plugin.
-     *
-     * @kind function
-     * @name closeOrReset
-     *
-     * @returns {null}
-     */
-    const closeOrReset = () => {
-      if (this.shouldTerminate) {
-        return this.terminatePlugin();
-      }
-
-      // reset the working state
-      const message: {
-        action: string,
-      } = {
-        action: 'resetState',
-      };
-      figma.ui.postMessage(message);
-
-      return null;
-    };
-
     // begin main thread of action ------------------------------------------------------
 
     // translate if text nodes are available and fonts are not missing
@@ -678,7 +636,7 @@ export default class App {
       // update the UI to reflect changes
       App.refreshGUI(sessionKey);
 
-      return closeOrReset();
+      return this.closeOrReset();
     }
 
     // otherwise set/display appropriate error messages
@@ -699,6 +657,30 @@ export default class App {
 
     // display the message and terminate the plugin
     messenger.toast(toastErrorMessage);
-    return closeOrReset();
+    return this.closeOrReset();
+  }
+
+  /**
+   * @description Resets the plugin GUI back to the original state or closes it entirely,
+   * terminating the plugin.
+   *
+   * @kind function
+   * @name closeOrReset
+   *
+   * @returns {null}
+   */
+  closeOrReset() {
+    if (this.shouldTerminate) {
+      return this.terminatePlugin();
+    }
+
+    // reset the working state
+    const message: {
+      action: string,
+    } = {
+      action: 'resetState',
+    };
+    figma.ui.postMessage(message);
+    return null;
   }
 }
