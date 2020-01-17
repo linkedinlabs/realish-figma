@@ -91,6 +91,10 @@
         {
           "name": "Set as “Timestamp”",
           "command": "quick-assign-timestamp"
+        },
+        {
+          "name": "Remove assignment",
+          "command": "quick-assign-unassigned"
         }
       ]
     },
