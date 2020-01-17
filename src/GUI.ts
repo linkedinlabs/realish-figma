@@ -300,7 +300,7 @@ const updateSelectedLayers = (layers: Array<{
 
       // set the Figma version of the menu
       selectMenu.init({
-        position: 'overlap',
+        position: 'positionToSelection',
         selector: 'styled-select',
       });
     } else {
