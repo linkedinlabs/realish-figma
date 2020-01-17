@@ -35,6 +35,20 @@ const assemble = (context: any = null) => {
   };
 };
 
+const filterTextNodes = (
+  selection: any,
+  includeLocked: boolean = false,
+): Array<TextNode> => {
+  const consolidatedSelection: Array<SceneNode | PageNode> = selection;
+
+  // retrieve selection of text nodes and filter for unlocked
+  const textNodes: Array<TextNode> = new Crawler(
+    { for: consolidatedSelection },
+  ).text(includeLocked);
+
+  return textNodes;
+};
+
 /**
  * @description Retrieves all of the typefaces (`FontName`) from a selection of text nodes
  * and returns them as a unique array (without repeats).
@@ -167,14 +181,7 @@ export default class App {
    */
   static refreshGUI(sessionKey: number) {
     const { messenger, selection } = assemble(figma);
-
-    const includeLocked: boolean = false;
-    const consolidatedSelection: Array<SceneNode | PageNode> = selection;
-
-    // retrieve selection of text nodes and filter for unlocked
-    const textNodes: Array<TextNode> = new Crawler(
-      { for: consolidatedSelection },
-    ).text(includeLocked);
+    const textNodes: Array<TextNode> = filterTextNodes(selection, false);
     const textNodesCount = textNodes.length;
 
     const selected = [];
@@ -279,12 +286,7 @@ export default class App {
      * @returns {null} Shows a Toast in the UI if nothing is selected.
      */
     const retrieveTextNode = (): TextNode => {
-      const includeLocked: boolean = false;
-      const consolidatedSelection: Array<SceneNode | PageNode> = selection;
-
-      const textNodes: Array<TextNode> = new Crawler(
-        { for: consolidatedSelection },
-      ).text(includeLocked);
+      const textNodes: Array<TextNode> = filterTextNodes(selection, false);
 
       const index = 0;
       const textNodesToUpdate: Array<TextNode> = textNodes.filter(
@@ -467,14 +469,7 @@ export default class App {
    */
   static remixAll(sessionKey: number) {
     const { messenger, selection } = assemble(figma);
-
-    const includeLocked: boolean = false;
-    const consolidatedSelection: Array<SceneNode | PageNode> = selection;
-
-    // retrieve selection of text nodes and filter for unlocked
-    const textNodes: Array<TextNode> = new Crawler(
-      { for: consolidatedSelection },
-    ).text(includeLocked);
+    const textNodes: Array<TextNode> = filterTextNodes(selection, false);
 
     // iterate through each selected layer and apply the `remix` action
     textNodes.forEach((textNode: TextNode) => App.actOnNode('remix', { id: textNode.id }, sessionKey));
@@ -502,14 +497,7 @@ export default class App {
   quickRandomize(assignmentType: string, sessionKey: number) {
     const { messenger, selection } = assemble(figma);
     const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
-
-    const includeLocked: boolean = false;
-    const consolidatedSelection: Array<SceneNode | PageNode> = selection;
-
-    // retrieve selection of text nodes and filter for unlocked
-    const textNodes: Array<TextNode> = new Crawler(
-      { for: consolidatedSelection },
-    ).text(includeLocked);
+    const textNodes: Array<TextNode> = filterTextNodes(selection, false);
 
     // iterate through each selected layer and apply the `remix` action
     textNodes.forEach((textNode: TextNode) => {
@@ -527,13 +515,13 @@ export default class App {
           JSON.stringify(proposedText),
         );
 
-        messenger.log(`Remixed ${textNode.id}’s proposed text for: ${assignmentType}`);
+        messenger.log(`Set ${textNode.id}’s proposed text for: ${assignmentType}`);
       } else {
         messenger.log(`Ignored ${textNode.id}: locked`);
       }
     });
 
-    messenger.log(`Quick randomize all selected TextNodes for ${assignmentType}`);
+    messenger.log(`Quickly randomize all selected TextNodes for ${assignmentType}`);
 
     this.commitText(sessionKey);
   }
