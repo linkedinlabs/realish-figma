@@ -1,8 +1,4 @@
-import {
-  dataNamespace,
-  getNodeAssignmentData,
-  isTextNode,
-} from './Tools';
+import { dataNamespace, isTextNode } from './Tools';
 import { DATA_KEYS } from './constants';
 
 // --- main Painter class function
@@ -50,8 +46,6 @@ export default class Painter {
     };
 
     // load basic node data
-    const assignmentData = getNodeAssignmentData(this.node);
-    const assignment: string = JSON.parse(assignmentData || null);
     const lockedData = this.node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
     const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
     const textProposedKey: string = `${DATA_KEYS.textProposed}-${this.sessionKey}`;
@@ -65,15 +59,7 @@ export default class Painter {
       return result;
     }
 
-    // if the node is marked as locked, shouldn’t do anything to it
-    if (!assignment || assignment === 'unassigned') {
-      result.status = 'error';
-      result.messages.log = `Layer ${this.node.id} is unassigned`;
-      return result;
-    }
-
-
-    // if there are no translations, return with error
+    // if there is no proposed text, return with error
     if (!proposedText) {
       result.status = 'error';
       result.messages.log = `Layer ${this.node.id} is missing proposed text`;
