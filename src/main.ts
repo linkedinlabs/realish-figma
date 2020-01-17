@@ -2,7 +2,7 @@
 import App from './App';
 import Messenger from './Messenger';
 import { awaitUIReadiness } from './Tools';
-// import { DATA_KEYS } from './constants';
+import { ASSIGNMENTS } from './constants';
 
 // GUI management -------------------------------------------------
 
@@ -64,6 +64,18 @@ const dispatcher = async (action: {
     //   translateLocked: boolean,
     //   languages: Array<string>,
     // } = await figma.clientStorage.getAsync(DATA_KEYS.options);
+
+    // make sure the type passed from the menu command exists
+    const verifyQuickType = (kind: string, quickType: string): boolean => {
+      const typeSimplified = quickType.replace(`quick-${kind}-`, '');
+      let isVerified = false;
+
+      if (typeSimplified && ASSIGNMENTS.hasOwnProperty.call(ASSIGNMENTS, typeSimplified)) {
+        isVerified = true;
+      }
+      return isVerified;
+    };
+
     switch (type) {
       case 'lock-toggle':
       case 'reassign':
@@ -79,6 +91,18 @@ const dispatcher = async (action: {
         break;
       case 'tools':
         App.showToolbar(sessionKey);
+        break;
+      case String(type.match(/^quick-randomize-.*/)):
+        if (verifyQuickType('randomize', type)) {
+          console.log(`do ${type}`); /* eslint-disable-line no-console */
+          // app.quickRandomize(type.replace('quick-randomize-', ''), sessionKey);
+        }
+        break;
+      case String(type.match(/^quick-assign-.*/)):
+        if (verifyQuickType('assign', type)) {
+          console.log(`do ${type}`); /* eslint-disable-line no-console */
+          // app.quickAssign(type.replace('quick-assign-', ''), sessionKey);
+        }
         break;
       default:
         return null;
