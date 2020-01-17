@@ -132,32 +132,32 @@
     element.style.display = 'none'; //hide the select menu
 
     //set the selected option to the correct element if not set
-        element.options[element.selectedIndex].selected = true;
+    element.options[element.selectedIndex].selected = true;
 
 
-        //create the div wrapper
-        element.parentNode.insertBefore(selectWrapper, element);
-        // selectWrapper.appendChild(element);
-        selectWrapper.className = selector;
+    //create the div wrapper
+    element.parentNode.insertBefore(selectWrapper, element);
+    // selectWrapper.appendChild(element);
+    selectWrapper.className = selector;
 
-        // create unique ID and add it to both wrapper and original select element
-        var wrapperId = ('id-' + Date.now() + Math.random()).replace('.', '-');
-        selectWrapper.setAttribute('data-select-id', wrapperId);
-        element.classList.add(wrapperId);
+    // create unique ID and add it to both wrapper and original select element
+    var wrapperId = ('id-' + Date.now() + Math.random()).replace('.', '-');
+    selectWrapper.setAttribute('data-select-id', wrapperId);
+    element.classList.add(wrapperId);
 
-        //create the new button element
-        let selectButton = document.createElement('button');
-        let selectButtonLabel = document.createElement('span');
-        let selectButtonIcon = document.createElement('span');
+    //create the new button element
+    let selectButton = document.createElement('button');
+    let selectButtonLabel = document.createElement('span');
+    let selectButtonIcon = document.createElement('span');
     optionList = document.createElement('ul');
     
     //determine button label
-        let selectButtonLabelText;
-        if (element.selectedIndex == 0) {
-            selectButtonLabelText = document.createTextNode(element.options[0].text);
-        } else {
-            let index = element.selectedIndex;
-            selectButtonLabelText = document.createTextNode(element.options[index].text);
+    let selectButtonLabelText;
+    if (element.selectedIndex == 0) {
+      selectButtonLabelText = document.createTextNode(element.options[0].text);
+    } else {
+      let index = element.selectedIndex;
+      selectButtonLabelText = document.createTextNode(element.options[index].text);
     }
 
     //assign class names
@@ -197,89 +197,85 @@
       listItem.className = selector + '__list-item';
       listIcon.className = selector + '__list-item-icon';
       listText.className = selector + '__list-item-text';
-      
-            listItem.setAttribute('data-value', item.value);
-            listText.innerHTML +=item.text;
+
+      listItem.setAttribute('data-value', item.value);
+      listText.innerHTML +=item.text;
       
       listItem.appendChild(listIcon);
       listItem.appendChild(listText);
-            optionList.appendChild(listItem);
+      optionList.appendChild(listItem);
 
-            //add data attributes to item if positionToSelection is set
-            if (settings.position == 'positionToSelection') {
-                listItem.setAttribute('position', itemHeight);
-                addItemHeight(listItem);
-            }
+      //add data attributes to item if positionToSelection is set
+      if (settings.position == 'positionToSelection') {
+          listItem.setAttribute('position', itemHeight);
+          addItemHeight(listItem);
+      }
 
-            //if item is selected, add active class
-            if (item.index == selectedItem) {
-                listItem.classList.add(selector + '__list-item--active');
-                
-              if (settings.position == 'positionToSelection') {
-                let menuPosition = -Math.abs(parseInt(listItem.getAttribute('position')));
-                optionList.style.top = menuPosition + 'px';
-              }
-            }
+      //if item is selected, add active class
+      if (item.index == selectedItem) {
+          listItem.classList.add(selector + '__list-item--active');
+          
+        if (settings.position == 'positionToSelection') {
+          let menuPosition = -Math.abs(parseInt(listItem.getAttribute('position')));
+          optionList.style.top = menuPosition + 'px';
+        }
+      }
 
       //event listener      
       listItem.addEventListener('click', displayMenu, false);
-        }
-
+    }
   }
 
   //function display menu
   var displayMenu = function(event) {
-
     let element = this;
 
     //determine if the the menu button or item is clicked
-        if (element.tagName == 'BUTTON') {
-
+    if (element.tagName == 'BUTTON') {
       this.classList.toggle(selector + '__button--active');
 
-            //toggle the dropdown
-            let dropdown = element.parentNode.querySelector('UL');
-            dropdown.classList.toggle(selector + '__list--active');
+      //toggle the dropdown
+      let dropdown = element.parentNode.querySelector('UL');
+      dropdown.classList.toggle(selector + '__list--active');
 
-            const docHeight = document.body.offsetHeight;
-            let menuHeight = dropdown.offsetHeight;
+      const docHeight = document.body.offsetHeight;
+      let menuHeight = dropdown.offsetHeight;
 
-            if (menuHeight > docHeight) {
-              menuHeight = docHeight - 10;
-              dropdown.style.height = menuHeight + 'px';
-            }
+      if (menuHeight > docHeight) {
+        menuHeight = docHeight - 10;
+        dropdown.style.height = menuHeight + 'px';
+      }
 
-            const buttonTopOffset = this.getBoundingClientRect().top + window.scrollY;
-            const menuTopOffset = dropdown.getBoundingClientRect().top + window.scrollY;
-            const menuTopInnerOffset = parseInt(dropdown.style.top.replace('px', ''));
-            let newMenuTopOffset = null;
-            // console.log(`docHeight ${docHeight}; menuHeight ${menuHeight}; menuTopOffset ${menuTopOffset}; menuTopInnerOffset ${menuTopInnerOffset}`)
+      const buttonTopOffset = this.getBoundingClientRect().top + window.scrollY;
+      const menuTopOffset = dropdown.getBoundingClientRect().top + window.scrollY;
+      const menuTopInnerOffset = parseInt(dropdown.style.top.replace('px', ''));
+      let newMenuTopOffset = null;
+      // console.log(`docHeight ${docHeight}; menuHeight ${menuHeight}; menuTopOffset ${menuTopOffset}; menuTopInnerOffset ${menuTopInnerOffset}`)
 
-            if (menuTopOffset < 5) {
-              // move menu down
-              newMenuTopOffset = menuTopInnerOffset - menuTopOffset + 5;
-              dropdown.style.top = newMenuTopOffset + 'px';
-            } else if ((menuTopOffset + menuHeight) > docHeight) {
-              // move menu up
-              newMenuTopOffset = (docHeight - 8) - menuHeight;
-              dropdown.style.top = (newMenuTopOffset - buttonTopOffset) + 'px';
-            }
-        } else if (element.tagName == 'LI') {
-      
-            let dropdown = element.parentNode.parentNode.querySelector('UL');
+      if (menuTopOffset < 5) {
+        // move menu down
+        newMenuTopOffset = menuTopInnerOffset - menuTopOffset + 5;
+        dropdown.style.top = newMenuTopOffset + 'px';
+      } else if ((menuTopOffset + menuHeight) > docHeight) {
+        // move menu up
+        newMenuTopOffset = (docHeight - 8) - menuHeight;
+        dropdown.style.top = (newMenuTopOffset - buttonTopOffset) + 'px';
+      }
+    } else if (element.tagName == 'LI') {
+      let dropdown = element.parentNode.parentNode.querySelector('UL');
 
-            //remove active classses from all menus
-            let listItems = dropdown.getElementsByTagName('LI');
-            for (let i = 0; i < listItems.length; i++) {
-                listItems[i].classList.remove(selector + '__list-item--active');
-            }
+      //remove active classses from all menus
+      let listItems = dropdown.getElementsByTagName('LI');
+      for (let i = 0; i < listItems.length; i++) {
+        listItems[i].classList.remove(selector + '__list-item--active');
+      }
 
-            //add active class
-            element.classList.add(selector + '__list-item--active');
+      //add active class
+      element.classList.add(selector + '__list-item--active');
 
-            //update the value of the select menu
-            var wrapperId = dropdown.parentNode.getAttribute('data-select-id');
-            let select = document.querySelector('.' + wrapperId);
+      //update the value of the select menu
+      var wrapperId = dropdown.parentNode.getAttribute('data-select-id');
+      let select = document.querySelector('.' + wrapperId);
       let selectedValue = element.getAttribute('data-value');
       let selectItems = select.querySelectorAll('option');
       let selectItemsLen = selectItems.length;
@@ -301,24 +297,20 @@
         }
       }
 
-
       //update the dropdown button
       let button = element.parentNode.parentNode.querySelector('BUTTON');
       let buttonLabel = button.querySelector('.' + selector + '__button-label');
       buttonLabel.textContent = element.textContent;
       button.classList.toggle(selector + '__button--active');
 
-            //toggle the dropdown
-            dropdown.classList.toggle(selector + '__list--active');
+      //toggle the dropdown
+      dropdown.classList.toggle(selector + '__list--active');
 
-            if (settings.position == 'positionToSelection') {
-                let menuPosition = -Math.abs(parseInt(element.getAttribute('position')));
-                element.parentNode.style.top = menuPosition + 'px';
+      if (settings.position == 'positionToSelection') {
+        let menuPosition = -Math.abs(parseInt(element.getAttribute('position')));
+        element.parentNode.style.top = menuPosition + 'px';
       }
-    
-
-        }
-
+    }
   }
 
   //EVENT HANDLERS //////////
@@ -347,76 +339,68 @@
     });
   }
 
-
   //HELPER FUNCTIONS //////////
   
   //increment itemHeight
-    function addItemHeight(element) {
+  function addItemHeight(element) {
+    //get key dimensions to calculate height
+    let dimensions = [
+      parseInt(window.getComputedStyle(element, null).getPropertyValue('margin-top')),
+      parseInt(window.getComputedStyle(element, null).getPropertyValue('margin-bottom')),
+      parseInt(window.getComputedStyle(element, null).getPropertyValue('padding-top')),
+      parseInt(window.getComputedStyle(element, null).getPropertyValue('padding-bottom')),
+      parseInt(window.getComputedStyle(element, null).getPropertyValue('height')),
+    ];
+    itemHeight += arraySum(dimensions);
+  }
 
-        //get key dimensions to calculate height
-        let dimensions = [
-            parseInt(window.getComputedStyle(element, null).getPropertyValue('margin-top')),
-            parseInt(window.getComputedStyle(element, null).getPropertyValue('margin-bottom')),
-            parseInt(window.getComputedStyle(element, null).getPropertyValue('padding-top')),
-            parseInt(window.getComputedStyle(element, null).getPropertyValue('padding-bottom')),
-            parseInt(window.getComputedStyle(element, null).getPropertyValue('height')),
-        ];
-        itemHeight += arraySum(dimensions);
-    }
-
-    //helper function to return sum of array
-    function arraySum(data) {
-        return data.reduce(function(a,b){
-            return a + b
-        }, 0);
-    }
-
+  //helper function to return sum of array
+  function arraySum(data) {
+    return data.reduce(function(a,b){
+      return a + b
+    }, 0);
+  }
 
   // PUBLIC FUNCTIONS /////////////
   window.selectMenu = {
-
     init: function(opts) {
 
-      if (init == true) {
-        // selectMenu.destroy();
-      }
-
-      settings = Object.assign({}, defaults, opts);
-      selector = settings.selector;
-      targets = document.querySelectorAll('.' + selector);
-
-      createMenus();
-
-      //click handler for clicks outside of menu
-      document.addEventListener('click', isOutside, false);
-
-      init = true;
-    },
-
-    destroy: function() {
-
-      //destroy the elements
-      let selectMenus = document.querySelectorAll('select.' + selector);
-      
-      selectMenus.forEach((menu) => {
-
-        let parent = menu.parentNode;
-        let button = parent.querySelector('BUTTON');
-        let menuList = parent.querySelector('UL');
-
-        button.remove();
-        menuList.remove();
-
-        parent.outerHTML = parent.innerHTML;
-
-      });
-
-      //remove event handler
-      document.removeEventListener('click', isOutside, false);
-
-      init = false;
+    if (init == true) {
+      // selectMenu.destroy();
     }
 
+    settings = Object.assign({}, defaults, opts);
+    selector = settings.selector;
+    targets = document.querySelectorAll('.' + selector);
+
+    createMenus();
+
+    //click handler for clicks outside of menu
+    document.addEventListener('click', isOutside, false);
+
+    init = true;
+  },
+
+  destroy: function() {
+    //destroy the elements
+    let selectMenus = document.querySelectorAll('select.' + selector);
+    
+    selectMenus.forEach((menu) => {
+      let parent = menu.parentNode;
+      let button = parent.querySelector('BUTTON');
+      let menuList = parent.querySelector('UL');
+
+      button.remove();
+      menuList.remove();
+
+      parent.outerHTML = parent.innerHTML;
+    });
+
+    //remove event handler
+    document.removeEventListener('click', isOutside, false);
+
+    init = false;
   }
+}
 
 })();
