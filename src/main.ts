@@ -94,8 +94,7 @@ const dispatcher = async (action: {
         break;
       case String(type.match(/^quick-randomize-.*/)):
         if (verifyQuickType('randomize', type)) {
-          console.log(`do ${type}`); /* eslint-disable-line no-console */
-          // app.quickRandomize(type.replace('quick-randomize-', ''), sessionKey);
+          app.quickRandomize(type.replace('quick-randomize-', ''), sessionKey);
         }
         break;
       case String(type.match(/^quick-assign-.*/)):

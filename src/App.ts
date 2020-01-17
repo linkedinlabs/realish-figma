@@ -460,7 +460,7 @@ export default class App {
    * @description Enables the plugin GUI within Figma.
    *
    * @kind function
-   * @name actOnNode
+   * @name remixAll
    * @param {string} size An optional param calling one of the UI sizes defined in GUI_SETTINGS.
    *
    * @returns {null} Shows a Toast in the UI if nothing is selected.
@@ -488,6 +488,54 @@ export default class App {
     figma.ui.postMessage(message);
 
     messenger.log('Remix all selected TextNodes');
+  }
+
+  /** WIP
+   * @description Enables the plugin GUI within Figma.
+   *
+   * @kind function
+   * @name quickRandomize
+   * @param {string} size An optional param calling one of the UI sizes defined in GUI_SETTINGS.
+   *
+   * @returns {null} Shows a Toast in the UI if nothing is selected.
+   */
+  quickRandomize(assignmentType: string, sessionKey: number) {
+    const { messenger, selection } = assemble(figma);
+    const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
+
+    const includeLocked: boolean = false;
+    const consolidatedSelection: Array<SceneNode | PageNode> = selection;
+
+    // retrieve selection of text nodes and filter for unlocked
+    const textNodes: Array<TextNode> = new Crawler(
+      { for: consolidatedSelection },
+    ).text(includeLocked);
+
+    // iterate through each selected layer and apply the `remix` action
+    textNodes.forEach((textNode: TextNode) => {
+      const lockedData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
+      const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
+
+      if (!locked) {
+        const data = new Data({ for: textNode });
+        const proposedText: string = data.randomText(assignmentType);
+
+        // commit the proposed text
+        textNode.setSharedPluginData(
+          dataNamespace(),
+          textProposedKey,
+          JSON.stringify(proposedText),
+        );
+
+        messenger.log(`Remixed ${textNode.id}’s proposed text for: ${assignmentType}`);
+      } else {
+        messenger.log(`Ignored ${textNode.id}: locked`);
+      }
+    });
+
+    messenger.log(`Quick randomize all selected TextNodes for ${assignmentType}`);
+
+    this.commitText(sessionKey);
   }
 
   /** WIP

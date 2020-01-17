@@ -288,10 +288,13 @@ export default class Data {
    * @param {string} message The string containing the message to be logged.
    * @param {string} type The optional string declaring the type of log: error or normal (default).
    */
-  randomText() {
-    const assignmentData = getNodeAssignmentData(this.textNode);
-    const assignment: string = JSON.parse(assignmentData || null);
+  randomText(forcedAssignment?: string) {
+    let assignment: string = forcedAssignment;
     let randomText: string = null;
+    if (!forcedAssignment) {
+      const assignmentData = getNodeAssignmentData(this.textNode);
+      assignment = JSON.parse(assignmentData || null);
+    }
 
     if (assignment) {
       randomText = generateRandom(assignment);
