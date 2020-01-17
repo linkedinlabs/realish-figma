@@ -227,7 +227,7 @@ export default class App {
           }
         }
       } else {
-        assignment = ASSIGNMENTS.unassigned;
+        assignment = ASSIGNMENTS.unassigned.id;
       }
 
       // update the bundle of info for the current `textNode` in the selection
@@ -571,7 +571,14 @@ export default class App {
     // give the user some feedback via toast
     const layerCount = textNodes.length;
     if (assignment !== 'unassigned') {
-      messenger.toast(`Layer${layerCount > 1 ? 's were' : ' was'} assigned to: “${assignment}” 🥳`);
+      let assignmentObject = null;
+      Object.keys(ASSIGNMENTS).forEach((key) => {
+        if (ASSIGNMENTS[key].id === assignment) {
+          assignmentObject = ASSIGNMENTS[key];
+        }
+      });
+
+      messenger.toast(`Layer${layerCount > 1 ? 's were' : ' was'} assigned to: “${assignmentObject.text}” 🥳`);
     } else {
       messenger.toast(`Layer assignment${layerCount > 1 ? 's were' : ' was'} removed 🥳`);
     }
