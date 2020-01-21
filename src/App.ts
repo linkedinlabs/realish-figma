@@ -524,7 +524,26 @@ export default class App {
             JSON.stringify(proposedText),
           );
 
-          messenger.log(`Set ${textNode.id}’s proposed text for: ${assignment}`);
+          messenger.log(`Set ${textNode.id}’s proposed text for: “${assignment}”`);
+
+          // set the assignment on unassigned nodes, otherwise ignore it
+          type Assignment =
+            'unassigned'
+            | 'name'
+            | 'company'
+            | 'country'
+            | 'date'
+            | 'degree-badge'
+            | 'domain'
+            | 'email'
+            | 'job-title'
+            | 'timestamp';
+          const currentAssignmentData = getNodeAssignmentData(textNode);
+          const currentAssignment = JSON.parse(currentAssignmentData || null) as Assignment;
+          if (!currentAssignment || currentAssignment === 'unassigned') {
+            const newAssignment: Assignment = assignment as Assignment;
+            App.actOnNode('reassign', { id: textNode.id, assignment: newAssignment }, sessionKey);
+          }
         }
       } else {
         messenger.log(`Ignored ${textNode.id}: locked`);
