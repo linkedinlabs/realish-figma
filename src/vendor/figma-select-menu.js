@@ -42,6 +42,7 @@
 
     const changeMenuValue = () => {
       let currentlySelectedItem = document.querySelector(`.${selector}__list--active .${selector}__list-item--indicate`);
+      const previouslySelectedItem = document.querySelector(`.${selector}__list--active .${selector}__list-item--active`);
       if (!currentlySelectedItem) {
         currentlySelectedItem = document.querySelector(`.${selector}__list--active .${selector}__list-item--active`);
       }
@@ -53,6 +54,16 @@
       let selectItemsLen = selectItems.length;
       let event = new Event('change');
 
+      // update the faux menu selected item
+      previouslySelectedItem.classList.remove(`${selector}__list-item--active`);
+      currentlySelectedItem.classList.add(`${selector}__list-item--active`);
+
+      // update the dropdown button
+      const button = dropdown.parentNode.querySelector('BUTTON');
+      const buttonLabel = button.querySelector('.' + selector + '__button-label');
+      buttonLabel.textContent = currentlySelectedItem.textContent;
+
+      // update the actual select input
       selectItems.forEach((item) => {
         item.removeAttribute("selected");
       });
@@ -71,6 +82,8 @@
 
       // remove the key listener
       document.removeEventListener('keydown', watchKeys, false);
+
+      closeMenu();
     }
 
     const selectNext = (direction) => {
@@ -87,12 +100,22 @@
           // grab the previous sibling
           nextSelectedItem = currentlySelectedItem.previousSibling;
 
+          // skip over separators
+          if (nextSelectedItem && nextSelectedItem.tagName !== 'LI') {
+            nextSelectedItem = nextSelectedItem.previousSibling;
+          }
+
           // if the previous sibling is missing, must be at the top
           // grab the last element in the list
           if (!nextSelectedItem) {
             nextSelectedItem = currentlySelectedItem.parentNode.lastChild;
           }
         } else {
+          // skip over separators
+          if (nextSelectedItem && nextSelectedItem.tagName !== 'LI') {
+            nextSelectedItem = nextSelectedItem.nextSibling;
+          }
+
           // if the next sibling is missing, must be at the bottom
           // grab the first element in the list
           if (!nextSelectedItem) {
@@ -236,7 +259,7 @@
     element.parentNode.insertBefore(selectWrapper, element);
     selectWrapper.className = selector;
     if (element.disabled) {
-      // selectWrapper.classList.add(selector + '--disabled')
+      selectWrapper.classList.add(selector + '--disabled');
     }
 
     // create unique ID and add it to both wrapper and original select element
@@ -370,13 +393,14 @@
       }
 
       // scroll menu so that selected item is visible
+      const dropdownHeight = dropdown.offsetHeight;
       const selectedItem = dropdown.querySelector('.' + selector + '__list-item--active');
-      const selectedItemTopOffset = selectedItem.getBoundingClientRect().top + window.scrollY
       const selectedItemHeight = selectedItem.offsetHeight;
+      const selectedItemTopOffset = selectedItem.getBoundingClientRect().top + window.scrollY
       const refreshedMenuTopInnerOffset = dropdown.getBoundingClientRect().top + window.scrollY;
 
-      if ((selectedItemTopOffset - 8) > buttonTopOffset) {
-        const scrollPoint = selectedItemTopOffset - (buttonTopOffset - refreshedMenuTopInnerOffset);
+      if ((selectedItemTopOffset < 0) || ((selectedItemTopOffset + selectedItemHeight) > dropdownHeight)) {
+        const scrollPoint = selectedItemTopOffset - refreshedMenuTopInnerOffset;
         dropdown.scrollTop = scrollPoint;
       }
     } else if (element.tagName == 'LI') {
@@ -386,6 +410,7 @@
       let listItems = dropdown.getElementsByTagName('LI');
       for (let i = 0; i < listItems.length; i++) {
         listItems[i].classList.remove(selector + '__list-item--active');
+        listItems[i].classList.remove(selector + '__list-item--indicate');
       }
 
       // add active class
