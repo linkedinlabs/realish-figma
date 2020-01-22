@@ -133,6 +133,10 @@
   box-shadow: 0 5px 17px rgba(0, 0, 0, 0.2), 0 2px 7px rgba(0, 0, 0, 0.15);
 }
 
+@mixin hover-indicate-state {
+  background-color: $wl-action-primary;
+}
+
 .styled-select__list-item {
   display: flex;
   align-items: center;
@@ -146,7 +150,11 @@
   color: rgba($wl-type-01-invert, 0.95);
 
   @include hover {
-    background-color: $wl-action-primary;
+    @include hover-indicate-state;
+  }
+
+  &.styled-select__list-item--indicate {
+    @include hover-indicate-state;
   }
 }
 
