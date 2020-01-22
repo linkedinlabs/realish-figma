@@ -22,6 +22,118 @@
   var init = false;
 
   //PRIVATE FUNCTIONS //////////
+  const watchKeys = (e) => {
+    const closeMenu = () => {
+      const currentlySelectedItem = document.querySelector(`.${selector}__list--active .${selector}__list-item--active`);
+      const currentlyHighlightedItem = document.querySelector(`.${selector}__list--active .${selector}__list-item--indicate`);
+      const currentlySelectedButton = document.querySelector(`.${selector}__button--active`);
+      const dropdown = currentlySelectedItem.parentNode;
+
+      dropdown.classList.remove(selector + '__list--active');
+      currentlySelectedButton.classList.remove(selector + '__button--active');
+      if (currentlyHighlightedItem) {
+        currentlyHighlightedItem.classList.remove(`${selector}__list-item--indicate`);
+      }
+
+      // remove the key listener
+      document.removeEventListener('keydown', watchKeys, false);
+    }
+
+    const changeMenuValue = () => {
+      let currentlySelectedItem = document.querySelector(`.${selector}__list--active .${selector}__list-item--indicate`);
+      if (!currentlySelectedItem) {
+        currentlySelectedItem = document.querySelector(`.${selector}__list--active .${selector}__list-item--active`);
+      }
+      const dropdown = currentlySelectedItem.parentNode;
+      const wrapperId = dropdown.parentNode.getAttribute('data-select-id');
+      let select = document.querySelector('.' + wrapperId);
+      let selectedValue = currentlySelectedItem.getAttribute('data-value');
+      let selectItems = select.querySelectorAll('option');
+      let selectItemsLen = selectItems.length;
+      let event = new Event('change');
+
+      selectItems.forEach((item) => {
+        item.removeAttribute("selected");
+      });
+
+      if (select && !select.disabled) {
+        select.value = selectedValue;
+        select.dispatchEvent(event);
+      }
+
+      for (let i = 0; i < selectItemsLen; i++) {
+        let value = selectItems[i].value;
+        if (value == selectedValue) {
+          selectItems[i].setAttribute('selected','selected');
+        }
+      }
+
+      // remove the key listener
+      document.removeEventListener('keydown', watchKeys, false);
+    }
+
+    const selectNext = (direction) => {
+      let currentlySelectedItem = document.querySelector(`.${selector}__list--active .${selector}__list-item--indicate`);
+      if (!currentlySelectedItem) {
+        currentlySelectedItem = document.querySelector(`.${selector}__list--active .${selector}__list-item--active`);
+      }
+      if (currentlySelectedItem) {
+        const dropdown = currentlySelectedItem.parentNode;
+
+        // default is `down`, grab the next sibling
+        let nextSelectedItem = currentlySelectedItem.nextSibling;
+        if (direction === 'up') {
+          // grab the previous sibling
+          nextSelectedItem = currentlySelectedItem.previousSibling;
+
+          // if the previous sibling is missing, must be at the top
+          // grab the last element in the list
+          if (!nextSelectedItem) {
+            nextSelectedItem = currentlySelectedItem.parentNode.lastChild;
+          }
+        } else {
+          // if the next sibling is missing, must be at the bottom
+          // grab the first element in the list
+          if (!nextSelectedItem) {
+            nextSelectedItem = currentlySelectedItem.parentNode.firstChild;
+          }
+        }
+
+        currentlySelectedItem.classList.remove(`${selector}__list-item--indicate`);
+        nextSelectedItem.classList.add(`${selector}__list-item--indicate`);
+
+        const dropdownHeight = dropdown.offsetHeight;
+        const selectedItem = dropdown.querySelector('.' + selector + '__list-item--indicate');
+        const selectedItemHeight = selectedItem.offsetHeight;
+        const selectedItemTopOffset = selectedItem.getBoundingClientRect().top + window.scrollY
+        const refreshedMenuTopInnerOffset = dropdown.getBoundingClientRect().top + window.scrollY;
+
+        if ((selectedItemTopOffset < 0) || ((selectedItemTopOffset + selectedItemHeight) > dropdownHeight)) {
+          const scrollPoint = selectedItemTopOffset - refreshedMenuTopInnerOffset;
+          dropdown.scrollTop = scrollPoint;
+        }
+      }
+    }
+    const { key } = e;
+    switch (key) {
+      case 'ArrowUp':
+        selectNext('up');
+        break;
+      case 'ArrowDown':
+        selectNext('down');
+        break;
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        changeMenuValue();
+        break;
+      case 'Escape':
+        closeMenu();
+        break;
+      default:
+        return null;
+    }
+  }
 
   //create the select menus
   function createMenus() {
@@ -243,6 +355,9 @@
       //toggle the dropdown
       let dropdown = element.parentNode.querySelector('UL');
       dropdown.classList.toggle(selector + '__list--active');
+
+      // set key listener
+      document.addEventListener('keydown', watchKeys, false)
 
       const docHeight = document.body.offsetHeight;
       let menuHeight = dropdown.offsetHeight;
