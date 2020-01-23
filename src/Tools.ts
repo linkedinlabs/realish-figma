@@ -28,14 +28,16 @@ const asyncForEach = async (
 };
 
 /**
- * @description An approximation of `forEach` but run in an async manner.
+ * @description An approximation of `setTimeout` but run in an async manner
+ * with logging to Messenger.
  *
  * @kind function
  * @name pollWithPromise
  *
  * @param {Function} externalCheck The external function to run a check against.
  * The function should resolve to `true`.
- * @param {Class} messenger An active instance of the Messenger class for logging (optional).
+ * @param {Object} messenger An initialized instance of the Messenger class for logging (optional).
+ * @param {string} name The name of the check for logging purposes (optional).
  *
  * @returns {Promise} Returns a promise for resolution.
  */
@@ -61,17 +63,18 @@ const pollWithPromise = (
   return new Promise(checkIsReady);
 };
 
-/** WIP
- * @description An approximation of `forEach` but run in an async manner.
+/**
+ * @description Manages the process of passing a network request along to the plugin
+ * UI and waiting for the response.
  *
  * @kind function
  * @name asyncNetworkRequest
  *
- * @param {Function} externalCheck The external function to run a check against.
- * The function should resolve to `true`.
- * @param {Class} messenger An active instance of the Messenger class for logging (optional).
+ * @param {Object} options An object including the request options: The URL the request should
+ * go to (`requestUrl`), headers to pass along to the request (optional), an optional request
+ * body (`bodyToSend`), and an initialized instance of the Messenger class for logging (optional).
  *
- * @returns {Promise} Returns a promise for resolution.
+ * @returns {Object} Returns the result of the network request (response).
  */
 const asyncNetworkRequest = async (options: {
   requestUrl: string,
@@ -89,6 +92,7 @@ const asyncNetworkRequest = async (options: {
   // set blank response
   let response = null;
 
+  // polling function to check for a response from the plugin UI
   const awaitResponse = async () => {
     // simple function to check for existence of a response
     const responseExists = () => (response !== null);
@@ -101,6 +105,7 @@ const asyncNetworkRequest = async (options: {
     await pollWithPromise(responseExists, messenger);
   };
 
+  // makes the request by passing the options along to the plugin UI
   const makeRequest = () => {
     figma.ui.postMessage({
       action: 'networkRequest',
@@ -135,23 +140,20 @@ const awaitUIReadiness = async (messenger?) => {
   await pollWithPromise(isUIReady, messenger);
 };
 
-/** WIP
- * @description A reusable helper function to take an array and add or remove data from it
- * based on a top-level key and a defined action.
- * an action (`add` or `remove`).
+/**
+ * @description A helper function that uses `fetch` to make a network request.
+ * This helper can only be used from the UI thread. The main thread of the plugin
+ * cannot make network requests. From the main thread, use `asyncNetworkRequest`.
  *
  * @kind function
  * @name makeNetworkRequest
  *
- * @param {string} key String representing the top-level area of the array to modify.
- * @param {Object} item Object containing the new bit of data to add or
- * remove (must include an `id` string for comparison).
- * @param {Array} array The array to be modified.
- * @param {string} action Constant string representing the action to take (`add` or `remove`).
+ * @param {Object} options The network request options, containing the URL/route for the
+ * request (`route`), the `method` of the request (default is `POST`), optional
+ * request `headers`, and an optional request body (`bodyToSend`).
  *
- * @returns {Object} The modified array.
-
- * @private
+ * @returns {null} Posts a message to the main thread of the plugin with the results
+ * of the `fetch` call.
  */
 const makeNetworkRequest = (options: {
   route: string,
@@ -180,23 +182,20 @@ const makeNetworkRequest = (options: {
     .catch(err => console.error(err)); // eslint-disable-line no-console
 };
 
-/** WIP - updated
+/**
  * @description A reusable helper function to take an array and add or remove data from it
  * based on a top-level key and a defined action.
- * an action (`add` or `remove`).
  *
  * @kind function
  * @name updateArray
  *
- * @param {string} key String representing the top-level area of the array to modify.
- * @param {Object} item Object containing the new bit of data to add or
- * remove (must include an `id` string for comparison).
  * @param {Array} array The array to be modified.
- * @param {string} action Constant string representing the action to take (`add` or `remove`).
+ * @param {Object} item Object containing the new bit of data to add, remove, or update.
+ * @param {string} itemKey String representing the key to match (default is `id`).
+ * @param {string} action Constant string representing the action to take
+ * (`add`, `update`, or `remove`).
  *
  * @returns {Object} The modified array.
-
- * @private
  */
 const updateArray = (
   array,
@@ -229,17 +228,17 @@ const updateArray = (
 };
 
 /**
- * @description Takes a layer object and traverses parent relationships until the top-level
- * `CONTAINER_NODE_TYPES.frame` layer is found. Returns the frame layer.
+ * @description Takes a node object and traverses parent relationships until the top-level
+ * `CONTAINER_NODE_TYPES.frame` node is found. Returns the frame node.
  *
  * @kind function
  * @name findTopFrame
- * @param {Object} layer A Figma layer object.
+ * @param {Object} node A Figma node object.
  *
- * @returns {Object} The top-level `CONTAINER_NODE_TYPES.frame` layer.
+ * @returns {Object} The top-level `CONTAINER_NODE_TYPES.frame` node.
  */
-const findTopFrame = (layer: any) => {
-  let { parent } = layer;
+const findTopFrame = (node: any) => {
+  let { parent } = node;
 
   // if the parent is a page, we're done
   if (parent && parent.type === 'PAGE') {
@@ -256,13 +255,15 @@ const findTopFrame = (layer: any) => {
 };
 
 /**
- * @description Reverse iterates the node tree to determin the top-level master component
+ * @description Reverse iterates the node tree to determine the top-level master component
  * (if one exists) for the node.
  *
  * @kind function
  * @name findTopInstance
  *
- * @returns {object} Returns the master component or `null`.
+ * @param {Object} node A Figma node object (`SceneNode`).
+ *
+ * @returns {Object} Returns the master component (`ComponentNode`) or `null`.
  */
 const findTopInstance = (node: any) => {
   let { parent } = node;
