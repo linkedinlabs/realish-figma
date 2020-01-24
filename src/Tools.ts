@@ -255,8 +255,9 @@ const findTopFrame = (node: any) => {
 };
 
 /**
- * @description Reverse iterates the node tree to determine the top-level master component
- * (if one exists) for the node.
+ * @description Reverse iterates the node tree to determine the top-level component instance
+ * (if one exists) for the node. This allows you to easily find a Master Component when dealing
+ * with an instance that may be nested within several component instances.
  *
  * @kind function
  * @name findTopInstance
@@ -288,14 +289,17 @@ const findTopInstance = (node: any) => {
   return null;
 };
 
-/** WIP
- * @description Reverse iterates the node tree to determin the top-level master component
- * (if one exists) for the node.
+/**
+ * @description Maps the nesting order of a node within the tree and then uses that “map”
+ * as a guide to find the peer node within the an instance’s Master Component.
  *
  * @kind function
  * @name matchMasterPeerNode
  *
- * @returns {object} Returns the master component or `null`.
+ * @param {Object} node A Figma node object (`SceneNode`).
+ * @param {Object} topNode A Figma instance node object (`InstanceNode`).
+ *
+ * @returns {Object} Returns the master component or `null`.
  */
 const matchMasterPeerNode = (node: any, topNode: InstanceNode) => {
   // finds the `index` of self in the parent’s children list
@@ -343,9 +347,10 @@ const matchMasterPeerNode = (node: any, topNode: InstanceNode) => {
   return masterPeerNode;
 };
 
-/** WIP
- * @description Checks the `FEATURESET` environment variable from webpack and
- * determines if the featureset build should be `internal` or not.
+/**
+ * @description A shared helper functional to easily retrieve the data namespace used
+ * for shared plugin data. Changing this function will potentially make it impossible
+ * for existing users to retrieve data saved to nodes before the change.
  *
  * @kind function
  * @name dataNamespace
@@ -361,13 +366,14 @@ const dataNamespace = (): string => {
 };
 
 /**
- * @description A shared helper function to set up in-UI messages and the logger.
+ * @description A shared helper function to retrieve type assignment data in raw form (JSON).
  *
  * @kind function
  * @name getNodeAssignmentData
- * @param {Object} context The current context (event) received from Figma.
- * @returns {Object} Contains an object with the current page as a javascript object,
- * a messenger instance, and a selection array (if applicable).
+ *
+ * @param {Object} node The text node to retrieve the assignment on.
+ *
+ * @returns {string} The assignment is returned as an unparsed JSON string.
  */
 const getNodeAssignmentData = (node: TextNode) => {
   let assignmentData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
@@ -385,16 +391,17 @@ const getNodeAssignmentData = (node: TextNode) => {
   return assignmentData;
 };
 
-/** WIP
- * @description An approximation of `forEach` but run in an async manner.
+/**
+ * @description An async function to load multiple typefaces using Figma’s `loadFontAsync`.
  *
  * @kind function
  * @name loadTypefaces
  *
- * @param {Array} array An array to iterate.
- * @param {Function} callback A function to feed the single/iterated item back to.
+ * @param {Array} typefaces An array of typefaces to load. Typefaces in the array must be
+ * formatted to match Figma’s `FontName` type.
+ * @param {Object} messenger An initialized instance of the Messenger class for logging (optional).
  *
- * @returns {null} Runs the callback function.
+ * @returns {Promise} Returns a promise for resolution.
  */
 const loadTypefaces = async (
   typefaces: Array<FontName>,
@@ -431,14 +438,15 @@ const resizeGUI = (
   return null;
 };
 
-/** WIP
- * @description Checks the `FEATURESET` environment variable from webpack and
- * determines if the featureset build should be `internal` or not.
+/**
+ * @description Checks a node’s `type` to see if it is a `TextNode`.
  *
  * @kind function
  * @name isTextNode
  *
- * @returns {boolean} `true` if the build is internal, `false` if it is not.
+ * @param {Object} node The node to check.
+ *
+ * @returns {boolean} `true` if the node is a `TextNode`.
  */
 const isTextNode = (node: any): node is TextNode => node.type === 'TEXT';
 
