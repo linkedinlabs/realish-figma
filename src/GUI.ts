@@ -11,13 +11,15 @@ import { ASSIGNMENTS } from './constants';
  * @kind function
  * @name sendMsgToMain
  *
+ * @param {string} action A string representing the action for the main thread to take.
+ * @param {Object} payload Any additional parameters/data to pass to the main thread.
+ *
  * @returns {null}
  */
 const sendMsgToMain = (
   action: string,
   payload: any,
 ): void => {
-  // send message to main thread indicating UI has loaded
   parent.postMessage({
     pluginMessage: {
       action,
@@ -154,11 +156,13 @@ const watchActions = (): void => {
   return null;
 };
 
-/** WIP
- * @description Watch UI clicks for actions to pass on to the main plugin thread.
+/**
+ * @description Watch UI clicks for changes to pass on to the main plugin thread.
  *
  * @kind function
  * @name watchLayer
+ *
+ * @param {Object} layerElement The html element in the DOM to watch.
  *
  * @returns {null}
  */
@@ -214,14 +218,15 @@ const watchLayer = (layerElement: HTMLElement): void => {
 
 /* process Messages from the plugin */
 
-/** WIP
- * @description Sets the plugin’s form elements in the webview DOM to the correct options.
+/**
+ * @description Clones a template html element and then updates the clone’s contents to match
+ * the supplied options for each layer in the supplied array.
  *
  * @kind function
  * @name updateSelectedLayers
  *
- * @param {Object} options Should include an array of languages to translate, the action to take
- * on the text blocks, and whether or not to ignore locked layers.
+ * @param {Array} layers An array of layers to clone. Each entry should include an `id`,
+ * an `assignment`, `originalText`, `proposedText`, and a `locked` boolean.
  *
  * @returns {null}
  */
@@ -309,6 +314,8 @@ const updateSelectedLayers = (layers: Array<{
       actionsElement.style.display = 'none';
     }
   }
+
+  return null;
 };
 
 /**
@@ -347,7 +354,6 @@ const watchIncomingMessages = (): void => {
     return null;
   };
 };
-
 
 // init GUI
 watchActions();
