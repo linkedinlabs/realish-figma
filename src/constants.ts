@@ -39,10 +39,9 @@ const DATA_KEYS = {
   locked: `${PLUGIN_IDENTIFIER}.locked-001`,
 };
 
-/** WIP
- * @description An object containing the current string constants used as keys in plugin data.
- * Changing one of these keys will break data retrieval or reset data in any
- * `xPluginData` getters/setters and potentially elsewhere.
+/**
+ * @description An object containing the available data type assignments. The `id` is
+ * used for matching. The `text` is only used as a label.
  *
  * @kind constant
  * @name ASSIGNMENTS
@@ -60,6 +59,16 @@ const ASSIGNMENTS = {
   name: { id: 'name', text: 'Name' },
   timestamp: { id: 'timestamp', text: 'Timestamp' },
 };
+// unassigned
+// company
+// country
+// date
+// degree-badge
+// domain
+// email
+// job-title
+// name
+// timestamp
 
 /**
  * @description An object containing the current string constants the Figma API returns for
