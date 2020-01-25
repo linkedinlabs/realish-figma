@@ -1,7 +1,6 @@
 import { dataNamespace, isTextNode } from './Tools';
 import { DATA_KEYS } from './constants';
 
-// --- main Painter class function
 /**
  * @description A class to add elements directly onto Figma file frames.
  *
@@ -21,9 +20,9 @@ export default class Painter {
     this.sessionKey = sessionKey;
   }
 
-  /** WIP
-   * @description Locates annotation text in a layer’s Settings object and
-   * builds the visual annotation on the Figma frame.
+  /**
+   * @description Locates proposed text in a text node’s Settings object and updates
+   * the node’s characters.
    *
    * @kind function
    * @name replaceText
