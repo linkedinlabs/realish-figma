@@ -33,19 +33,56 @@ const PLUGIN_NAME = 'Realish';
  */
 const DATA_KEYS = {
   options: `${PLUGIN_IDENTIFIER}.options-001`,
+  assignment: `${PLUGIN_IDENTIFIER}.assignment-001`,
+  textOriginal: `${PLUGIN_IDENTIFIER}.text-original-001`,
+  textProposed: `${PLUGIN_IDENTIFIER}.text-proposed-001`,
+  locked: `${PLUGIN_IDENTIFIER}.locked-001`,
 };
+
+/**
+ * @description An object containing the available data type assignments. The `id` is
+ * used for matching. The `text` is only used as a label.
+ *
+ * @kind constant
+ * @name ASSIGNMENTS
+ * @type {Object}
+ */
+const ASSIGNMENTS = {
+  unassigned: { id: 'unassigned', text: 'Unassigned' },
+  company: { id: 'company', text: 'Company' },
+  country: { id: 'country', text: 'Country' },
+  date: { id: 'date', text: 'Date' },
+  degreeBadge: { id: 'degree-badge', text: 'Degree Badge' },
+  domain: { id: 'domain', text: 'Domain Name' },
+  email: { id: 'email', text: 'Email' },
+  jobTitle: { id: 'job-title', text: 'Job Title' },
+  name: { id: 'name', text: 'Name' },
+  timestamp: { id: 'timestamp', text: 'Timestamp' },
+};
+// unassigned
+// company
+// country
+// date
+// degree-badge
+// domain
+// email
+// job-title
+// name
+// timestamp
 
 /**
  * @description An object containing the current string constants the Figma API returns for
  * top-level (`main`) layer and `group` layer types.
  *
  * @kind constant
- * @name FRAME_TYPES
+ * @name CONTAINER_NODE_TYPES
  * @type {Object}
  */
-const FRAME_TYPES = {
+const CONTAINER_NODE_TYPES = {
+  component: 'COMPONENT',
+  frame: 'FRAME',
   group: 'GROUP',
-  main: 'FRAME',
+  instance: 'INSTANCE',
 };
 
 /**
@@ -58,7 +95,7 @@ const FRAME_TYPES = {
 const GUI_SETTINGS = {
   default: {
     width: 360,
-    height: 300,
+    height: 180,
   },
   quick: {
     width: 200,
@@ -89,8 +126,9 @@ const TYPEFACES = {
 };
 
 export {
+  ASSIGNMENTS,
+  CONTAINER_NODE_TYPES,
   DATA_KEYS,
-  FRAME_TYPES,
   GUI_SETTINGS,
   PLUGIN_IDENTIFIER,
   PLUGIN_NAME,
