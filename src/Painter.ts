@@ -1,11 +1,6 @@
-import {
-  findTopFrame,
-  isTextNode,
-  updateArray,
-} from './Tools';
+import { dataNamespace, isTextNode } from './Tools';
 import { DATA_KEYS } from './constants';
 
-// --- main Painter class function
 /**
  * @description A class to add elements directly onto Figma file frames.
  *
@@ -14,74 +9,20 @@ import { DATA_KEYS } from './constants';
  *
  * @constructor
  *
- * @property layer The SceneNode in the Figma file that we want to annotate or modify.
- * @property frame The top-level FrameNode in the Figma file that we want to annotate or modify.
- * @property page The PageNode in the Figma file containing the corresponding `frame` and `layer`.
+ * @property node The TextNode in the Figma file that we want to modify.
+ * @property sessionKey The current session identifier.
  */
 export default class Painter {
-  layer: SceneNode;
-  frame?: FrameNode;
-  page: PageNode;
-  textLayer: TextNode;
-  constructor({ for: layer, in: page }) {
-    this.layer = layer;
-    this.textLayer = isTextNode(this.layer) ? this.layer : null;
-    this.frame = findTopFrame(this.layer);
-    this.page = page;
+  node: TextNode;
+  sessionKey: number;
+  constructor({ node, sessionKey }) {
+    this.node = isTextNode(node) ? node : null;
+    this.sessionKey = sessionKey;
   }
 
-  /** WIP
-   * @description Locates annotation text in a layer’s Settings object and
-   * builds the visual annotation on the Figma frame.
-   *
-   * @kind function
-   * @name duplicate
-   *
-   * @returns {Object} A result object container success/error status and log/toast messages.
-   */
-  duplicate(newPage?: PageNode) {
-    const result: {
-      node: SceneNode,
-      status: 'error' | 'success',
-      messages: {
-        toast: string,
-        log: string,
-      },
-    } = {
-      node: null,
-      status: null,
-      messages: {
-        toast: null,
-        log: null,
-      },
-    };
-
-    // set up initial layer spacing
-    let spacingBuffer: number = 56;
-    if ((this.layer.height / (1.5)) < spacingBuffer) {
-      spacingBuffer = (this.layer.height / (1.5));
-    }
-
-    // create text node + update characters and typeface
-    const newNode: SceneNode = this.layer.clone();
-    newPage ? newPage.appendChild(newNode) : this.layer.parent.appendChild(newNode);
-
-    // force unlock - no one expects new layers to be locked
-    newNode.locked = false;
-
-    // placement
-    newNode.x = this.layer.x + spacingBuffer;
-    newNode.y = this.layer.y + spacingBuffer;
-    result.node = newNode;
-
-    // return a successful result
-    result.status = 'success';
-    return result;
-  }
-
-  /** WIP
-   * @description Locates annotation text in a layer’s Settings object and
-   * builds the visual annotation on the Figma frame.
+  /**
+   * @description Locates proposed text in a text node’s Settings object and updates
+   * the node’s characters.
    *
    * @kind function
    * @name replaceText
@@ -103,81 +44,44 @@ export default class Painter {
       },
     };
 
-    // load list of translations for the layer from Settings
-    const existingTranslations = JSON.parse(
-      this.layer.getPluginData(DATA_KEYS.translations) || null,
-    );
+    // load basic node data
+    const lockedData = this.node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
+    const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
+    const textProposedKey: string = `${DATA_KEYS.textProposed}-${this.sessionKey}`;
+    const proposedTextData = this.node.getSharedPluginData(dataNamespace(), textProposedKey);
+    const proposedText = JSON.parse(proposedTextData || null);
 
-    // if there are no translations, return with error
-    if (!existingTranslations) {
+    // if the node is marked as locked, shouldn’t do anything to it
+    if (locked) {
       result.status = 'error';
-      result.messages.log = 'Layer is missing translations';
+      result.messages.log = `Layer ${this.node.id} is locked`;
       return result;
     }
 
-    // isolate the translations that need to be added
-    // only unpainted items should be drawn
-    const unpaintedTranslations = existingTranslations.filter(translation => !translation.painted);
-    let updatedTranslations = existingTranslations;
+    // if there is no proposed text, return with error
+    if (!proposedText) {
+      result.status = 'error';
+      result.messages.log = `Layer ${this.node.id} is missing proposed text`;
+      return result;
+    }
 
-    // update the layer’s text with the translation
-    unpaintedTranslations.filter(translation => !translation.painted).forEach((translation) => {
-      // select the node to update
-      const textNode: TextNode = this.textLayer;
+    // if the current text matches the proposed text, nothing to do
+    if (proposedText === this.node.characters) {
+      result.status = 'success';
+      result.messages.log = 'Current text matches proposed; nothing to replace';
+      return result;
+    }
 
-      // add previous originalText to the translations list as a translation
-      const originalText: {
-        text: string,
-        from: string,
-      } = JSON.parse(textNode.getPluginData(DATA_KEYS.originalText) || null);
-      if (originalText && originalText.text === textNode.characters) {
-        const newTranslation: {
-          text: string,
-          to: string,
-          painted: boolean,
-        } = {
-          text: textNode.characters,
-          to: originalText.from,
-          painted: true,
-        };
+    // update the node’s text with the translation
+    const textNode: TextNode = this.node;
 
-        // add/update the translations array with the original text
-        updatedTranslations = updateArray(updatedTranslations, newTranslation, 'to');
-      }
-
-      // update (replace) the text + update typeface, if necessary
-      const updatedCharacters: string = translation.text;
-      const languageConstant = LANGUAGES.find(language => language.id === translation.to);
-      const languageTypeface = languageConstant.font;
-      if (languageTypeface) {
-        textNode.fontName = languageTypeface;
-      }
-      textNode.characters = updatedCharacters;
-
-      // flip the painted flag + update the overall array
-      translation.painted = true; // eslint-disable-line no-param-reassign
-      updatedTranslations = updateArray(updatedTranslations, translation, 'to');
-
-      // update layer settings with a new originalText
-      const newOriginalText: {
-        text: string,
-        from: string,
-      } = {
-        text: updatedCharacters,
-        from: translation.to,
-      };
-
-      textNode.setPluginData(
-        DATA_KEYS.originalText,
-        JSON.stringify(newOriginalText),
-      );
-    });
-
-    // commit updated list of translations to Settings
-    this.layer.setPluginData(DATA_KEYS.translations, JSON.stringify(updatedTranslations));
+    // update (replace) the text
+    const updatedCharacters: string = proposedText;
+    textNode.characters = updatedCharacters;
 
     // return a successful result
     result.status = 'success';
+    result.messages.log = `Layer ${this.node.id} text updated`;
     return result;
   }
 }

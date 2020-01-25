@@ -1,95 +1,150 @@
+<!-- staging area for easy cloning -->
+<li class="text-layer-holder locked" id="layer-holder-original" style="display: none;">
+  <span class="row">
+    <!-- original text widget -->
+    <span class="text-widget original-text">
+      <span class="text">
+        Firstname Lastname
+      </span>
+      <span class="inline-control reset-control">
+        <button class="action-restore" disabled>
+          <span class="label">
+            Reset to original text
+          </span>
+          <span class="icon">
+            <svg viewBox="0 0 12 12" fill="none">
+              <path d="M0.495605 0.495605L1.75766 1.75766C2.84335 0.671782 4.3431 0 5.99998 0C9.30629 0 12.0024 2.69818 12 6.00447C11.9976 9.31614 9.31222 12 6 12C4.4534 12 3.0435 11.4148 1.97956 10.4538C1.85586 10.3421 1.85006 10.1499 1.9679 10.0321L2.44544 9.55454C2.55426 9.44572 2.72978 9.43877 2.84465 9.54118C3.68257 10.2882 4.78778 10.7419 6 10.7419C8.62067 10.7419 10.7419 8.62108 10.7419 6C10.7419 3.37933 8.62108 1.25806 6 1.25806C4.6896 1.25806 3.50427 1.78846 2.64644 2.64644L3.95598 3.95601C4.13889 4.13891 4.00935 4.45161 3.7507 4.45161H0.290323C0.129992 4.45161 0 4.32162 0 4.16129V0.700911C0 0.442258 0.312726 0.312726 0.495605 0.495605Z"/>
+            </svg>
+          </span>
+        </button>
+      </span>
+    </span>
+
+    <!-- layer assignment select -->
+    <span class="layer-assignment-control select">
+      <label>Assigned text type</label>
+      <select class="assignments select-menu" disabled>
+        <option value="unassigned" selected>Not assigned</option>
+        <option value="company">Company</option>
+        <option value="country">Country</option>
+        <option value="date">Date</option>
+        <option value="degree-badge">Degree Badge</option>
+        <option value="domain">Domain Name</option>
+        <option value="email">Email</option>
+        <option value="job-title">Job Title</option>
+        <option value="name">Name</option>
+        <option value="timestamp">Timestamp</option>
+      </select>
+    </span>
+  </span>
+
+  <span class="row">
+    <!-- new text widget -->
+    <span class="text-widget new-text">
+      <span class="text">
+        Nemo Marlin
+      </span>
+      <span class="inline-control remix-control">
+        <button class="action-remix" disabled>
+          <span class="label">
+            Remix text
+          </span>
+          <span class="icon">
+            <svg viewBox="0 0 12 12">
+              <path d="M11.8359 9.37499L9.97969 11.0836C9.62578 11.4375 9 11.1867 9 10.6851V9.74765H8.27344C8.19609 9.74765 8.12109 9.71484 8.06719 9.65624L5.9625 7.37812L6.85547 6.41015L8.72578 8.4328H9V7.3078C9 6.80624 9.62578 6.55546 9.97969 6.90937L11.8359 8.57343C12.0539 8.79843 12.0539 9.15468 11.8359 9.37499ZM0.28125 3.56249H2.43281L4.30313 5.58515L5.19609 4.61718L3.09141 2.33905C3.0375 2.28046 2.9625 2.24765 2.88516 2.24765H0.28125C0.126563 2.24765 0 2.37421 0 2.5289V3.2789C0 3.43593 0.126563 3.56249 0.28125 3.56249ZM11.8359 2.58046L9.97969 0.916398C9.62578 0.562492 9 0.813273 9 1.31249V2.24999H8.27344C8.19609 2.24999 8.12109 2.2828 8.06719 2.3414L2.43281 8.43749H0.28125C0.126563 8.43749 0 8.56405 0 8.71874V9.46874C0 9.62343 0.126563 9.74999 0.28125 9.74999H2.88281C2.96016 9.74999 3.03516 9.71718 3.08906 9.65859L8.72344 3.56249H9V4.68749C9 5.18905 9.62578 5.43984 9.97969 5.08593L11.8359 3.37499C12.0539 3.15468 12.0539 2.79843 11.8359 2.58046Z"/>
+            </svg>
+          </span>
+        </button>
+      </span>
+    </span>
+
+    <!-- locking control -->
+    <span class="locking-control">
+      <button class="action-lock-toggle">
+        <span class="label">
+          Lock/unlock layer
+        </span>
+        <span class="icon locked">
+          <svg viewBox="0 0 16 16">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.5 5.5V7H6.5V5.5C6.5 4.67157 7.17157 4 8 4C8.82843 4 9.5 4.67157 9.5 5.5ZM5.5 7V5.5C5.5 4.11929 6.61929 3 8 3C9.38071 3 10.5 4.11929 10.5 5.5V7H11C11.2761 7 11.5 7.22386 11.5 7.5V12.5C11.5 12.7761 11.2761 13 11 13H5C4.72386 13 4.5 12.7761 4.5 12.5V7.5C4.5 7.22386 4.72386 7 5 7H5.5Z"/>
+          </svg>
+        </span>
+        <span class="icon unlocked">
+          <svg viewBox="0 0 16 16">
+            <g clip-path="url(#clip0)">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M10 6V7H10.5C10.7761 7 11 7.22386 11 7.5V12.5C11 12.7761 10.7761 13 10.5 13H4.5C4.22386 13 4 12.7761 4 12.5V7.5C4 7.22386 4.22386 7 4.5 7H9V4.5C9 3.11929 10.1193 2 11.5 2C12.8807 2 14 3.11929 14 4.5V6H13V4.5C13 3.67157 12.3284 3 11.5 3C10.6716 3 10 3.67157 10 4.5V6Z" fill="#9E9E9E"/>
+            </g>
+            <defs>
+              <clipPath id="clip0">
+              <path d="M0 0H16V16H0V0Z" fill="white"/>
+            </clipPath>
+            </defs>
+          </svg>
+        </span>
+      </button>
+    </span>
+  </span>
+</li>
+
 <div class="container padding">
   <section class="options" id="action-options">
     <h2>
-      Language
+      Selected text layers
     </h2>
-    <p class="select">
-      <label>
-        Language
-      </label>
-      <select id="languages" class="select-menu">
-      </select>
-    </p>
-    <h3>
-      Options
-    </h3>
-    <ul>
-      <li class="radio">
-        <input
-          class="radio__button"
-          type="radio"
-          name="text-action"
-          value="replace"
-          id="text-replace"
-          checked
-        >
-        <label
-          class="radio__label"
-          for="text-replace"
-        >
-          Replace existing text
-        </label>
-      </li>
-      <li class="radio">
-        <input
-          class="radio__button"
-          type="radio"
-          name="text-action"
-          value="duplicate"
-          id="text-duplicate"
-        >
-        <label
-          class="radio__label"
-          for="text-duplicate"
-        >
-          Duplicate selected layers
-        </label>
-      </li>
-      <li class="radio">
-        <input
-          class="radio__button"
-          type="radio"
-          name="text-action"
-          value="new-page"
-          id="text-new-page"
-        >
-        <label
-          class="radio__label"
-          for="text-new-page"
-        >
-          Create a new page
-        </label>
-      </li>
-    </ul>
-    <p class="switch">
-      <input
-        class="switch__toggle"
-        id="translate-locked"
-        name="translate-locked"
-        type="checkbox"
-        value="translate-locked"
-      >
-      <label
-        class="switch__label"
-        for="translate-locked"
-      >
-        Translate locked layers
-      </label>
-    </p>
+
+    <ul id="layer-list"></ul>
+    
+    <aside class="blank-state" id="blank">
+      <span class="mark">
+        <svg viewBox="0 0 26 30">
+          <ellipse cx="13" cy="12.8571" rx="13" ry="12.8571" fill="#3399FF"/>
+          <g clip-path="url(#clip01)">
+            <ellipse cx="13" cy="12.8571" rx="13" ry="12.8571" fill="#FF3399"/>
+          </g>
+          <rect x="13" y="18.2143" width="4.33333" height="1.07143" fill="white"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M18.9583 15.5357C21.3516 15.5357 23.2917 13.6169 23.2917 11.25C23.2917 8.88306 21.3516 6.96429 18.9583 6.96429C16.5651 6.96429 14.625 8.88306 14.625 11.25C14.625 13.6169 16.5651 15.5357 18.9583 15.5357Z" fill="white"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M18.4167 13.3929C19.3142 13.3929 20.0417 12.6733 20.0417 11.7857C20.0417 10.8981 19.3142 10.1786 18.4167 10.1786C17.5193 10.1786 16.7917 10.8981 16.7917 11.7857C16.7917 12.6733 17.5193 13.3929 18.4167 13.3929Z" fill="black"/>
+          <rect y="25.7143" width="13" height="4.28571" fill="#3399FF"/>
+          <rect x="13" y="25.7143" width="13" height="4.28571" fill="black"/>
+          <defs>
+            <clipPath id="clip01">
+            <rect x="13" width="13" height="25.7143" fill="white"/>
+          </clipPath>
+          </defs>
+        </svg>
+      </span>
+      <span class="text">
+        To get started, select some text…
+      </span>
+    </aside>
   </section>
-  <footer id="actions">
+
+  <footer id="actions" style="display: none;">
     <span class="mark">
-      <svg viewBox="0 0 26 32">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M13 -7.70853e-07L19.5 8L26 4L26 19.9921C26 26.6239 20.1797 32 13 32C5.8203 32 -4.69995e-07 26.6239 -1.04976e-06 19.9921L-2.44784e-06 4L6.5 8L13 -7.70853e-07Z" fill="#666666"/>
-        <path d="M7.04165 23C9.43488 23 11.375 21.2091 11.375 19C11.375 16.7909 9.43488 15 7.04165 15C4.64841 15 2.70831 16.7909 2.70831 19C2.70831 21.2091 4.64841 23 7.04165 23Z" fill="white"/>
-        <path d="M8.125 21.5C9.02246 21.5 9.75 20.8284 9.75 20C9.75 19.1716 9.02246 18.5 8.125 18.5C7.22754 18.5 6.5 19.1716 6.5 20C6.5 20.8284 7.22754 21.5 8.125 21.5Z" fill="#666666"/>
-        <path d="M18.9583 23C21.3516 23 23.2917 21.2091 23.2917 19C23.2917 16.7909 21.3516 15 18.9583 15C16.5651 15 14.625 16.7909 14.625 19C14.625 21.2091 16.5651 23 18.9583 23Z" fill="white"/>
-        <path d="M20.0416 21.5C20.9391 21.5 21.6666 20.8284 21.6666 20C21.6666 19.1716 20.9391 18.5 20.0416 18.5C19.1442 18.5 18.4166 19.1716 18.4166 20C18.4166 20.8284 19.1442 21.5 20.0416 21.5Z" fill="#666666"/>
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.74996 24.5L9.74982 25.4999H16.2499L16.25 24.5H17.3333V25.5V26.5V27.5H16.25L16.2499 26.4999H9.74982L9.74996 27.5H8.66663V24.5H9.74996Z" fill="white"/>
+      <svg viewBox="0 0 26 30">
+        <ellipse cx="13" cy="12.8571" rx="13" ry="12.8571" fill="#3399FF"/>
+        <g clip-path="url(#clip02)">
+          <ellipse cx="13" cy="12.8571" rx="13" ry="12.8571" fill="#FF3399"/>
+        </g>
+        <rect x="13" y="18.2143" width="4.33333" height="1.07143" fill="white"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M18.9583 15.5357C21.3516 15.5357 23.2917 13.6169 23.2917 11.25C23.2917 8.88306 21.3516 6.96429 18.9583 6.96429C16.5651 6.96429 14.625 8.88306 14.625 11.25C14.625 13.6169 16.5651 15.5357 18.9583 15.5357Z" fill="white"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M18.4167 13.3929C19.3142 13.3929 20.0417 12.6733 20.0417 11.7857C20.0417 10.8981 19.3142 10.1786 18.4167 10.1786C17.5193 10.1786 16.7917 10.8981 16.7917 11.7857C16.7917 12.6733 17.5193 13.3929 18.4167 13.3929Z" fill="black"/>
+        <rect y="25.7143" width="13" height="4.28571" fill="#3399FF"/>
+        <rect x="13" y="25.7143" width="13" height="4.28571" fill="black"/>
+        <defs>
+          <clipPath id="clip02">
+          <rect x="13" width="13" height="25.7143" fill="white"/>
+        </clipPath>
+        </defs>
       </svg>
     </span>
-    <button class="button button--primary" id="submit">
-      Translate
-    </button>
+    <div class="actions-holder">
+      <button class="button--secondary button--margin-right" id="remix-all">
+        Randomize
+      </button>
+      <button class="button--primary" id="submit">
+        Apply
+      </button>
+    </div>
   </footer>
 </div>
