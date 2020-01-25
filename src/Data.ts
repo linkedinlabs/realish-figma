@@ -272,8 +272,10 @@ const generateRandom = (assignment): string => {
   return newRandomString;
 };
 
-/** WIP
- * @description A class to handle UI alerts, messages, and logging.
+/**
+ * @description Manages the interface between the data sets and text nodes. Randomizes data
+ * for a node’s `proposedText` through helper functions that generate the data or randomly
+ * select from the supplied data sets.
  *
  * @class
  * @name Data
