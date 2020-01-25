@@ -1,19 +1,27 @@
 import Crawler from './Crawler';
+import Data from './Data';
 import Messenger from './Messenger';
-// import Painter from './Painter';
+import Painter from './Painter';
 import {
-  awaitUIReadiness,
+  dataNamespace,
+  getNodeAssignmentData,
   loadTypefaces,
   resizeGUI,
 } from './Tools';
-import { DATA_KEYS } from './constants';
+import {
+  ASSIGNMENTS,
+  DATA_KEYS,
+  GUI_SETTINGS,
+} from './constants';
 
 /**
  * @description A shared helper function to set up in-UI messages and the logger.
  *
  * @kind function
  * @name assemble
+ *
  * @param {Object} context The current context (event) received from Figma.
+ *
  * @returns {Object} Contains an object with the current page as a javascript object,
  * a messenger instance, and a selection array (if applicable).
  */
@@ -27,6 +35,61 @@ const assemble = (context: any = null) => {
     page,
     selection,
   };
+};
+
+/**
+ * @description Takes a `selection` array and removes any node that is not a
+ * text node (`TextNode`).
+ *
+ * @kind function
+ * @name filterTextNodes
+ *
+ * @param {Array} selection The resulting array of text nodes.
+ * @param {boolean} includeLocked Include locked nodes in the returned results (`true`)
+ * or omit them (`false`).
+ *
+ * @returns {Array} The resulting array of text nodes.
+ */
+const filterTextNodes = (
+  selection: Array<any>,
+  includeLocked: boolean = false,
+): Array<TextNode> => {
+  const consolidatedSelection: Array<SceneNode | PageNode> = selection;
+
+  // retrieve selection of text nodes and filter for unlocked
+  const textNodes: Array<TextNode> = new Crawler(
+    { for: consolidatedSelection },
+  ).text(includeLocked);
+
+  return textNodes;
+};
+
+/**
+ * @description Triggers Figma’s change watcher by randomly re-naming a node and then returning
+ * it to it’s original name. This is used in the context of applying new data to a master
+ * component that needs to be re-published in a library. Data updates do not currently
+ * trigger Figma’s awareness of changes within the component.
+ *
+ * @kind function
+ * @name triggerFigmaChangeWatcher
+ *
+ * @param {Object} textNode The text node (`TextNode`) to trigger changes on.
+ *
+ * @returns {null}
+ */
+const triggerFigmaChangeWatcher = (textNode: TextNode): void => {
+  // rename the layer, and then rename it back, to trigger Figma's changes watcher
+  // this is used to allow master components to be republished with changes
+  const randomName: string = `${Date.now()}`;
+  const originalName: string = textNode.name;
+  const originalAutoRename: boolean = textNode.autoRename;
+  /* eslint-disable no-param-reassign */
+  textNode.name = randomName;
+  textNode.name = originalName;
+  textNode.autoRename = originalAutoRename;
+  /* eslint-enable no-param-reassign */
+
+  return null;
 };
 
 /**
@@ -104,53 +167,33 @@ export default class App {
     this.terminatePlugin = terminatePlugin;
   }
 
-  /** WIP
-   * @description Enables the plugin GUI within Figma.
+  /**
+   * @description Displays the plugin GUI within Figma.
    *
    * @kind function
    * @name showGUI
-   * @param {string} size An optional param calling one of the UI sizes defined in GUI_SETTINGS.
    *
-   * @returns {null} Shows a Toast in the UI if nothing is selected.
+   * @param {Object} options Can include `size` calling one of the UI sizes defined
+   * in GUI_SETTINGS  and/or an initialized instance of the Messenger class for
+   * logging (`messenger`). Both are optional.
+   *
+   * @returns {null}
    */
   static async showGUI(options: {
-    size: 'default' | 'info',
+    size?: 'default' | 'info',
     messenger?: { log: Function },
   }) {
     const { size, messenger } = options;
 
     if (messenger) {
-      messenger.log(`Display GUI at size: ${size}`);
-    }
-
-    if (size === 'default') {
-      // retrieve existing options
-      const lastUsedOptions: {
-        action: 'duplicate' | 'replace' | 'new-page',
-        translateLocked: boolean,
-        languages: Array<string>,
-      } = await figma.clientStorage.getAsync(DATA_KEYS.options);
-
-      // update the UI with the existing options
-      if (lastUsedOptions
-        && lastUsedOptions.action !== undefined
-        && lastUsedOptions.translateLocked !== undefined
-        && lastUsedOptions.languages !== undefined
-      ) {
-        // set the options in the UI
-        figma.ui.postMessage({
-          action: 'setOptions',
-          payload: lastUsedOptions,
-        });
-
-        // wait for the UI to tell us it is done setting options
-        // this prevents showing the UI while changes are being drawn
-        await awaitUIReadiness(messenger);
-      }
+      const displayMessage: string = size ? ` at size: ${size}` : '';
+      messenger.log(`Display GUI${displayMessage}`);
     }
 
     // set UI panel size
-    resizeGUI(size, figma.ui);
+    if (size) {
+      resizeGUI(size, figma.ui);
+    }
 
     // show UI
     figma.ui.show();
@@ -158,132 +201,504 @@ export default class App {
     return null;
   }
 
-  static showToolbar() {
-    const { messenger } = assemble(figma);
-
-    App.showGUI({ size: 'default', messenger });
-  }
-
-  /** WIP
-   * @description Does a thing.
+  /**
+   * @description Triggers a UI refresh and then displays the plugin UI.
    *
    * @kind function
-   * @name runTranslate
+   * @name showToolbar
+   *
+   * @param {string} sessionKey A rotating key used during the single run of the plugin.
+   */
+  static showToolbar(sessionKey: number) {
+    const { messenger } = assemble(figma);
+
+    App.refreshGUI(sessionKey);
+    App.showGUI({ messenger });
+  }
+
+  /**
+   * @description Triggers a UI refresh with the current selection.
+   *
+   * @kind function
+   * @name refreshGUI
+   *
+   * @param {string} sessionKey A rotating key used during the single run of the plugin.
+   */
+  static refreshGUI(sessionKey: number) {
+    const { messenger, selection } = assemble(figma);
+    const textNodes: Array<TextNode> = filterTextNodes(selection, false);
+    const textNodesCount = textNodes.length;
+
+    // set array of data with information from each text node
+    const selected = [];
+    textNodes.forEach((textNode: TextNode) => {
+      const assignmentData = getNodeAssignmentData(textNode);
+      let assignment: string = JSON.parse(assignmentData || null);
+      let proposedText: string = textNode.characters;
+      const lockedData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
+      const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
+
+      // if text is already assigned, generate/rotate the new proposed text
+      if (assignment && (assignment !== 'unassigned')) {
+        const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
+        const proposedTextData = textNode.getSharedPluginData(dataNamespace(), textProposedKey);
+
+        if (!locked) {
+          proposedText = JSON.parse(proposedTextData || null);
+          if (!proposedText) {
+            const data = new Data({ for: textNode });
+            proposedText = data.randomText();
+
+            // update the proposed text
+            textNode.setSharedPluginData(
+              dataNamespace(),
+              textProposedKey,
+              JSON.stringify(proposedText),
+            );
+          }
+        }
+      } else {
+        assignment = ASSIGNMENTS.unassigned.id;
+      }
+
+      // update the bundle of info for the current `textNode` in the selection
+      selected.push({
+        id: textNode.id,
+        assignment,
+        originalText: textNode.characters,
+        proposedText,
+        locked,
+      });
+    });
+
+    // send the updates to the UI
+    figma.ui.postMessage({
+      action: 'refreshState',
+      payload: selected,
+    });
+
+    // resize the UI
+    let newGUIHeight = GUI_SETTINGS.default.height;
+    if (textNodesCount > 0) {
+      newGUIHeight = ((textNodesCount - 1) * 62) + newGUIHeight;
+    }
+
+    figma.ui.resize(
+      GUI_SETTINGS.default.width,
+      newGUIHeight,
+    );
+
+    messenger.log(`Updating the UI with ${textNodes.length} selected ${textNodes.length === 1 ? 'layer' : 'layers'}`);
+  }
+
+  /**
+   * @description The core action of the app. Retrieve a text node (`TextNode`) by `id` and
+   * lock it (`lock-toggle`), assign it to a specific type (`reassign`), propose new randomized
+   * text (`remix`), or restore the proposed text to the node’s original text (`restore`).
+   *
+   * @kind function
+   * @name actOnNode
+   *
+   * @param {string} actionType The action to take on the node: lock it (`lock-toggle`), assign
+   * it to a specific type (`reassign`), propose new randomized text (`remix`), or restore the
+   * proposed text to the node’s original text (`restore`).
+   * @param {string} payload The `id` of the node to act on and, optionally, the data type to
+   * assign the layer to (`assignment`). The `assignment` should match an `id` in the
+   * `ASSIGNMENTS` constant.
+   * @param {string} sessionKey A rotating key used during the single run of the plugin.
    *
    * @returns {null} Shows a Toast in the UI if nothing is selected.
    */
-  async runTranslate(
-    options: {
-      languages: Array<string>,
-      action: 'duplicate' | 'replace' | 'new-page',
-      translateLocked: boolean,
+  static actOnNode(
+    actionType: 'lock-toggle' | 'reassign' | 'remix' | 'restore',
+    payload: {
+      id: string,
+      assignment?:
+        'unassigned'
+        | 'name'
+        | 'company'
+        | 'country'
+        | 'date'
+        | 'degree-badge'
+        | 'domain'
+        | 'email'
+        | 'job-title'
+        | 'timestamp',
     },
-    savePrefs: boolean,
+    sessionKey: number,
   ) {
-    const {
-      messenger,
-      page,
-      selection,
-    } = assemble(figma);
-    const {
-      action,
-      languages,
-      translateLocked,
-    } = options;
-    let consolidatedSelection: Array<SceneNode | PageNode> = selection;
+    const { id } = payload;
+    const { messenger, selection } = assemble(figma);
+    const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
 
-    // retrieve selection of text nodes and filter for locked/unlocked based on options
-    let textNodes = new Crawler({ for: consolidatedSelection }).text(translateLocked);
+    /**
+     * @description Filters the available `selection` and finds a text node (`TextNode`)
+     * matching the `id` provided in the `payload`.
+     *
+     * @kind function
+     * @name retrieveTextNode
+     *
+     * @returns {Object} The text node (`TextNode`) retrieved.
+     */
+    const retrieveTextNode = (): TextNode => {
+      const textNodes: Array<TextNode> = filterTextNodes(selection, false);
 
-    /** WIP
-     * @description Does a thing.
+      const index = 0;
+      const textNodesToUpdate: Array<TextNode> = textNodes.filter(
+        (node: TextNode) => node.id === id,
+      );
+      const textNodeToUpdate: TextNode = textNodesToUpdate[index];
+
+      return textNodeToUpdate;
+    };
+
+    /**
+     * @description Assigns or re-assigns a new data assignment type to supplied
+     * text node (`TextNode`).
+     *
+     * @kind function
+     * @name reassignTextNode
+     *
+     * @param {string} textNodeToReassign The text node (`TextNode`) to modify.
+     */
+    const reassignTextNode = (textNodeToReassign: TextNode): void => {
+      const { assignment } = payload;
+
+      if (assignment) {
+        // commit the new assignment
+        textNodeToReassign.setSharedPluginData(
+          dataNamespace(),
+          DATA_KEYS.assignment,
+          JSON.stringify(assignment),
+        );
+
+        // empty the proposed text
+        const proposedText = null;
+
+        // commit the proposed text
+        textNodeToReassign.setSharedPluginData(
+          dataNamespace(),
+          textProposedKey,
+          JSON.stringify(proposedText),
+        );
+
+        triggerFigmaChangeWatcher(textNodeToReassign);
+
+        messenger.log(`Updated ${id}’s assignment to: “${assignment}”`);
+      }
+    };
+
+    /**
+     * @description Sets a new `proposedText` in a node’s data based on assignment.
+     *
+     * @kind function
+     * @name remixProposedText
+     *
+     * @param {string} textNodeToRemix The text node (`TextNode`) to modify.
+     */
+    const remixProposedText = (textNodeToRemix: TextNode): void => {
+      // new randomization based on assignment
+      const data = new Data({ for: textNodeToRemix });
+      const proposedText: string = data.randomText();
+
+      // commit the proposed text
+      textNodeToRemix.setSharedPluginData(
+        dataNamespace(),
+        textProposedKey,
+        JSON.stringify(proposedText),
+      );
+
+      messenger.log(`Remixed ${id}’s proposed text`);
+    };
+
+    /**
+     * @description Sets a text node’s (`TextNode`) `proposedText` to it’s
+     * current text (`characters`).
+     *
+     * @kind function
+     * @name restoreText
+     *
+     * @param {string} textNodeToRestore The text node (`TextNode`) to modify.
+     */
+    const restoreText = (textNodeToRestore: TextNode): void => {
+      // set to the current (original) text
+      const proposedText = textNodeToRestore.characters;
+
+      // commit the proposed text
+      textNodeToRestore.setSharedPluginData(
+        dataNamespace(),
+        textProposedKey,
+        JSON.stringify(proposedText),
+      );
+
+      messenger.log(`Restored ${id} to the original text`);
+    };
+
+    /**
+     * @description Locks or unlocks the supplied text node (`TextNode`) for the plugin
+     * not at the Figma level.
+     *
+     * @kind function
+     * @name toggleNodeLock
+     *
+     * @param {string} textNodeToSecure The text node (`TextNode`) to modify.
+     * @param {boolean} locked Current locked (`true`) status of the node. Unlocked is `false`.
+     */
+    const toggleNodeLock = (
+      textNodeToSecure: TextNode,
+      locked: boolean,
+    ): void => {
+      // commit the new assignment
+      textNodeToSecure.setSharedPluginData(
+        dataNamespace(),
+        DATA_KEYS.locked,
+        JSON.stringify(!locked), // toggle the opposite of whatever was read from the layer data
+      );
+
+      // new randomization based on assignment if layer was previously locked
+      // otherwise the proposed text should restore to the original text if locking the layer
+      let proposedText: string = textNodeToSecure.characters;
+      if (locked) {
+        const data = new Data({ for: textNodeToSecure });
+        proposedText = data.randomText();
+      }
+
+      // commit the proposed text
+      textNodeToSecure.setSharedPluginData(
+        dataNamespace(),
+        textProposedKey,
+        JSON.stringify(proposedText),
+      );
+
+      messenger.log(`Updated ${id}’s locking to: “${locked}”`);
+    };
+
+    const textNode = retrieveTextNode();
+    if (textNode) {
+      const lockedData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
+      const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
+
+      switch (actionType) {
+        case 'reassign':
+          if (!locked) { reassignTextNode(textNode); }
+          break;
+        case 'remix':
+          if (!locked) { remixProposedText(textNode); }
+          break;
+        case 'restore':
+          if (!locked) { restoreText(textNode); }
+          break;
+        case 'lock-toggle':
+          toggleNodeLock(textNode, locked);
+          break;
+        default:
+          return null;
+      }
+
+      // update the UI
+      App.refreshGUI(sessionKey);
+    } else {
+      messenger.log(`Could not find a TextNode to update with the id: ${id}`, 'error');
+    }
+
+    return null;
+  }
+
+  /**
+   * @description Sets new `proposedText` on currently selected (and unlocked)
+   * text nodes (`TextNode`).
+   *
+   * @kind function
+   * @name remixAll
+   *
+   * @param {string} sessionKey A rotating key used during the single run of the plugin.
+   *
+   * @returns {null}
+   */
+  static remixAll(sessionKey: number): void {
+    const { messenger, selection } = assemble(figma);
+    const textNodes: Array<TextNode> = filterTextNodes(selection, false);
+
+    // iterate through each selected layer and apply the `remix` action
+    textNodes.forEach((textNode: TextNode) => App.actOnNode('remix', { id: textNode.id }, sessionKey));
+
+    // reset the working state
+    const message: {
+      action: string,
+    } = {
+      action: 'resetState',
+    };
+    figma.ui.postMessage(message);
+
+    messenger.log('Remix all selected TextNodes');
+
+    return null;
+  }
+
+  /**
+   * @description Sets new random text based on a supplied assignment on currently-selected
+   * (and unlocked) text nodes (`TextNode`). A node’s existing `assignment` is ignored. If
+   * a node does not already have an assignment, it is assigned the supplied type.
+   *
+   * @kind function
+   * @name quickRandomize
+   *
+   * @param {string} assignment A string matching an `id` in `ASSIGNMENTS`.
+   * @param {string} sessionKey A rotating key used during the single run of the plugin.
+   *
+   * @returns {null} Shows a Toast in the UI if nothing is selected.
+   */
+  quickRandomize(assignment: string, sessionKey: number): void {
+    const { messenger, selection } = assemble(figma);
+    const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
+    const textNodes: Array<TextNode> = filterTextNodes(selection, false);
+
+    // iterate through each selected layer and apply the `remix` action
+    textNodes.forEach((textNode: TextNode) => {
+      const lockedData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
+      const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
+
+      if (!locked) {
+        if (assignment === 'assigned') {
+          App.actOnNode('remix', { id: textNode.id }, sessionKey);
+        } else {
+          const data = new Data({ for: textNode });
+          const proposedText: string = data.randomText(assignment);
+
+          // commit the proposed text
+          textNode.setSharedPluginData(
+            dataNamespace(),
+            textProposedKey,
+            JSON.stringify(proposedText),
+          );
+
+          messenger.log(`Set ${textNode.id}’s proposed text for: “${assignment}”`);
+
+          // set the assignment on unassigned nodes, otherwise ignore it
+          type Assignment =
+            'unassigned'
+            | 'name'
+            | 'company'
+            | 'country'
+            | 'date'
+            | 'degree-badge'
+            | 'domain'
+            | 'email'
+            | 'job-title'
+            | 'timestamp';
+          const currentAssignmentData = getNodeAssignmentData(textNode);
+          const currentAssignment = JSON.parse(currentAssignmentData || null) as Assignment;
+          if (!currentAssignment || currentAssignment === 'unassigned') {
+            const newAssignment: Assignment = assignment as Assignment;
+            App.actOnNode('reassign', { id: textNode.id, assignment: newAssignment }, sessionKey);
+          }
+        }
+      } else {
+        messenger.log(`Ignored ${textNode.id}: locked`);
+      }
+    });
+
+    messenger.log(`Quickly randomize all selected TextNodes for ${assignment}`);
+
+    this.commitText(sessionKey);
+
+    return null;
+  }
+
+  /**
+   * @description Assigns (or re-assigns) the current selection with the supplied
+   * `assignment` type.
+   *
+   * @kind function
+   * @name quickRandomize
+   *
+   * @param {string} assignment A string matching an `id` in `ASSIGNMENTS`.
+   *
+   * @returns {Function} Ends with the `closeOrReset` function, terminating the plugin.
+   */
+  quickAssign(assignment: string): void {
+    const { messenger, selection } = assemble(figma);
+    const textNodes: Array<TextNode> = filterTextNodes(selection, false);
+
+    // iterate through each selected layer and apply the `remix` action
+    textNodes.forEach((textNode: TextNode) => {
+      const lockedData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
+      const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
+
+      if (!locked) {
+        // commit the new assignment
+        textNode.setSharedPluginData(
+          dataNamespace(),
+          DATA_KEYS.assignment,
+          JSON.stringify(assignment),
+        );
+
+        triggerFigmaChangeWatcher(textNode);
+
+        messenger.log(`Updated ${textNode.id}’s assignment to: “${assignment}”`);
+      } else {
+        messenger.log(`Ignored ${textNode.id}: locked`);
+      }
+    });
+
+    messenger.log(`Quickly reassign all selected TextNodes to: “${assignment}”`);
+
+    // give the user some feedback via toast
+    const layerCount = textNodes.length;
+    if (assignment !== 'unassigned') {
+      let assignmentObject = null;
+      Object.keys(ASSIGNMENTS).forEach((key) => {
+        if (ASSIGNMENTS[key].id === assignment) {
+          assignmentObject = ASSIGNMENTS[key];
+        }
+      });
+
+      messenger.toast(`Layer${layerCount > 1 ? 's were' : ' was'} assigned to: “${assignmentObject.text}” 🥳`);
+    } else {
+      messenger.toast(`Layer assignment${layerCount > 1 ? 's were' : ' was'} removed 🥳`);
+    }
+
+    return this.closeOrReset();
+  }
+
+  /**
+   * @description Iterates over the current selection, committing each node’s `proposedText`
+   * to `chracters` and updating the node.
+   *
+   * @kind function
+   * @name commitText
+   *
+   * @param {string} sessionKey A rotating key used during the single run of the plugin.
+   *
+   * @returns {Function} Ends with the `closeOrReset` function, terminating the plugin.
+   */
+  async commitText(sessionKey: number) {
+    const { messenger, selection } = assemble(figma);
+    const includeLocked: boolean = false;
+    const textNodes: Array<TextNode> = filterTextNodes(selection, includeLocked);
+
+    /**
+     * @description Applies a `Painter` instance to each node in an array, updating the text.
      *
      * @kind function
      * @name manipulateText
      *
-     * @returns {null} Shows a Toast in the UI if nothing is selected.
+     * @param {Array} textNodesToPaint The array of text nodes (`TextNode`) to modify.
      */
     const manipulateText = (textNodesToPaint) => {
       messenger.log('Begin manipulating text');
       textNodesToPaint.forEach((textNode: SceneNode) => {
         // set up Painter instance for the layer
-        // const painter = new Painter({ for: textNode, in: page });
+        const painter = new Painter({ node: textNode, sessionKey });
 
-        // replace the existing text with the translation
-        // TKTK handle error result
-        // painter.replaceText();
-        messenger.toast('Do a thing!');
+        // replace the existing text with the proposed text
+        const paintResult = painter.replaceText();
+        messenger.handleResult(paintResult);
       });
       messenger.log('End manipulating text');
     };
 
-    /**
-     * @description Resets the plugin GUI back to the original state or closes it entirely,
-     * terminating the plugin.
-     *
-     * @kind function
-     * @name closeOrReset
-     *
-     * @returns {null}
-     */
-    const closeOrReset = () => {
-      if (this.shouldTerminate) {
-        return this.terminatePlugin();
-      }
-
-      // reset the working state
-      const message: {
-        action: string,
-      } = {
-        action: 'resetState',
-      };
-      figma.ui.postMessage(message);
-
-      return null;
-    };
-
     // begin main thread of action ------------------------------------------------------
-
-    // save current options
-    if (savePrefs) {
-      figma.clientStorage.setAsync(DATA_KEYS.options, options);
-    }
-
-    // if action is `new-page`, need to create a new page first
-    let newPage = null;
-    if (textNodes.length > 0 && action === 'new-page') {
-      newPage = figma.createPage();
-    }
-
-    // if action is `duplicate`, need to duplicate the layers first
-    if (
-      textNodes.length > 0
-      && (action === 'duplicate' || action === 'new-page')
-    ) {
-      consolidatedSelection = [];
-
-      selection.forEach((node) => {
-        messenger.log('Do a thing!')
-        messenger.toast('Do a thing!')
-        // set up Painter instance for the layer
-        // const painter = new Painter({ for: node, in: page });
-
-        // duplicate the layer
-        // const newNodeResult = painter.duplicate(newPage);
-        // if (newNodeResult.status === 'success') {
-        //   const newNode = newNodeResult.node;
-        //   consolidatedSelection.push(newNode);
-        // }
-      });
-
-      if (newPage && action === 'new-page') {
-        figma.currentPage = newPage;
-        figma.currentPage.selection = newPage.children;
-      }
-
-      // reset and retrieve selection of text nodes
-      textNodes = new Crawler({ for: consolidatedSelection }).text(translateLocked);
-    }
 
     // translate if text nodes are available and fonts are not missing
     const missingTypefaces: Array<TextNode> = textNodes.filter(
@@ -300,9 +715,13 @@ export default class App {
       }
       await loadTypefaces(typefaces, messenger);
 
-      // do the text stuff TKTK
+      // replace existing text with proposed text
+      manipulateText(textNodes);
 
-      return closeOrReset();
+      // update the UI to reflect changes
+      App.refreshGUI(sessionKey);
+
+      return this.closeOrReset();
     }
 
     // otherwise set/display appropriate error messages
@@ -315,7 +734,7 @@ export default class App {
         : '❌ This text layer contains a missing font';
       messenger.log('Text node(s) contained missing fonts');
     } else {
-      toastErrorMessage = translateLocked
+      toastErrorMessage = includeLocked
         ? '❌ You need to select at least one text layer'
         : '❌ You need to select at least one unlocked text layer';
       messenger.log('No text nodes were selected/found');
@@ -323,6 +742,30 @@ export default class App {
 
     // display the message and terminate the plugin
     messenger.toast(toastErrorMessage);
-    return closeOrReset();
+    return this.closeOrReset();
+  }
+
+  /**
+   * @description Resets the plugin GUI back to the original state or closes it entirely,
+   * terminating the plugin.
+   *
+   * @kind function
+   * @name closeOrReset
+   *
+   * @returns {null}
+   */
+  closeOrReset() {
+    if (this.shouldTerminate) {
+      return this.terminatePlugin();
+    }
+
+    // reset the working state
+    const message: {
+      action: string,
+    } = {
+      action: 'resetState',
+    };
+    figma.ui.postMessage(message);
+    return null;
   }
 }

@@ -2,7 +2,7 @@
 import App from './App';
 import Messenger from './Messenger';
 import { awaitUIReadiness } from './Tools';
-import { DATA_KEYS } from './constants';
+import { ASSIGNMENTS } from './constants';
 
 // GUI management -------------------------------------------------
 
@@ -38,8 +38,14 @@ const dispatcher = async (action: {
   type: string,
   payload?: any,
   visual: boolean,
+  sessionKey: number,
 }) => {
-  const { type, payload, visual } = action;
+  const {
+    payload,
+    sessionKey,
+    type,
+    visual,
+  } = action;
 
   // if the action is not visual, close the plugin after running
   const shouldTerminate: boolean = !visual;
@@ -52,83 +58,62 @@ const dispatcher = async (action: {
 
   // run the action in the App class based on type
   const runAction = async () => {
-    let quickTranslatePayload = null;
-
     // retrieve existing options
-    const lastUsedOptions: {
-      action: 'duplicate' | 'replace' | 'new-page',
-      translateLocked: boolean,
-      languages: Array<string>,
-    } = await figma.clientStorage.getAsync(DATA_KEYS.options);
+    // const lastUsedOptions: {
+    //   action: 'duplicate' | 'replace' | 'new-page',
+    //   translateLocked: boolean,
+    //   languages: Array<string>,
+    // } = await figma.clientStorage.getAsync(DATA_KEYS.options);
 
-    const setTranslatePayload = (quickTranslateType: string) => {
-      // set language to use
-      const language: string = quickTranslateType.replace('quick-translate-', '');
+    // make sure the type passed from the menu command exists
+    const verifyQuickType = (kind: string, quickType: string): boolean => {
+      const typeSimplified = quickType.replace(`quick-${kind}-`, '');
+      let isVerified = false;
 
-      // set preliminary options
-      const options: {
-        languages: Array<string>,
-        action: 'duplicate' | 'replace' | 'new-page',
-        translateLocked: boolean,
-      } = {
-        languages: [language],
-        action: 'duplicate',
-        translateLocked: false,
-      };
-
-      // set core options
-      if (
-        lastUsedOptions
-        && lastUsedOptions.action !== undefined
-        && lastUsedOptions.translateLocked !== undefined
-      ) {
-        options.action = lastUsedOptions.action;
-        options.translateLocked = lastUsedOptions.translateLocked;
+      if (typeSimplified === 'assigned') {
+        isVerified = true;
+        return isVerified;
       }
 
-      // set last-used language, if necessary
-      if (language === 'last') {
-        if (lastUsedOptions && lastUsedOptions.languages !== undefined) {
-          options.languages = lastUsedOptions.languages;
-        } else {
-          const index = 0;
-          const firstCoreLanguage = {
-            name: 'Spanish',
-            id: 'es',
-            font: null,
-            group: 'addl',
-          };
-          options.languages = [firstCoreLanguage.id];
+      Object.keys(ASSIGNMENTS).forEach((key) => {
+        if (ASSIGNMENTS[key].id === typeSimplified) {
+          isVerified = true;
         }
-      }
-
-      // commit options to payload
-      quickTranslatePayload = options;
-    };
-
-    const verifyQuickType = (quickType): boolean => {
-      const typeSimplified = quickType.replace('quick-translate-', '');
-      if (typeSimplified
-        && (typeSimplified === 'last')
-      ) {
-        return true;
-      }
-      return false;
+      });
+      return isVerified;
     };
 
     switch (type) {
-      case 'submit':
-        app.runTranslate(payload, true);
+      case 'lock-toggle':
+      case 'reassign':
+      case 'remix':
+      case 'restore':
+        App.actOnNode(type, payload, sessionKey);
         break;
-      case String(type.match(/^quick-translate-.*/)):
-        if (verifyQuickType(type)) {
-          setTranslatePayload(type);
-          app.runTranslate(quickTranslatePayload, false);
+      case 'remix-all':
+        App.remixAll(sessionKey);
+        break;
+      case 'submit':
+        app.commitText(sessionKey);
+        break;
+      case 'tools':
+        App.showToolbar(sessionKey);
+        break;
+      case String(type.match(/^quick-randomize-.*/)):
+        if (verifyQuickType('randomize', type)) {
+          app.quickRandomize(type.replace('quick-randomize-', ''), sessionKey);
+        }
+        break;
+      case String(type.match(/^quick-assign-.*/)):
+        if (verifyQuickType('assign', type)) {
+          app.quickAssign(type.replace('quick-assign-', ''));
         }
         break;
       default:
-        App.showToolbar();
+        return null;
     }
+
+    return null;
   };
 
   runAction();
@@ -147,6 +132,10 @@ export default dispatcher;
  * @returns {null}
  */
 const main = async () => {
+  // set up rotating key (use a timestamp)
+  // this key is only used during the single run of the plugin
+  const SESSION_KEY: number = Math.round((new Date()).getTime() / 1000);
+
   // set up logging
   const messenger = new Messenger({ for: figma, in: figma.currentPage });
 
@@ -161,6 +150,7 @@ const main = async () => {
     dispatcher({
       type: figma.command,
       visual: false,
+      sessionKey: SESSION_KEY,
     });
   }
 
@@ -174,12 +164,18 @@ const main = async () => {
         type: action,
         payload,
         visual: true,
+        sessionKey: SESSION_KEY,
       });
     }
 
     // ignore everything else
     return null;
   };
+
+  // watch selection changes on the Figma level -------------------------------
+  figma.on('selectionchange', () => {
+    App.refreshGUI(SESSION_KEY);
+  });
 };
 
 // run main as default

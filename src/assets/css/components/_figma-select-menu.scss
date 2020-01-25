@@ -3,7 +3,7 @@
 // original source: https://www.figma.com/plugin-docs/figma-components/
 // requires use of src/vendor/figma-select-menu.js
 
-.select-menu {
+.styled-select {
   position: relative;
   display: block;
   box-sizing: border-box;
@@ -13,9 +13,19 @@
   &:disabled {
     opacity: 0.3;
   }
+
+  ul {
+    margin: 0;
+    padding: 0;
+
+    li {
+      margin: 0;
+      padding: 0;
+    }
+  }
 }
 
-.select-menu__button {
+.styled-select__button {
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -30,21 +40,23 @@
   background-color: $wl-canvas;
 
   @include hover {
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    &:enabled {
+      border: 1px solid rgba(0, 0, 0, 0.1);
 
-    span {
-      &:after {
-        opacity: 0;
+      span {
+        &:after {
+          opacity: 0;
+        }
       }
-    }
 
-    .select-menu__icon {
-      opacity: 1;
+      .styled-select__icon {
+        opacity: 1;
+      }
     }
   }
 
   &:enabled:focus,
-  &:active {
+  &:enabled:active {
     padding: 5px 0 5px 7px;
     border: 2px solid #18a0fb;
     width: 100%;
@@ -56,24 +68,30 @@
       }
     }
 
-    .select-menu__icon {
-      top: -1px;
-      right: -1px;
+    .styled-select__icon {
+      top: -2px;
+      right: -4px;
       opacity: 1;
+    }
+  }
+
+  &:disabled {
+    color: $wl-action-tertiary;
+  }
+}
+
+.styled-select__button--active {
+  @include hover {
+    &:enabled {
+      padding: 5px 0 5px 7px;
+      border: 2px solid #18a0fb;
+      width: 100%;
+      outline: none;
     }
   }
 }
 
-.select-menu__button--active {
-  @include hover {
-    padding: 5px 0 5px 7px;
-    border: 2px solid #18a0fb;
-    width: 100%;
-    outline: none;
-  }
-}
-
-.select-menu__button-label {
+.styled-select__button-label {
   display: inline-block;
   text-align: left;
 
@@ -89,10 +107,10 @@
   }
 }
 
-.select-menu__icon {
+.styled-select__icon {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: -1px;
+  right: -3px;
   width: 30px;
   height: 30px;
   opacity: 0;
@@ -101,54 +119,66 @@
   background-position: center center;
 }
 
-.select-menu__list {
+.styled-select__list {
   position: absolute;
   z-index: 2;
   display: none;
   flex-direction: column;
   margin: 0;
   padding: 8px 0 8px 0;
-  width: 100%;
+  width: 125px;
+  left: -20px;
   border-radius: 2px;
   background-color: $wl-canvas-invert;
   box-shadow: 0 5px 17px rgba(0, 0, 0, 0.2), 0 2px 7px rgba(0, 0, 0, 0.15);
 }
 
-.select-menu__list-item {
+@mixin hover-indicate-state {
+  background-color: $wl-action-primary;
+}
+
+.styled-select__list-item {
   display: flex;
   align-items: center;
   padding: 0 8px 0 4px;
   width: 100%;
   height: 24px;
   @include type-01(400);
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: 300;
   letter-spacing: 0.005em;
   color: rgba($wl-type-01-invert, 0.95);
 
   @include hover {
-    background-color: $wl-action-primary;
+    @include hover-indicate-state;
+  }
+
+  &.styled-select__list-item--indicate {
+    @include hover-indicate-state;
   }
 }
 
-.select-menu__list--active {
+.styled-select__list--active {
   display: block;
   overflow-y: scroll;
-  height: 206px;
 
-  .select-menu__list-item-icon {
-    opacity: 1 !important; // stylelint-disable-line declaration-no-important
+  .styled-select__list-item--active {
+    .styled-select__list-item-icon {
+      opacity: 1; // stylelint-disable-line declaration-no-important
+    }
   }
 }
 
-.select-menu__list-item-text {
+.styled-select__list-item-text {
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   padding: 0 0 0 4px;
   width: 100%;
   height: 100%;
 }
 
-.select-menu__list-item-icon {
+.styled-select__list-item-icon {
   display: block;
   flex-shrink: 0;
   width: 24px;
@@ -159,18 +189,18 @@
   background-position: center center;
 }
 
-.select-menu__divider {
+.styled-select__divider {
   margin: 0;
 }
 
-.select-menu__divider-line {
+.styled-select__divider-line {
   display: block;
   height: 1px;
   margin: 8px 0 7px;
   background-color: rgba($wl-accent-invert, 0.2);
 }
 
-.select-menu__divider-label {
+.styled-select__divider-label {
   display: flex;
   align-items: center;
   padding: 8px 8px 0 32px;
@@ -182,7 +212,7 @@
   border-top: 1px solid rgba($wl-accent-invert, 0.2);
 }
 
-.select-menu__divider-label--first {
+.styled-select__divider-label--first {
   padding: 0 8px 0 32px;
   height: 24px;
   margin-top: 0;

@@ -3,7 +3,7 @@
 */
 
 // vendor
-@import "bourbon"; // required (path defined) in GUI.ts
+@import "bourbon"; // added via devDependencies
 
 // shared
 @import "shared/mixins";
@@ -15,4 +15,5 @@
 @import "components/figma-button";
 @import "components/figma-select-menu";
 @import "components/icon-button";
+@import "components/blank-state";
 @import "components/text-layer-holder";

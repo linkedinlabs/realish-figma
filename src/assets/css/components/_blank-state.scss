@@ -1,0 +1,27 @@
+// ++++++++++++++++++++++++++++++++++++++++++++++ blank state component
+
+@mixin blank-state {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  padding: em(24) 20%;
+
+  span {
+    display: block;
+
+    &.mark {
+      flex-basis: 25%;
+    }
+
+    &.text {
+      flex-basis: 60%;
+      @include type-03;
+    }
+  }
+}
+
+.blank-state {
+  @include blank-state;
+}
