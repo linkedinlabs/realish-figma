@@ -168,15 +168,14 @@ export default class App {
   }
 
   /**
-   * @description Displays the plugin GUI within Figma. Before showing the UI, it
-   * reads saved options from `clientStorage` and passes them along to the UI thread.
+   * @description Displays the plugin GUI within Figma.
    *
    * @kind function
    * @name showGUI
    *
-   * @param {Object} options Should include `size`, calling one of the UI sizes defined
-   * in GUI_SETTINGS, and an optional initialized instance of the Messenger class for
-   * logging (`messenger`).
+   * @param {Object} options Can include `size` calling one of the UI sizes defined
+   * in GUI_SETTINGS  and/or an initialized instance of the Messenger class for
+   * logging (`messenger`). Both are optional.
    *
    * @returns {null}
    */
