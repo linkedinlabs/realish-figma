@@ -1,7 +1,6 @@
 import { dataNamespace, isTextNode } from './Tools';
 import { DATA_KEYS } from './constants';
 
-// --- main Painter class function
 /**
  * @description A class to add elements directly onto Figma file frames.
  *
@@ -10,21 +9,20 @@ import { DATA_KEYS } from './constants';
  *
  * @constructor
  *
- * @property layer The SceneNode in the Figma file that we want to annotate or modify.
- * @property frame The top-level FrameNode in the Figma file that we want to annotate or modify.
- * @property page The PageNode in the Figma file containing the corresponding `frame` and `layer`.
+ * @property node The TextNode in the Figma file that we want to modify.
+ * @property sessionKey The current session identifier.
  */
 export default class Painter {
-  layer: TextNode;
+  node: TextNode;
   sessionKey: number;
-  constructor({ layer, sessionKey }) {
-    this.layer = isTextNode(layer) ? layer : null;
+  constructor({ node, sessionKey }) {
+    this.node = isTextNode(node) ? node : null;
     this.sessionKey = sessionKey;
   }
 
-  /** WIP
-   * @description Locates annotation text in a layer’s Settings object and
-   * builds the visual annotation on the Figma frame.
+  /**
+   * @description Locates proposed text in a text node’s Settings object and updates
+   * the node’s characters.
    *
    * @kind function
    * @name replaceText
@@ -46,46 +44,36 @@ export default class Painter {
       },
     };
 
-    // load based layer data
-    const assignmentData = this.layer.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
-    const assignment: string = JSON.parse(assignmentData || null);
-    const lockedData = this.layer.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
+    // load basic node data
+    const lockedData = this.node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
     const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
     const textProposedKey: string = `${DATA_KEYS.textProposed}-${this.sessionKey}`;
-    const proposedTextData = this.layer.getSharedPluginData(dataNamespace(), textProposedKey);
+    const proposedTextData = this.node.getSharedPluginData(dataNamespace(), textProposedKey);
     const proposedText = JSON.parse(proposedTextData || null);
 
-    // if the layer is marked as locked, shouldn’t do anything to it
+    // if the node is marked as locked, shouldn’t do anything to it
     if (locked) {
       result.status = 'error';
-      result.messages.log = `Layer ${this.layer.id} is locked`;
+      result.messages.log = `Layer ${this.node.id} is locked`;
       return result;
     }
 
-    // if the layer is marked as locked, shouldn’t do anything to it
-    if (!assignment || assignment === 'unassigned') {
-      result.status = 'error';
-      result.messages.log = `Layer ${this.layer.id} is unassigned`;
-      return result;
-    }
-
-
-    // if there are no translations, return with error
+    // if there is no proposed text, return with error
     if (!proposedText) {
       result.status = 'error';
-      result.messages.log = `Layer ${this.layer.id} is missing proposed text`;
+      result.messages.log = `Layer ${this.node.id} is missing proposed text`;
       return result;
     }
 
     // if the current text matches the proposed text, nothing to do
-    if (proposedText === this.layer.characters) {
+    if (proposedText === this.node.characters) {
       result.status = 'success';
       result.messages.log = 'Current text matches proposed; nothing to replace';
       return result;
     }
 
-    // update the layer’s text with the translation
-    const textNode: TextNode = this.layer;
+    // update the node’s text with the translation
+    const textNode: TextNode = this.node;
 
     // update (replace) the text
     const updatedCharacters: string = proposedText;
@@ -93,7 +81,7 @@ export default class Painter {
 
     // return a successful result
     result.status = 'success';
-    result.messages.log = `Layer ${this.layer.id} text updated`;
+    result.messages.log = `Layer ${this.node.id} text updated`;
     return result;
   }
 }

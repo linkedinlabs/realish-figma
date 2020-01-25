@@ -2,7 +2,7 @@
 import App from './App';
 import Messenger from './Messenger';
 import { awaitUIReadiness } from './Tools';
-// import { DATA_KEYS } from './constants';
+import { ASSIGNMENTS } from './constants';
 
 // GUI management -------------------------------------------------
 
@@ -64,6 +64,25 @@ const dispatcher = async (action: {
     //   translateLocked: boolean,
     //   languages: Array<string>,
     // } = await figma.clientStorage.getAsync(DATA_KEYS.options);
+
+    // make sure the type passed from the menu command exists
+    const verifyQuickType = (kind: string, quickType: string): boolean => {
+      const typeSimplified = quickType.replace(`quick-${kind}-`, '');
+      let isVerified = false;
+
+      if (typeSimplified === 'assigned') {
+        isVerified = true;
+        return isVerified;
+      }
+
+      Object.keys(ASSIGNMENTS).forEach((key) => {
+        if (ASSIGNMENTS[key].id === typeSimplified) {
+          isVerified = true;
+        }
+      });
+      return isVerified;
+    };
+
     switch (type) {
       case 'lock-toggle':
       case 'reassign':
@@ -79,6 +98,16 @@ const dispatcher = async (action: {
         break;
       case 'tools':
         App.showToolbar(sessionKey);
+        break;
+      case String(type.match(/^quick-randomize-.*/)):
+        if (verifyQuickType('randomize', type)) {
+          app.quickRandomize(type.replace('quick-randomize-', ''), sessionKey);
+        }
+        break;
+      case String(type.match(/^quick-assign-.*/)):
+        if (verifyQuickType('assign', type)) {
+          app.quickAssign(type.replace('quick-assign-', ''));
+        }
         break;
       default:
         return null;
