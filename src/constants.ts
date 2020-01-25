@@ -49,10 +49,16 @@ const DATA_KEYS = {
  * @type {Object}
  */
 const ASSIGNMENTS = {
-  unassigned: 'unassigned',
-  name: 'name',
-  animal: 'animal',
-  color: 'color',
+  unassigned: { id: 'unassigned', text: 'Unassigned' },
+  company: { id: 'company', text: 'Company' },
+  country: { id: 'country', text: 'Country' },
+  date: { id: 'date', text: 'Date' },
+  degreeBadge: { id: 'degree-badge', text: 'Degree Badge' },
+  domain: { id: 'domain', text: 'Domain Name' },
+  email: { id: 'email', text: 'Email' },
+  jobTitle: { id: 'job-title', text: 'Job Title' },
+  name: { id: 'name', text: 'Name' },
+  timestamp: { id: 'timestamp', text: 'Timestamp' },
 };
 
 /**
@@ -60,12 +66,14 @@ const ASSIGNMENTS = {
  * top-level (`main`) layer and `group` layer types.
  *
  * @kind constant
- * @name FRAME_TYPES
+ * @name CONTAINER_NODE_TYPES
  * @type {Object}
  */
-const FRAME_TYPES = {
+const CONTAINER_NODE_TYPES = {
+  component: 'COMPONENT',
+  frame: 'FRAME',
   group: 'GROUP',
-  main: 'FRAME',
+  instance: 'INSTANCE',
 };
 
 /**
@@ -110,8 +118,8 @@ const TYPEFACES = {
 
 export {
   ASSIGNMENTS,
+  CONTAINER_NODE_TYPES,
   DATA_KEYS,
-  FRAME_TYPES,
   GUI_SETTINGS,
   PLUGIN_IDENTIFIER,
   PLUGIN_NAME,

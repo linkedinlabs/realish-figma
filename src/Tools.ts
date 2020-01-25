@@ -1,5 +1,6 @@
 import {
-  FRAME_TYPES,
+  CONTAINER_NODE_TYPES,
+  DATA_KEYS,
   GUI_SETTINGS,
   PLUGIN_IDENTIFIER,
 } from './constants';
@@ -27,14 +28,16 @@ const asyncForEach = async (
 };
 
 /**
- * @description An approximation of `forEach` but run in an async manner.
+ * @description An approximation of `setTimeout` but run in an async manner
+ * with logging to Messenger.
  *
  * @kind function
  * @name pollWithPromise
  *
  * @param {Function} externalCheck The external function to run a check against.
  * The function should resolve to `true`.
- * @param {Class} messenger An active instance of the Messenger class for logging (optional).
+ * @param {Object} messenger An initialized instance of the Messenger class for logging (optional).
+ * @param {string} name The name of the check for logging purposes (optional).
  *
  * @returns {Promise} Returns a promise for resolution.
  */
@@ -60,17 +63,18 @@ const pollWithPromise = (
   return new Promise(checkIsReady);
 };
 
-/** WIP
- * @description An approximation of `forEach` but run in an async manner.
+/**
+ * @description Manages the process of passing a network request along to the plugin
+ * UI and waiting for the response.
  *
  * @kind function
  * @name asyncNetworkRequest
  *
- * @param {Function} externalCheck The external function to run a check against.
- * The function should resolve to `true`.
- * @param {Class} messenger An active instance of the Messenger class for logging (optional).
+ * @param {Object} options An object including the request options: The URL the request should
+ * go to (`requestUrl`), headers to pass along to the request (optional), an optional request
+ * body (`bodyToSend`), and an initialized instance of the Messenger class for logging (optional).
  *
- * @returns {Promise} Returns a promise for resolution.
+ * @returns {Object} Returns the result of the network request (response).
  */
 const asyncNetworkRequest = async (options: {
   requestUrl: string,
@@ -88,6 +92,7 @@ const asyncNetworkRequest = async (options: {
   // set blank response
   let response = null;
 
+  // polling function to check for a response from the plugin UI
   const awaitResponse = async () => {
     // simple function to check for existence of a response
     const responseExists = () => (response !== null);
@@ -100,6 +105,7 @@ const asyncNetworkRequest = async (options: {
     await pollWithPromise(responseExists, messenger);
   };
 
+  // makes the request by passing the options along to the plugin UI
   const makeRequest = () => {
     figma.ui.postMessage({
       action: 'networkRequest',
@@ -109,6 +115,10 @@ const asyncNetworkRequest = async (options: {
         bodyToSend,
       },
     });
+
+    if (messenger) {
+      messenger.log(`Network request: ${requestUrl}`);
+    }
   };
 
   // do the things
@@ -134,23 +144,20 @@ const awaitUIReadiness = async (messenger?) => {
   await pollWithPromise(isUIReady, messenger);
 };
 
-/** WIP
- * @description A reusable helper function to take an array and add or remove data from it
- * based on a top-level key and a defined action.
- * an action (`add` or `remove`).
+/**
+ * @description A helper function that uses `fetch` to make a network request.
+ * This helper can only be used from the UI thread. The main thread of the plugin
+ * cannot make network requests. From the main thread, use `asyncNetworkRequest`.
  *
  * @kind function
  * @name makeNetworkRequest
  *
- * @param {string} key String representing the top-level area of the array to modify.
- * @param {Object} item Object containing the new bit of data to add or
- * remove (must include an `id` string for comparison).
- * @param {Array} array The array to be modified.
- * @param {string} action Constant string representing the action to take (`add` or `remove`).
+ * @param {Object} options The network request options, containing the URL/route for the
+ * request (`route`), the `method` of the request (default is `POST`), optional
+ * request `headers`, and an optional request body (`bodyToSend`).
  *
- * @returns {Object} The modified array.
-
- * @private
+ * @returns {null} Posts a message to the main thread of the plugin with the results
+ * of the `fetch` call.
  */
 const makeNetworkRequest = (options: {
   route: string,
@@ -179,23 +186,20 @@ const makeNetworkRequest = (options: {
     .catch(err => console.error(err)); // eslint-disable-line no-console
 };
 
-/** WIP - updated
+/**
  * @description A reusable helper function to take an array and add or remove data from it
  * based on a top-level key and a defined action.
- * an action (`add` or `remove`).
  *
  * @kind function
  * @name updateArray
  *
- * @param {string} key String representing the top-level area of the array to modify.
- * @param {Object} item Object containing the new bit of data to add or
- * remove (must include an `id` string for comparison).
  * @param {Array} array The array to be modified.
- * @param {string} action Constant string representing the action to take (`add` or `remove`).
+ * @param {Object} item Object containing the new bit of data to add, remove, or update.
+ * @param {string} itemKey String representing the key to match (default is `id`).
+ * @param {string} action Constant string representing the action to take
+ * (`add`, `update`, or `remove`).
  *
  * @returns {Object} The modified array.
-
- * @private
  */
 const updateArray = (
   array,
@@ -228,17 +232,17 @@ const updateArray = (
 };
 
 /**
- * @description Takes a layer object and traverses parent relationships until the top-level
- * `FRAME_TYPES.main` layer is found. Returns the frame layer.
+ * @description Takes a node object and traverses parent relationships until the top-level
+ * `CONTAINER_NODE_TYPES.frame` node is found. Returns the frame node.
  *
  * @kind function
  * @name findTopFrame
- * @param {Object} layer A Figma layer object.
+ * @param {Object} node A Figma node object.
  *
- * @returns {Object} The top-level `FRAME_TYPES.main` layer.
+ * @returns {Object} The top-level `CONTAINER_NODE_TYPES.frame` node.
  */
-const findTopFrame = (layer: any) => {
-  let { parent } = layer;
+const findTopFrame = (node: any) => {
+  let { parent } = node;
 
   // if the parent is a page, we're done
   if (parent && parent.type === 'PAGE') {
@@ -247,23 +251,161 @@ const findTopFrame = (layer: any) => {
 
   // loop through each parent until we find the outermost FRAME
   if (parent) {
-    while (parent && parent.type !== FRAME_TYPES.main) {
+    while (parent && parent.type !== CONTAINER_NODE_TYPES.frame) {
       parent = parent.parent;
     }
   }
   return parent;
 };
 
-/** WIP
- * @description An approximation of `forEach` but run in an async manner.
+/**
+ * @description Reverse iterates the node tree to determine the top-level component instance
+ * (if one exists) for the node. This allows you to easily find a Master Component when dealing
+ * with an instance that may be nested within several component instances.
+ *
+ * @kind function
+ * @name findTopInstance
+ *
+ * @param {Object} node A Figma node object (`SceneNode`).
+ *
+ * @returns {Object} Returns the master component (`ComponentNode`) or `null`.
+ */
+const findTopInstance = (node: any) => {
+  let { parent } = node;
+  let currentNode = node;
+  let currentTopInstance = null;
+
+  if (parent) {
+    // iterate until the parent is a page
+    while (parent && parent.type !== 'PAGE') {
+      currentNode = parent;
+      if (currentNode.type === CONTAINER_NODE_TYPES.instance) {
+        // update the top-most master component with the current one
+        currentTopInstance = currentNode;
+      }
+      parent = parent.parent;
+    }
+  }
+
+  if (currentTopInstance) {
+    return currentTopInstance;
+  }
+  return null;
+};
+
+/**
+ * @description Maps the nesting order of a node within the tree and then uses that “map”
+ * as a guide to find the peer node within the an instance’s Master Component.
+ *
+ * @kind function
+ * @name matchMasterPeerNode
+ *
+ * @param {Object} node A Figma node object (`SceneNode`).
+ * @param {Object} topNode A Figma instance node object (`InstanceNode`).
+ *
+ * @returns {Object} Returns the master component or `null`.
+ */
+const matchMasterPeerNode = (node: any, topNode: InstanceNode) => {
+  // finds the `index` of self in the parent’s children list
+  const indexAtParent = (childNode: any): number => childNode.parent.children.findIndex(
+    child => child.id === childNode.id,
+  );
+
+  // set some defaults
+  let { parent } = node;
+  const childIndices = [];
+  const masterComponentNode = topNode.masterComponent;
+  let masterPeerNode = null;
+  let currentNode = node;
+
+  // iterate up the chain, collecting indices in each child list
+  if (parent) {
+    childIndices.push(indexAtParent(node));
+    while (parent && parent.id !== topNode.id) {
+      currentNode = parent;
+      parent = parent.parent;
+      childIndices.push(indexAtParent(currentNode));
+    }
+  }
+
+  // navigate down the chain of the corresponding master component using the
+  // collected child indices to locate the peer node
+  if (childIndices.length > 0 && masterComponentNode) {
+    const childIndicesReversed = childIndices.reverse();
+    let { children } = masterComponentNode;
+    let selectedChild = null;
+
+    childIndicesReversed.forEach((childIndex, index) => {
+      selectedChild = children[childIndex];
+      if ((childIndicesReversed.length - 1) > index) {
+        children = selectedChild.children;
+      }
+    });
+
+    // the last selected child should be the peer node
+    if (selectedChild) {
+      masterPeerNode = selectedChild;
+    }
+  }
+
+  return masterPeerNode;
+};
+
+/**
+ * @description A shared helper functional to easily retrieve the data namespace used
+ * for shared plugin data. Changing this function will potentially make it impossible
+ * for existing users to retrieve data saved to nodes before the change.
+ *
+ * @kind function
+ * @name dataNamespace
+ *
+ * @returns {string} `true` if the build is internal, `false` if it is not.
+ */
+const dataNamespace = (): string => {
+  const identifier: string = PLUGIN_IDENTIFIER;
+  const key: string = process.env.SECRET_KEY ? process.env.SECRET_KEY : '1234';
+  let namespace: string = `${identifier.toLowerCase()}${key.toLowerCase()}`;
+  namespace = namespace.replace(/[^0-9a-z]/gi, '');
+  return namespace;
+};
+
+/**
+ * @description A shared helper function to retrieve type assignment data in raw form (JSON).
+ *
+ * @kind function
+ * @name getNodeAssignmentData
+ *
+ * @param {Object} node The text node to retrieve the assignment on.
+ *
+ * @returns {string} The assignment is returned as an unparsed JSON string.
+ */
+const getNodeAssignmentData = (node: TextNode) => {
+  let assignmentData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
+
+  if (!assignmentData) {
+    const topInstanceNode = findTopInstance(node);
+    if (topInstanceNode) {
+      const peerNode = matchMasterPeerNode(node, topInstanceNode);
+      if (peerNode) {
+        assignmentData = peerNode.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
+      }
+    }
+  }
+
+  return assignmentData;
+};
+
+/**
+ * @description An async function to load multiple typefaces using Figma’s `loadFontAsync`.
  *
  * @kind function
  * @name loadTypefaces
  *
- * @param {Array} array An array to iterate.
- * @param {Function} callback A function to feed the single/iterated item back to.
+ * @param {Array} typefaces An array of typefaces to load. Typefaces in the array must be
+ * formatted to match Figma’s `FontName` type.
+ * @param {Object} messenger An initialized instance of the Messenger class for logging (optional).
  *
- * @returns {null} Runs the callback function.
+ * @returns {Promise} Returns a promise for resolution.
  */
 const loadTypefaces = async (
   typefaces: Array<FontName>,
@@ -300,33 +442,17 @@ const resizeGUI = (
   return null;
 };
 
-/** WIP
- * @description Checks the `FEATURESET` environment variable from webpack and
- * determines if the featureset build should be `internal` or not.
+/**
+ * @description Checks a node’s `type` to see if it is a `TextNode`.
  *
  * @kind function
  * @name isTextNode
  *
- * @returns {boolean} `true` if the build is internal, `false` if it is not.
+ * @param {Object} node The node to check.
+ *
+ * @returns {boolean} `true` if the node is a `TextNode`.
  */
 const isTextNode = (node: any): node is TextNode => node.type === 'TEXT';
-
-/** WIP
- * @description Checks the `FEATURESET` environment variable from webpack and
- * determines if the featureset build should be `internal` or not.
- *
- * @kind function
- * @name dataNamespace
- *
- * @returns {string} `true` if the build is internal, `false` if it is not.
- */
-const dataNamespace = (): string => {
-  const identifier: string = PLUGIN_IDENTIFIER;
-  const key: string = process.env.SECRET_KEY ? process.env.SECRET_KEY : '1234';
-  let namespace: string = `${identifier.toLowerCase()}${key.toLowerCase()}`;
-  namespace = namespace.replace(/[^0-9a-z]/gi, '');
-  return namespace;
-};
 
 /**
  * @description Checks the `FEATURESET` environment variable from webpack and
@@ -348,10 +474,13 @@ export {
   awaitUIReadiness,
   dataNamespace,
   findTopFrame,
+  findTopInstance,
+  getNodeAssignmentData,
   isInternal,
   isTextNode,
   loadTypefaces,
   makeNetworkRequest,
+  matchMasterPeerNode,
   pollWithPromise,
   resizeGUI,
   updateArray,
