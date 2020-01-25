@@ -4,6 +4,7 @@ node_js:
 cache: npm
 install:
   - npm install --ignore-scripts
+  - npm rebuild node-sass
 script:
   - npm run lint
   - npm run build
