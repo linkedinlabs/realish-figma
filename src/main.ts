@@ -2,7 +2,7 @@
 import App from './App';
 import Messenger from './Messenger';
 import { awaitUIReadiness } from './Tools';
-// import { DATA_KEYS } from './constants';
+import { ASSIGNMENTS } from './constants';
 
 // GUI management -------------------------------------------------
 
@@ -38,8 +38,14 @@ const dispatcher = async (action: {
   type: string,
   payload?: any,
   visual: boolean,
+  sessionKey: number,
 }) => {
-  const { type, payload, visual } = action;
+  const {
+    payload,
+    sessionKey,
+    type,
+    visual,
+  } = action;
 
   // if the action is not visual, close the plugin after running
   const shouldTerminate: boolean = !visual;
@@ -59,13 +65,55 @@ const dispatcher = async (action: {
     //   languages: Array<string>,
     // } = await figma.clientStorage.getAsync(DATA_KEYS.options);
 
+    // make sure the type passed from the menu command exists
+    const verifyQuickType = (kind: string, quickType: string): boolean => {
+      const typeSimplified = quickType.replace(`quick-${kind}-`, '');
+      let isVerified = false;
+
+      if (typeSimplified === 'assigned') {
+        isVerified = true;
+        return isVerified;
+      }
+
+      Object.keys(ASSIGNMENTS).forEach((key) => {
+        if (ASSIGNMENTS[key].id === typeSimplified) {
+          isVerified = true;
+        }
+      });
+      return isVerified;
+    };
+
     switch (type) {
+      case 'lock-toggle':
+      case 'reassign':
+      case 'remix':
+      case 'restore':
+        App.actOnNode(type, payload, sessionKey);
+        break;
+      case 'remix-all':
+        App.remixAll(sessionKey);
+        break;
       case 'submit':
-        app.commitText(payload, true);
+        app.commitText(sessionKey);
+        break;
+      case 'tools':
+        App.showToolbar(sessionKey);
+        break;
+      case String(type.match(/^quick-randomize-.*/)):
+        if (verifyQuickType('randomize', type)) {
+          app.quickRandomize(type.replace('quick-randomize-', ''), sessionKey);
+        }
+        break;
+      case String(type.match(/^quick-assign-.*/)):
+        if (verifyQuickType('assign', type)) {
+          app.quickAssign(type.replace('quick-assign-', ''));
+        }
         break;
       default:
-        App.showToolbar();
+        return null;
     }
+
+    return null;
   };
 
   runAction();
@@ -84,6 +132,10 @@ export default dispatcher;
  * @returns {null}
  */
 const main = async () => {
+  // set up rotating key (use a timestamp)
+  // this key is only used during the single run of the plugin
+  const SESSION_KEY: number = Math.round((new Date()).getTime() / 1000);
+
   // set up logging
   const messenger = new Messenger({ for: figma, in: figma.currentPage });
 
@@ -98,6 +150,7 @@ const main = async () => {
     dispatcher({
       type: figma.command,
       visual: false,
+      sessionKey: SESSION_KEY,
     });
   }
 
@@ -111,6 +164,7 @@ const main = async () => {
         type: action,
         payload,
         visual: true,
+        sessionKey: SESSION_KEY,
       });
     }
 
@@ -120,7 +174,7 @@ const main = async () => {
 
   // watch selection changes on the Figma level -------------------------------
   figma.on('selectionchange', () => {
-    App.refreshGUI();
+    App.refreshGUI(SESSION_KEY);
   });
 };
 
