@@ -1,7 +1,7 @@
 {
   "name": "realish-figma",
-  "description": "A Figma plugin for easily translating text.",
-  "version": "0.0.1",
+  "description": "A Figma plugin for generating random bits of text.",
+  "version": "1.0.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/linkedinlabs/realish-figma.git"
