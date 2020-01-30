@@ -168,40 +168,76 @@ export default class Crawler {
    * @returns {Array} All TextNode items in an array.
    */
   text(includeLocked: boolean = false): Array<TextNode> {
+    // filter and retain immediate text nodes
+    const filterTypes: Array<('TEXT')> = ['TEXT'];
+    const textNodes: Array<TextNode> = this.filterByTypes(filterTypes, includeLocked);
+
+    return textNodes;
+  }
+
+  /**
+   * @description Looks into the selection array for any groups and pulls out
+   * individual TextNode nodes.
+   *
+   * @kind function
+   * @name filterByTypes
+   * @param {boolean} includeLocked Determines whether or not locked nodes are included
+   * in the selection.
+   *
+   * @returns {Array} All TextNode items in an array.
+   */
+  filterByTypes(
+    filterTypes: Array<('ELLIPSE' | 'POLYGON' | 'RECTANGLE' | 'STAR' | 'TEXT')>,
+    includeLocked: boolean = false,
+  ): Array<any> {
     // start with flattened selection of all nodes, ordered by position on the artboard
     const nodes = this.allSorted();
 
-    // filter and retain immediate text nodes
-    let textNodes: Array<TextNode> = nodes.filter((node: SceneNode) => node.type === 'TEXT');
+    // filter and retain immediate type-matched nodes
+    let filteredNodes: Array<
+      TextNode
+      | EllipseNode
+      | PolygonNode
+      | RectangleNode
+      | StarNode
+    > = nodes.filter(
+      node => filterTypes.includes(node.type),
+    );
 
-    // iterate through components to find additional text nodes
+    // iterate through components to find additional type-matched nodes
     const componentNodes: Array<ComponentNode | InstanceNode> = nodes.filter(
-      (node: SceneNode) => (
+      node => (
         (node.type === 'COMPONENT' || node.type === 'INSTANCE') && node.visible
       ),
     );
     if (componentNodes) {
       componentNodes.forEach((componentNode: ComponentNode | InstanceNode) => {
-        // find text node inside components
+        // find type-matched node inside components
         const innerTextNodesUntyped: any = componentNode.findAll(
-          (node: SceneNode) => node.type === 'TEXT',
+          (node: any) => filterTypes.includes(node.type),
         );
-        const innerTextNodes: Array<TextNode> = innerTextNodesUntyped.filter(
-          (node: SceneNode) => node.type === 'TEXT',
+        const innerTextNodes: Array<
+          TextNode
+          | EllipseNode
+          | PolygonNode
+          | RectangleNode
+          | StarNode
+        > = innerTextNodesUntyped.filter(
+          node => filterTypes.includes(node.type),
         );
 
         if (innerTextNodes) {
-          // add any text nodes to the overall selection
-          innerTextNodes.forEach(innerTextNode => textNodes.push(innerTextNode));
+          // add any type-matched nodes to the overall selection
+          innerTextNodes.forEach(innerTextNode => filteredNodes.push(innerTextNode));
         }
       });
     }
 
-    // remove locked text nodes, if necessary
+    // remove locked type-matched nodes, if necessary
     if (!includeLocked) {
-      textNodes = textNodes.filter((node: TextNode) => !node.locked);
+      filteredNodes = filteredNodes.filter(node => !node.locked);
     }
 
-    return textNodes;
+    return filteredNodes;
   }
 }
