@@ -177,10 +177,11 @@ export default class Crawler {
 
   /**
    * @description Looks into the selection array for any groups and pulls out
-   * individual TextNode nodes.
+   * individual nodes based on the supplied type(s).
    *
    * @kind function
    * @name filterByTypes
+   * @param {Array} filterTypes Array of type constants to filter for (inclusive).
    * @param {boolean} includeLocked Determines whether or not locked nodes are included
    * in the selection.
    *
