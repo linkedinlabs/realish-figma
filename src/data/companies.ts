@@ -6,17 +6,22 @@
  * @type {Array}
  */
 export default [
-  'Zoomjax',
+  'Antelith',
   'Codelane',
-  'Flexis',
+  'Energence',
   'Fixedex',
+  'Flexis',
   'Freshing',
   'GoldenPhase',
-  'Laminae',
+  'Itkix',
+  'Lamcane',
   'Mintome',
   'Oustia',
   'Runity',
-  'Techcore',
+  'Telendo',
   'Trustway',
-  'Ventofase',
+  'Venofase',
+  'Viyo',
+  'Whistlety',
+  'Zoomjax',
 ];
