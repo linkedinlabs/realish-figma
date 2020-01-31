@@ -42,7 +42,7 @@ const assemble = (context: any = null) => {
  * text node (`TextNode`).
  *
  * @kind function
- * @name filterTextNodes
+ * @name getFilteredNodes
  *
  * @param {Array} selection The resulting array of text nodes.
  * @param {boolean} includeLocked Include locked nodes in the returned results (`true`)
@@ -50,18 +50,27 @@ const assemble = (context: any = null) => {
  *
  * @returns {Array} The resulting array of text nodes.
  */
-const filterTextNodes = (
+const getFilteredNodes = (
   selection: Array<any>,
   includeLocked: boolean = false,
-): Array<TextNode> => {
+): Array<TextNode | EllipseNode | PolygonNode | RectangleNode | StarNode> => {
   const consolidatedSelection: Array<SceneNode | PageNode> = selection;
 
   // retrieve selection of text nodes and filter for unlocked
-  const textNodes: Array<TextNode> = new Crawler(
+  const filterTypes: Array<
+    ('ELLIPSE' | 'POLYGON' | 'RECTANGLE' | 'STAR' | 'TEXT')
+  > = ['ELLIPSE', 'POLYGON', 'RECTANGLE', 'STAR', 'TEXT'];
+  const filteredNodes: Array<
+    TextNode
+    | EllipseNode
+    | PolygonNode
+    | RectangleNode
+    | StarNode
+  > = new Crawler(
     { for: consolidatedSelection },
-  ).text(includeLocked);
+  ).filterByTypes(filterTypes, includeLocked);
 
-  return textNodes;
+  return filteredNodes;
 };
 
 /**
@@ -226,7 +235,12 @@ export default class App {
    */
   static refreshGUI(sessionKey: number) {
     const { messenger, selection } = assemble(figma);
-    const textNodes: Array<TextNode> = filterTextNodes(selection, false);
+    const textNodes: Array<
+      TextNode
+      | EllipseNode
+      | PolygonNode
+      | RectangleNode
+      | StarNode> = getFilteredNodes(selection, false);
     const textNodesCount = textNodes.length;
 
     // set array of data with information from each text node
@@ -234,7 +248,7 @@ export default class App {
     textNodes.forEach((textNode: TextNode) => {
       const assignmentData = getNodeAssignmentData(textNode);
       let assignment: string = JSON.parse(assignmentData || null);
-      let proposedText: string = textNode.characters;
+      let proposedText: string = textNode.characters || textNode.type;
       const lockedData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
       const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
 
@@ -265,7 +279,7 @@ export default class App {
       selected.push({
         id: textNode.id,
         assignment,
-        originalText: textNode.characters,
+        originalText: textNode.characters || textNode.type,
         proposedText,
         locked,
       });
@@ -340,16 +354,25 @@ export default class App {
      *
      * @returns {Object} The text node (`TextNode`) retrieved.
      */
-    const retrieveTextNode = (): TextNode => {
-      const textNodes: Array<TextNode> = filterTextNodes(selection, false);
+    const retrieveTextNode = (): TextNode
+      | EllipseNode
+      | PolygonNode
+      | RectangleNode
+      | StarNode => {
+      const filteredNodes: Array<
+        TextNode
+        | EllipseNode
+        | PolygonNode
+        | RectangleNode
+        | StarNode> = getFilteredNodes(selection, false);
 
       const index = 0;
-      const textNodesToUpdate: Array<TextNode> = textNodes.filter(
-        (node: TextNode) => node.id === id,
+      const filteredNodesToUpdate: Array<any> = filteredNodes.filter(
+        node => node.id === id,
       );
-      const textNodeToUpdate: TextNode = textNodesToUpdate[index];
+      const filteredNodeToUpdate = filteredNodesToUpdate[index];
 
-      return textNodeToUpdate;
+      return filteredNodeToUpdate;
     };
 
     /**
@@ -517,7 +540,12 @@ export default class App {
    */
   static remixAll(sessionKey: number): void {
     const { messenger, selection } = assemble(figma);
-    const textNodes: Array<TextNode> = filterTextNodes(selection, false);
+    const textNodes: Array<
+      TextNode
+      | EllipseNode
+      | PolygonNode
+      | RectangleNode
+      | StarNode> = getFilteredNodes(selection, false);
 
     // iterate through each selected layer and apply the `remix` action
     textNodes.forEach((textNode: TextNode) => App.actOnNode('remix', { id: textNode.id }, sessionKey));
@@ -551,7 +579,12 @@ export default class App {
   quickRandomize(assignment: string, sessionKey: number): void {
     const { messenger, selection } = assemble(figma);
     const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
-    const textNodes: Array<TextNode> = filterTextNodes(selection, false);
+    const textNodes: Array<
+      TextNode
+      | EllipseNode
+      | PolygonNode
+      | RectangleNode
+      | StarNode> = getFilteredNodes(selection, false);
 
     // iterate through each selected layer and apply the `remix` action
     textNodes.forEach((textNode: TextNode) => {
@@ -618,7 +651,12 @@ export default class App {
    */
   quickAssign(assignment: string): void {
     const { messenger, selection } = assemble(figma);
-    const textNodes: Array<TextNode> = filterTextNodes(selection, false);
+    const textNodes: Array<
+      TextNode
+      | EllipseNode
+      | PolygonNode
+      | RectangleNode
+      | StarNode> = getFilteredNodes(selection, false);
 
     // iterate through each selected layer and apply the `remix` action
     textNodes.forEach((textNode: TextNode) => {
@@ -675,7 +713,12 @@ export default class App {
   async commitText(sessionKey: number) {
     const { messenger, selection } = assemble(figma);
     const includeLocked: boolean = false;
-    const textNodes: Array<TextNode> = filterTextNodes(selection, includeLocked);
+    const textNodes: Array<
+      TextNode
+      | EllipseNode
+      | PolygonNode
+      | RectangleNode
+      | StarNode> = getFilteredNodes(selection, false);
 
     /**
      * @description Applies a `Painter` instance to each node in an array, updating the text.
