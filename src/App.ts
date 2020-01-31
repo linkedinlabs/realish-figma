@@ -82,20 +82,33 @@ const getFilteredNodes = (
  * @kind function
  * @name triggerFigmaChangeWatcher
  *
- * @param {Object} textNode The text node (`TextNode`) to trigger changes on.
+ * @param {Object} node The text node (`TextNode`) to trigger changes on.
  *
  * @returns {null}
  */
-const triggerFigmaChangeWatcher = (textNode: TextNode): void => {
+const triggerFigmaChangeWatcher = (
+  node:
+    TextNode
+    | EllipseNode
+    | PolygonNode
+    | RectangleNode
+    | StarNode,
+): void => {
   // rename the layer, and then rename it back, to trigger Figma's changes watcher
   // this is used to allow master components to be republished with changes
   const randomName: string = `${Date.now()}`;
-  const originalName: string = textNode.name;
-  const originalAutoRename: boolean = textNode.autoRename;
+  const originalName: string = node.name;
+  let originalAutoRename: boolean = false;
+  if (node.type === 'TEXT') {
+    originalAutoRename = node.autoRename;
+  }
   /* eslint-disable no-param-reassign */
-  textNode.name = randomName;
-  textNode.name = originalName;
-  textNode.autoRename = originalAutoRename;
+  node.name = randomName;
+  node.name = originalName;
+
+  if (node.type === 'TEXT') {
+    node.autoRename = originalAutoRename;
+  }
   /* eslint-enable no-param-reassign */
 
   return null;
@@ -350,11 +363,12 @@ export default class App {
      * matching the `id` provided in the `payload`.
      *
      * @kind function
-     * @name retrieveTextNode
+     * @name retrieveNode
      *
      * @returns {Object} The text node (`TextNode`) retrieved.
      */
-    const retrieveTextNode = (): TextNode
+    const retrieveNode = ():
+      TextNode
       | EllipseNode
       | PolygonNode
       | RectangleNode
@@ -380,16 +394,23 @@ export default class App {
      * text node (`TextNode`).
      *
      * @kind function
-     * @name reassignTextNode
+     * @name reassignNode
      *
-     * @param {string} textNodeToReassign The text node (`TextNode`) to modify.
+     * @param {string} nodeToReassign The text node (`TextNode`) to modify.
      */
-    const reassignTextNode = (textNodeToReassign: TextNode): void => {
+    const reassignNode = (
+      nodeToReassign:
+        TextNode
+        | EllipseNode
+        | PolygonNode
+        | RectangleNode
+        | StarNode,
+    ): void => {
       const { assignment } = payload;
 
       if (assignment) {
         // commit the new assignment
-        textNodeToReassign.setSharedPluginData(
+        nodeToReassign.setSharedPluginData(
           dataNamespace(),
           DATA_KEYS.assignment,
           JSON.stringify(assignment),
@@ -399,13 +420,13 @@ export default class App {
         const proposedText = null;
 
         // commit the proposed text
-        textNodeToReassign.setSharedPluginData(
+        nodeToReassign.setSharedPluginData(
           dataNamespace(),
           textProposedKey,
           JSON.stringify(proposedText),
         );
 
-        triggerFigmaChangeWatcher(textNodeToReassign);
+        triggerFigmaChangeWatcher(nodeToReassign);
 
         messenger.log(`Updated ${id}’s assignment to: “${assignment}”`);
       }
@@ -415,17 +436,24 @@ export default class App {
      * @description Sets a new `proposedText` in a node’s data based on assignment.
      *
      * @kind function
-     * @name remixProposedText
+     * @name remixProposedContent
      *
-     * @param {string} textNodeToRemix The text node (`TextNode`) to modify.
+     * @param {string} nodeToRemix The text node (`TextNode`) to modify.
      */
-    const remixProposedText = (textNodeToRemix: TextNode): void => {
+    const remixProposedContent = (
+      nodeToRemix:
+        TextNode
+        | EllipseNode
+        | PolygonNode
+        | RectangleNode
+        | StarNode,
+    ): void => {
       // new randomization based on assignment
-      const data = new Data({ for: textNodeToRemix });
+      const data = new Data({ for: nodeToRemix });
       const proposedText: string = data.randomText();
 
       // commit the proposed text
-      textNodeToRemix.setSharedPluginData(
+      nodeToRemix.setSharedPluginData(
         dataNamespace(),
         textProposedKey,
         JSON.stringify(proposedText),
@@ -439,16 +467,23 @@ export default class App {
      * current text (`characters`).
      *
      * @kind function
-     * @name restoreText
+     * @name restoreContent
      *
-     * @param {string} textNodeToRestore The text node (`TextNode`) to modify.
+     * @param {string} nodeToRestore The text node (`TextNode`) to modify.
      */
-    const restoreText = (textNodeToRestore: TextNode): void => {
+    const restoreContent = (
+      nodeToRestore:
+        TextNode
+        | EllipseNode
+        | PolygonNode
+        | RectangleNode
+        | StarNode,
+    ): void => {
       // set to the current (original) text
-      const proposedText = textNodeToRestore.characters;
+      const proposedText = nodeToRestore.type === 'TEXT' ? nodeToRestore.characters : nodeToRestore.type;
 
       // commit the proposed text
-      textNodeToRestore.setSharedPluginData(
+      nodeToRestore.setSharedPluginData(
         dataNamespace(),
         textProposedKey,
         JSON.stringify(proposedText),
@@ -464,15 +499,20 @@ export default class App {
      * @kind function
      * @name toggleNodeLock
      *
-     * @param {string} textNodeToSecure The text node (`TextNode`) to modify.
+     * @param {string} nodeToSecure The text node (`TextNode`) to modify.
      * @param {boolean} locked Current locked (`true`) status of the node. Unlocked is `false`.
      */
     const toggleNodeLock = (
-      textNodeToSecure: TextNode,
+      nodeToSecure:
+        TextNode
+        | EllipseNode
+        | PolygonNode
+        | RectangleNode
+        | StarNode,
       locked: boolean,
     ): void => {
       // commit the new assignment
-      textNodeToSecure.setSharedPluginData(
+      nodeToSecure.setSharedPluginData(
         dataNamespace(),
         DATA_KEYS.locked,
         JSON.stringify(!locked), // toggle the opposite of whatever was read from the layer data
@@ -480,14 +520,14 @@ export default class App {
 
       // new randomization based on assignment if layer was previously locked
       // otherwise the proposed text should restore to the original text if locking the layer
-      let proposedText: string = textNodeToSecure.characters;
+      let proposedText: string = nodeToSecure.type === 'TEXT' ? nodeToSecure.characters : nodeToSecure.type;
       if (locked) {
-        const data = new Data({ for: textNodeToSecure });
+        const data = new Data({ for: nodeToSecure });
         proposedText = data.randomText();
       }
 
       // commit the proposed text
-      textNodeToSecure.setSharedPluginData(
+      nodeToSecure.setSharedPluginData(
         dataNamespace(),
         textProposedKey,
         JSON.stringify(proposedText),
@@ -496,20 +536,20 @@ export default class App {
       messenger.log(`Updated ${id}’s locking to: “${locked}”`);
     };
 
-    const textNode = retrieveTextNode();
+    const textNode = retrieveNode();
     if (textNode) {
       const lockedData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
       const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
 
       switch (actionType) {
         case 'reassign':
-          if (!locked) { reassignTextNode(textNode); }
+          if (!locked) { reassignNode(textNode); }
           break;
         case 'remix':
-          if (!locked) { remixProposedText(textNode); }
+          if (!locked) { remixProposedContent(textNode); }
           break;
         case 'restore':
-          if (!locked) { restoreText(textNode); }
+          if (!locked) { restoreContent(textNode); }
           break;
         case 'lock-toggle':
           toggleNodeLock(textNode, locked);
@@ -633,7 +673,7 @@ export default class App {
 
     messenger.log(`Quickly randomize all selected TextNodes for ${assignment}`);
 
-    this.commitText(sessionKey);
+    this.commitContent(sessionKey);
 
     return null;
   }
@@ -704,16 +744,16 @@ export default class App {
    * to `chracters` and updating the node.
    *
    * @kind function
-   * @name commitText
+   * @name commitContent
    *
    * @param {string} sessionKey A rotating key used during the single run of the plugin.
    *
    * @returns {Function} Ends with the `closeOrReset` function, terminating the plugin.
    */
-  async commitText(sessionKey: number) {
+  async commitContent(sessionKey: number) {
     const { messenger, selection } = assemble(figma);
     const includeLocked: boolean = false;
-    const textNodes: Array<
+    const nodes: Array<
       TextNode
       | EllipseNode
       | PolygonNode
@@ -726,11 +766,11 @@ export default class App {
      * @kind function
      * @name manipulateText
      *
-     * @param {Array} textNodesToPaint The array of text nodes (`TextNode`) to modify.
+     * @param {Array} nodesToPaint The array of text nodes (`TextNode`) to modify.
      */
-    const manipulateText = (textNodesToPaint) => {
+    const manipulateText = (nodesToPaint) => {
       messenger.log('Begin manipulating text');
-      textNodesToPaint.forEach((textNode: SceneNode) => {
+      nodesToPaint.forEach((textNode: SceneNode) => {
         // set up Painter instance for the layer
         const painter = new Painter({ node: textNode, sessionKey });
 
@@ -743,11 +783,15 @@ export default class App {
 
     // begin main thread of action ------------------------------------------------------
 
-    // translate if text nodes are available and fonts are not missing
+    const textNodes: Array<TextNode> = nodes.filter(
+      (node): node is TextNode => node.type === 'TEXT',
+    );
     const missingTypefaces: Array<TextNode> = textNodes.filter(
       (node: TextNode) => node.hasMissingFont,
     );
-    if ((textNodes.length > 0) && (missingTypefaces.length < 1)) {
+
+    if (textNodes && (textNodes.length > 0) && (missingTypefaces.length < 1)) {
+      // update if text nodes are available and fonts are not missing
       // run the main thread this sets everything else in motion
       const typefaces: Array<FontName> = readTypefaces(textNodes);
       const languageTypefaces: Array<FontName> = null;
@@ -767,12 +811,13 @@ export default class App {
       return this.closeOrReset();
     }
 
+
     // otherwise set/display appropriate error messages
     let toastErrorMessage = 'Something went wrong 😬';
 
     // set the message + log
     if (missingTypefaces.length > 0) {
-      toastErrorMessage = textNodes.length > 1
+      toastErrorMessage = nodes.length > 1
         ? '❌ One or more select text layers contain missing fonts'
         : '❌ This text layer contains a missing font';
       messenger.log('Text node(s) contained missing fonts');
