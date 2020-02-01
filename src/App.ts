@@ -5,6 +5,7 @@ import Painter from './Painter';
 import {
   dataNamespace,
   getNodeAssignmentData,
+  isValidAssignment,
   loadTypefaces,
   resizeGUI,
 } from './Tools';
@@ -259,9 +260,25 @@ export default class App {
     // set array of data with information from each text node
     const selected = [];
     nodes.forEach((node) => {
+      type Assignment =
+        'unassigned'
+        | 'avatar-company'
+        | 'avatar-person'
+        | 'name'
+        | 'company'
+        | 'country'
+        | 'date'
+        | 'degree-badge'
+        | 'domain'
+        | 'email'
+        | 'job-title'
+        | 'timestamp';
       const assignmentData = getNodeAssignmentData(node);
-      let assignment: string = JSON.parse(assignmentData || null);
-      let nodeType = 'shape';
+      let assignment = JSON.parse(assignmentData || null) as Assignment;
+
+      // const assignmentData = getNodeAssignmentData(node);
+      // let assignment: string = JSON.parse(assignmentData || null);
+      let nodeType: 'shape' | 'text' = 'shape';
       let originalText: string = node.type;
       if (node.type === 'TEXT') {
         nodeType = 'text';
@@ -291,7 +308,7 @@ export default class App {
           }
         }
       } else {
-        assignment = ASSIGNMENTS.unassigned.id;
+        assignment = ASSIGNMENTS.unassigned.id as Assignment;
       }
 
       // update the bundle of info for the current `node` in the selection
@@ -415,8 +432,12 @@ export default class App {
         | StarNode,
     ): void => {
       const { assignment } = payload;
+      let nodeType: 'shape' | 'text' = 'shape';
+      if (nodeToReassign.type === 'TEXT') {
+        nodeType = 'text';
+      }
 
-      if (assignment) {
+      if (assignment && isValidAssignment(assignment, nodeType)) {
         // commit the new assignment
         nodeToReassign.setSharedPluginData(
           dataNamespace(),
@@ -437,6 +458,8 @@ export default class App {
         triggerFigmaChangeWatcher(nodeToReassign);
 
         messenger.log(`Updated ${id}’s assignment to: “${assignment}”`);
+      } else {
+        messenger.log(`Could not reassign ${id}`, 'error');
       }
     };
 
@@ -656,22 +679,26 @@ export default class App {
           messenger.log(`Set ${textNode.id}’s proposed text for: “${assignment}”`);
 
           // set the assignment on unassigned nodes, otherwise ignore it
-          type Assignment =
-            'unassigned'
-            | 'name'
-            | 'company'
-            | 'country'
-            | 'date'
-            | 'degree-badge'
-            | 'domain'
-            | 'email'
-            | 'job-title'
-            | 'timestamp';
-          const currentAssignmentData = getNodeAssignmentData(textNode);
-          const currentAssignment = JSON.parse(currentAssignmentData || null) as Assignment;
-          if (!currentAssignment || currentAssignment === 'unassigned') {
-            const newAssignment: Assignment = assignment as Assignment;
-            App.actOnNode('reassign', { id: textNode.id, assignment: newAssignment }, sessionKey);
+          if (isValidAssignment(assignment, 'text')) {
+            type Assignment =
+              'unassigned'
+              | 'name'
+              | 'company'
+              | 'country'
+              | 'date'
+              | 'degree-badge'
+              | 'domain'
+              | 'email'
+              | 'job-title'
+              | 'timestamp';
+            const currentAssignmentData = getNodeAssignmentData(textNode);
+            const currentAssignment = JSON.parse(currentAssignmentData || null) as Assignment;
+            if (!currentAssignment || currentAssignment === 'unassigned') {
+              const newAssignment: Assignment = assignment as Assignment;
+              App.actOnNode('reassign', { id: textNode.id, assignment: newAssignment }, sessionKey);
+            }
+          } else {
+            messenger.log(`Could not assign ${textNode.id}; Invalid assignment`, 'error');
           }
         }
       } else {

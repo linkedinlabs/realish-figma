@@ -1,4 +1,5 @@
 import {
+  ASSIGNMENTS,
   CONTAINER_NODE_TYPES,
   DATA_KEYS,
   GUI_SETTINGS,
@@ -455,6 +456,34 @@ const resizeGUI = (
 const isTextNode = (node: any): node is TextNode => node.type === 'TEXT';
 
 /**
+ * @description Checks if a supplied `assignment` string and `nodeType` is valid (it can be
+ * matched with an entry in `ASSIGNMENTS`).
+ *
+ * @kind function
+ * @name isValidAssignment
+ *
+ * @param {string} assignment The assignment to check (`id` in `ASSIGNMENTS`).
+ * @param {string} nodeType The type to check (`nodeType` in `ASSIGNMENTS`).
+ *
+ * @returns {boolean} `true` if the assignment is valid.
+ */
+const isValidAssignment = (assignment: string, nodeType: 'shape' | 'text'): boolean => {
+  let isValid = false;
+
+  if (assignment === ASSIGNMENTS.unassigned.id) {
+    isValid = true;
+    return isValid;
+  }
+
+  Object.keys(ASSIGNMENTS).forEach((key) => {
+    if (ASSIGNMENTS[key].id === assignment && ASSIGNMENTS[key].nodeType === nodeType) {
+      isValid = true;
+    }
+  });
+  return isValid;
+};
+
+/**
  * @description Checks the `FEATURESET` environment variable from webpack and
  * determines if the featureset build should be `internal` or not.
  *
@@ -478,6 +507,7 @@ export {
   getNodeAssignmentData,
   isInternal,
   isTextNode,
+  isValidAssignment,
   loadTypefaces,
   makeNetworkRequest,
   matchMasterPeerNode,
