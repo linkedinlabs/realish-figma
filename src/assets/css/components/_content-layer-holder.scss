@@ -1,4 +1,4 @@
-// ++++++++++++++++++++++++++++++++++++++++++++++ text layer line component
+// ++++++++++++++++++++++++++++++++++++++++++++++ content layer line component
 
 @mixin text-widget(
   $selectWidth: 100,
@@ -11,20 +11,25 @@
   align-items: center;
   width: calc(100% - #{em($selectWidth + 10)});
 
+  &.original-shape,
   &.original-text {
+    .shape,
     .text {
       @include type-02;
     }
   }
 
+  &.new-shape,
   &.new-text {
     width: calc(100% - #{em($iconWidthBuffered)});
 
+    .shape,
     .text {
       @include type-03;
     }
   }
 
+  .shape,
   .text {
     @include ellipsis;
   }
@@ -34,7 +39,7 @@
   }
 }
 
-@mixin text-layer-holder {
+@mixin content-layer-holder {
   $selectWidth: 105;
   $iconWidthBuffered: 35;
   display: flex;
@@ -53,6 +58,7 @@
     }
   }
 
+  .shape-widget,
   .text-widget {
     @include text-widget($selectWidth, $iconWidthBuffered);
   }
@@ -71,8 +77,11 @@
   }
 
   &.locked {
+    .shape-widget,
     .text-widget {
+      &.new-shape,
       &.new-text {
+        .shape,
         .text {
           color: $wl-type-02;
         }
@@ -94,6 +103,7 @@
   }
 }
 
+.shape-layer-holder,
 .text-layer-holder {
-  @include text-layer-holder;
+  @include content-layer-holder;
 }

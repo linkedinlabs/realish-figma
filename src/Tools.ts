@@ -379,7 +379,7 @@ const dataNamespace = (): string => {
  *
  * @returns {string} The assignment is returned as an unparsed JSON string.
  */
-const getNodeAssignmentData = (node: TextNode) => {
+const getNodeAssignmentData = (node: SceneNode) => {
   let assignmentData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
 
   if (!assignmentData) {

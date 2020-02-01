@@ -248,36 +248,42 @@ export default class App {
    */
   static refreshGUI(sessionKey: number) {
     const { messenger, selection } = assemble(figma);
-    const textNodes: Array<
+    const nodes: Array<
       TextNode
       | EllipseNode
       | PolygonNode
       | RectangleNode
       | StarNode> = getFilteredNodes(selection, false);
-    const textNodesCount = textNodes.length;
+    const nodesCount = nodes.length;
 
     // set array of data with information from each text node
     const selected = [];
-    textNodes.forEach((textNode: TextNode) => {
-      const assignmentData = getNodeAssignmentData(textNode);
+    nodes.forEach((node) => {
+      const assignmentData = getNodeAssignmentData(node);
       let assignment: string = JSON.parse(assignmentData || null);
-      let proposedText: string = textNode.characters || textNode.type;
-      const lockedData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
+      let nodeType = 'shape';
+      let originalText: string = node.type;
+      if (node.type === 'TEXT') {
+        nodeType = 'text';
+        originalText = node.characters;
+      }
+      let proposedText: string = node.type === 'TEXT' ? node.characters : node.type;
+      const lockedData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
       const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
 
       // if text is already assigned, generate/rotate the new proposed text
       if (assignment && (assignment !== 'unassigned')) {
         const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
-        const proposedTextData = textNode.getSharedPluginData(dataNamespace(), textProposedKey);
+        const proposedTextData = node.getSharedPluginData(dataNamespace(), textProposedKey);
 
         if (!locked) {
           proposedText = JSON.parse(proposedTextData || null);
           if (!proposedText) {
-            const data = new Data({ for: textNode });
+            const data = new Data({ for: node });
             proposedText = data.randomText();
 
             // update the proposed text
-            textNode.setSharedPluginData(
+            node.setSharedPluginData(
               dataNamespace(),
               textProposedKey,
               JSON.stringify(proposedText),
@@ -288,12 +294,14 @@ export default class App {
         assignment = ASSIGNMENTS.unassigned.id;
       }
 
-      // update the bundle of info for the current `textNode` in the selection
+      // update the bundle of info for the current `node` in the selection
+
       selected.push({
-        id: textNode.id,
+        id: node.id,
         assignment,
-        originalText: textNode.characters || textNode.type,
+        originalText,
         proposedText,
+        nodeType,
         locked,
       });
     });
@@ -306,8 +314,8 @@ export default class App {
 
     // resize the UI
     let newGUIHeight = GUI_SETTINGS.default.height;
-    if (textNodesCount > 0) {
-      newGUIHeight = ((textNodesCount - 1) * 62) + newGUIHeight;
+    if (nodesCount > 0) {
+      newGUIHeight = ((nodesCount - 1) * 62) + newGUIHeight;
     }
 
     figma.ui.resize(
@@ -315,7 +323,7 @@ export default class App {
       newGUIHeight,
     );
 
-    messenger.log(`Updating the UI with ${textNodes.length} selected ${textNodes.length === 1 ? 'layer' : 'layers'}`);
+    messenger.log(`Updating the UI with ${nodes.length} selected ${nodes.length === 1 ? 'layer' : 'layers'}`);
   }
 
   /**

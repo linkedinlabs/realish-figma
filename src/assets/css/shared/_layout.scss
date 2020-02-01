@@ -30,6 +30,7 @@ svg {
   flex-direction: column;
 
   ul#layer-list,
+  ul#layer-list li.shape-layer-holder,
   ul#layer-list li.text-layer-holder {
     margin: 0;
     padding: 0;
@@ -38,6 +39,7 @@ svg {
 
   ul#layer-list {
     li {
+      &.shape-layer-holder,
       &.text-layer-holder {
         margin-bottom: em(12);
 

@@ -235,11 +235,11 @@ const updateSelectedLayers = (layers: Array<{
   assignment: string,
   originalText: string,
   proposedText: string,
+  nodeType: 'text' | 'shape',
   locked: boolean,
 }>): void => {
   const layerCount = layers.length;
   const layerListElement: HTMLUListElement = (<HTMLUListElement> document.getElementById('layer-list'));
-  const templateElement: HTMLLIElement = (<HTMLLIElement> document.getElementById('layer-holder-original'));
 
   if (layerListElement && layers) {
     // remove everything to start
@@ -247,23 +247,33 @@ const updateSelectedLayers = (layers: Array<{
 
     if (layerCount > 0) {
       layers.forEach((layer) => {
+        const {
+          id,
+          assignment,
+          originalText,
+          proposedText,
+          nodeType,
+          locked,
+        } = layer;
+
+        const templateElement: HTMLLIElement = (<HTMLLIElement> document.getElementById(`${nodeType}-layer-holder-original`));
         const newLayerElement: any = templateElement.cloneNode(true);
         newLayerElement.removeAttribute('style');
-        newLayerElement.id = layer.id;
+        newLayerElement.id = id;
 
         const assignmentsElement: HTMLSelectElement = newLayerElement.querySelector('.assignments');
-        assignmentsElement.value = layer.assignment;
+        assignmentsElement.value = assignment;
 
-        if (!layer.locked) {
+        if (!locked) {
           assignmentsElement.disabled = false;
         }
 
         assignmentsElement.classList.add('styled-select');
 
         // set reset / remix button states
-        if (layer.assignment !== ASSIGNMENTS.unassigned.id && !layer.locked) {
+        if (assignment !== ASSIGNMENTS.unassigned.id && !locked) {
           const resetButtonElement: HTMLButtonElement = newLayerElement.querySelector('.reset-control button');
-          if (resetButtonElement && (layer.originalText !== layer.proposedText)) {
+          if (resetButtonElement && (originalText !== proposedText)) {
             resetButtonElement.disabled = false;
           }
 
@@ -275,16 +285,16 @@ const updateSelectedLayers = (layers: Array<{
 
         // set locking toggle state
         const lockingButtonElement: HTMLButtonElement = newLayerElement.querySelector('.locking-control button');
-        if (lockingButtonElement && !layer.locked) {
+        if (lockingButtonElement && !locked) {
           newLayerElement.classList.remove('locked');
         }
 
         // set text
-        const originalTextElement = newLayerElement.querySelector('.original-text .text');
-        originalTextElement.firstChild.nodeValue = layer.originalText;
+        const originalTextElement = newLayerElement.querySelector(`.original-${nodeType} .${nodeType}`);
+        originalTextElement.firstChild.nodeValue = originalText;
 
-        const proposedTextElement = newLayerElement.querySelector('.new-text .text');
-        proposedTextElement.firstChild.nodeValue = layer.proposedText;
+        const proposedTextElement = newLayerElement.querySelector(`.new-${nodeType} .${nodeType}`);
+        proposedTextElement.firstChild.nodeValue = proposedText;
 
         // add the layer to the list
         layerListElement.appendChild(newLayerElement);
