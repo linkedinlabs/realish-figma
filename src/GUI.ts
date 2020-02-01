@@ -289,12 +289,23 @@ const updateSelectedLayers = (layers: Array<{
           newLayerElement.classList.remove('locked');
         }
 
+        // set url
+        let fullUrl: string = null;
+        if (nodeType === 'shape') {
+          const serverLocation: string = process.env.MEDIA_URL ? process.env.MEDIA_URL : 'https://somewhere.com';
+          fullUrl = `${serverLocation}${proposedText}`;
+        }
+
         // set text
         const originalTextElement = newLayerElement.querySelector(`.original-${nodeType} .${nodeType}`);
         originalTextElement.firstChild.nodeValue = originalText;
 
         const proposedTextElement = newLayerElement.querySelector(`.new-${nodeType} .${nodeType}`);
         proposedTextElement.firstChild.nodeValue = proposedText;
+        if (fullUrl && assignment !== ASSIGNMENTS.unassigned.id) {
+          proposedTextElement.style.backgroundImage = `url(${fullUrl})`;
+          proposedTextElement.style.backgroundImage = 'red';
+        }
 
         // add the layer to the list
         layerListElement.appendChild(newLayerElement);

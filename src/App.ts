@@ -297,7 +297,7 @@ export default class App {
           proposedText = JSON.parse(proposedTextData || null);
           if (!proposedText) {
             const data = new Data({ for: node });
-            proposedText = data.randomText();
+            proposedText = data.randomContent();
 
             // update the proposed text
             node.setSharedPluginData(
@@ -481,7 +481,7 @@ export default class App {
     ): void => {
       // new randomization based on assignment
       const data = new Data({ for: nodeToRemix });
-      const proposedText: string = data.randomText();
+      const proposedText: string = data.randomContent();
 
       // commit the proposed text
       nodeToRemix.setSharedPluginData(
@@ -554,7 +554,7 @@ export default class App {
       let proposedText: string = nodeToSecure.type === 'TEXT' ? nodeToSecure.characters : nodeToSecure.type;
       if (locked) {
         const data = new Data({ for: nodeToSecure });
-        proposedText = data.randomText();
+        proposedText = data.randomContent();
       }
 
       // commit the proposed text
@@ -667,7 +667,7 @@ export default class App {
           App.actOnNode('remix', { id: textNode.id }, sessionKey);
         } else {
           const data = new Data({ for: textNode });
-          const proposedText: string = data.randomText(assignment);
+          const proposedText: string = data.randomContent(assignment);
 
           // commit the proposed text
           textNode.setSharedPluginData(

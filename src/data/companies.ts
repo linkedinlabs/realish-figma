@@ -9,7 +9,7 @@ export default [
   'Antelith',
   'Codelane',
   'Energence',
-  'Fixedex',
+  'Fixdex',
   'Flexis',
   'Freshing',
   'GoldenPhase',
