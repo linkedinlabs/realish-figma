@@ -354,22 +354,25 @@ const updateSelectedLayers = (layers: Array<{
           newLayerElement.classList.remove('locked');
         }
 
-        // set url
-        let fullUrl: string = null;
+        // grab the `proposedText` element; used by both types
+        const proposedTextElement = newLayerElement.querySelector(`.new-${nodeType} .${nodeType}`);
+
+        // set image url
         if (nodeType === 'shape') {
+          let fullUrl: string = null;
           const serverLocation: string = process.env.MEDIA_URL ? process.env.MEDIA_URL : 'https://somewhere.com';
           fullUrl = `${serverLocation}${proposedText}`;
+
+          if (fullUrl && assignment !== ASSIGNMENTS.unassigned.id) {
+            proposedTextElement.style.backgroundImage = `url(${fullUrl})`;
+          }
         }
 
         // set text
-        const originalTextElement = newLayerElement.querySelector(`.original-${nodeType} .${nodeType}`);
-        originalTextElement.firstChild.nodeValue = originalText;
-
-        const proposedTextElement = newLayerElement.querySelector(`.new-${nodeType} .${nodeType}`);
-        proposedTextElement.firstChild.nodeValue = proposedText;
-        if (fullUrl && assignment !== ASSIGNMENTS.unassigned.id) {
-          proposedTextElement.style.backgroundImage = `url(${fullUrl})`;
-          proposedTextElement.style.backgroundImage = 'red';
+        if (nodeType === 'text') {
+          const originalTextElement = newLayerElement.querySelector(`.original-${nodeType} .${nodeType}`);
+          originalTextElement.firstChild.nodeValue = originalText;
+          proposedTextElement.firstChild.nodeValue = proposedText;
         }
 
         // add the layer to the list

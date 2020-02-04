@@ -1,6 +1,6 @@
 // ++++++++++++++++++++++++++++++++++++++++++++++ content layer line component
 
-@mixin text-widget(
+@mixin content-widget(
   $selectWidth: 100,
   $iconWidthBuffered: 35
 ) {
@@ -10,32 +10,59 @@
   justify-content: flex-start;
   align-items: center;
   width: calc(100% - #{em($selectWidth + 10)});
+}
 
-  &.original-shape,
+@mixin text-widget(
+  $selectWidth: 100,
+  $iconWidthBuffered: 35
+) {
+  @include content-widget($selectWidth, $iconWidthBuffered);
+
   &.original-text {
-    .shape,
     .text {
       @include type-02;
     }
   }
 
-  &.new-shape,
   &.new-text {
     width: calc(100% - #{em($iconWidthBuffered)});
 
-    .shape,
     .text {
       @include type-03;
     }
   }
 
-  .shape,
   .text {
     @include ellipsis;
   }
 
   .inline-control {
     margin-left: em(3);
+  }
+}
+
+@mixin shape-widget(
+  $selectWidth: 100,
+  $iconWidthBuffered: 35
+) {
+  @include content-widget($selectWidth, $iconWidthBuffered);
+
+  &.original-shape {
+    // display: none;
+  }
+
+  &.new-shape {
+    display: block;
+    width: em(46);
+
+    .shape {
+      display: block;
+      width: em(46);
+      height: em(46);
+      border-radius: em(46);
+      background-size: cover;
+      border: 1px solid $wk-accent-tertiary;
+    }
   }
 }
 
@@ -58,9 +85,20 @@
     }
   }
 
-  .shape-widget,
+  &.shape-layer-holder {
+    flex-direction: row;
+
+    .column-holder {
+      width: calc(100% - #{em(50)});
+    }
+  }
+
   .text-widget {
     @include text-widget($selectWidth, $iconWidthBuffered);
+  }
+
+  .shape-widget {
+    @include shape-widget($selectWidth, $iconWidthBuffered);
   }
 
   .locking-control {
