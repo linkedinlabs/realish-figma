@@ -3,6 +3,7 @@ import Data from './Data';
 import Messenger from './Messenger';
 import Painter from './Painter';
 import {
+  asyncForEach,
   dataNamespace,
   getNodeAssignmentData,
   isValidAssignment,
@@ -828,12 +829,12 @@ export default class App {
     const manipulateShapes = (nodesToPaint) => {
       messenger.log('Begin manipulating shape nodes');
 
-      nodesToPaint.forEach((shapeNode: SceneNode) => {
+      asyncForEach(nodesToPaint, async (shapeNode: SceneNode) => {
         // set up Painter instance for the layer
         const painter = new Painter({ node: shapeNode, sessionKey });
 
         // replace the existing fill with the proposed image fill
-        const paintResult = painter.replaceFill();
+        const paintResult = await painter.replaceFill();
         messenger.handleResult(paintResult);
       });
       messenger.log('End manipulating shape nodes');
