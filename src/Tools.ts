@@ -128,6 +128,64 @@ const asyncNetworkRequest = async (options: {
   return response;
 };
 
+/** WIP
+ * @description Manages the process of passing a network request along to the plugin
+ * UI and waiting for the response.
+ *
+ * @kind function
+ * @name asyncImageRequest
+ *
+ * @param {Object} options An object including the request options: The URL the request should
+ * go to (`requestUrl`), headers to pass along to the request (optional), an optional request
+ * body (`bodyToSend`), and an initialized instance of the Messenger class for logging (optional).
+ *
+ * @returns {Object} Returns the result of the network request (response).
+ */
+const asyncImageRequest = async (options: {
+  requestUrl: string,
+  messenger?: { log: Function },
+}) => {
+  const {
+    messenger,
+    requestUrl,
+  } = options;
+
+  // set blank response
+  let response = null;
+
+  // polling function to check for a response from the plugin UI
+  const awaitResponse = async () => {
+    // simple function to check for existence of a response
+    const responseExists = () => (response !== null);
+
+    // set a one-time use listener
+    figma.ui.once('message', (msg) => {
+      if (msg && msg.imageResponse) { response = msg.imageResponse; }
+    });
+
+    await pollWithPromise(responseExists, messenger);
+  };
+
+  // makes the request by passing the options along to the plugin UI
+  const makeRequest = () => {
+    figma.ui.postMessage({
+      action: 'imageRequest',
+      payload: {
+        route: requestUrl,
+      },
+    });
+
+    if (messenger) {
+      messenger.log(`Request image at: ${requestUrl}`);
+    }
+  };
+
+  // do the things
+  makeRequest();
+  await awaitResponse();
+  return response;
+};
+
 // we need to wait for the UI to be ready:
 // network calls are made through the UI iframe
 const awaitUIReadiness = async (messenger?) => {
@@ -499,6 +557,7 @@ const isInternal = (): boolean => {
 
 export {
   asyncForEach,
+  asyncImageRequest,
   asyncNetworkRequest,
   awaitUIReadiness,
   dataNamespace,

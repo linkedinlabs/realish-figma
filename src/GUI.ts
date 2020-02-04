@@ -2,8 +2,9 @@
  * @description A set of functions to operate the plugin GUI.
  */
 import './assets/css/main.scss';
-import './vendor/figma-select-menu';
+import { pollWithPromise } from './Tools';
 import { ASSIGNMENTS } from './constants';
+import './vendor/figma-select-menu';
 
 /**
  * @description Sends a message and applicable payload to the main thread.
@@ -154,6 +155,70 @@ const watchActions = (): void => {
   }
 
   return null;
+};
+
+/**
+ * @description Watch UI clicks for changes to pass on to the main plugin thread.
+ *
+ * @kind function
+ * @name watchLayer
+ *
+ * @param {Object} layerElement The html element in the DOM to watch.
+ *
+ * @returns {null}
+ */
+const makeImageRequest = async (requestUrl) => {
+  if (requestUrl && requestUrl.route) {
+    // helper to encode canvas image data into Uint8Array
+    const encode = async (canvas, ctx, imageData) => {
+      ctx.putImageData(imageData, 0, 0);
+      return new Promise((resolve, reject) => {
+        canvas.toBlob((blob) => {
+          const reader: any = new FileReader(); // eslint-disable-line no-undef
+          reader.onload = () => resolve(new Uint8Array(reader.result));
+          reader.onerror = () => reject(new Error('Could not read from blob'));
+          reader.readAsArrayBuffer(blob);
+        });
+      });
+    };
+
+    // grab the sandbox image
+    const sandboxImgElement: HTMLImageElement = (<HTMLImageElement> document.getElementById('image-sandbox'));
+
+    if (sandboxImgElement) {
+      const imageLoaded = () => sandboxImgElement.complete;
+
+      sandboxImgElement.crossOrigin = 'anonymous';
+      sandboxImgElement.src = requestUrl.route;
+
+      // wait to make sure the image is loaded
+      await pollWithPromise(imageLoaded);
+
+      // create an empty canvas element, same dimensions as the image
+      const canvas = document.createElement('canvas');
+      canvas.width = sandboxImgElement.width;
+      canvas.height = sandboxImgElement.height;
+
+      // copy the image contents to the canvas
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(sandboxImgElement, 0, 0);
+
+      // read the raw data from the canvas
+      const canvasImageData = await ctx.getImageData(
+        0, 0, sandboxImgElement.width, sandboxImgElement.height,
+      );
+
+      // encode the data for figma
+      const imageData = await encode(canvas, ctx, canvasImageData);
+
+      // remove the temporary canvas element; reset the image
+      canvas.remove();
+      sandboxImgElement.removeAttribute('SRC');
+
+      // send the encoded data back to the main thread
+      parent.postMessage({ pluginMessage: { imageResponse: imageData } }, '*');
+    }
+  }
 };
 
 /**
@@ -362,6 +427,9 @@ const watchIncomingMessages = (): void => {
     const { pluginMessage } = event.data;
 
     switch (pluginMessage.action) {
+      case 'imageRequest':
+        makeImageRequest(pluginMessage.payload);
+        break;
       case 'refreshState':
         updateSelectedLayers(pluginMessage.payload);
         break;

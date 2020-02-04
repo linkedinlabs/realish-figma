@@ -793,7 +793,8 @@ export default class App {
       | EllipseNode
       | PolygonNode
       | RectangleNode
-      | StarNode> = getFilteredNodes(selection, false);
+      | StarNode
+    > = getFilteredNodes(selection, false);
 
     /**
      * @description Applies a `Painter` instance to each node in an array, updating the text.
@@ -816,36 +817,73 @@ export default class App {
       messenger.log('End manipulating text');
     };
 
+    /** WIP
+     * @description Applies a `Painter` instance to each node in an array, updating the text.
+     *
+     * @kind function
+     * @name manipulateShapes
+     *
+     * @param {Array} nodesToPaint The array of text nodes (`TextNode`) to modify.
+     */
+    const manipulateShapes = (nodesToPaint) => {
+      messenger.log('Begin manipulating shape nodes');
+
+      nodesToPaint.forEach((shapeNode: SceneNode) => {
+        // set up Painter instance for the layer
+        const painter = new Painter({ node: shapeNode, sessionKey });
+
+        // replace the existing fill with the proposed image fill
+        const paintResult = painter.replaceFill();
+        messenger.handleResult(paintResult);
+      });
+      messenger.log('End manipulating shape nodes');
+    };
+
     // begin main thread of action ------------------------------------------------------
 
     const textNodes: Array<TextNode> = nodes.filter(
       (node): node is TextNode => node.type === 'TEXT',
     );
+    const shapeNodes: Array<
+      EllipseNode
+      | PolygonNode
+      | RectangleNode
+      | StarNode
+    > = nodes.filter((node): node is EllipseNode | PolygonNode | RectangleNode | StarNode => node.type !== 'TEXT');
     const missingTypefaces: Array<TextNode> = textNodes.filter(
       (node: TextNode) => node.hasMissingFont,
     );
 
-    if (textNodes && (textNodes.length > 0) && (missingTypefaces.length < 1)) {
-      // update if text nodes are available and fonts are not missing
-      // run the main thread this sets everything else in motion
-      const typefaces: Array<FontName> = readTypefaces(textNodes);
-      const languageTypefaces: Array<FontName> = null;
+    if (
+      (textNodes && (textNodes.length > 0) && (missingTypefaces.length < 1))
+      || (shapeNodes && (shapeNodes.length > 0))
+    ) {
+      if (textNodes && (textNodes.length > 0) && (missingTypefaces.length < 1)) {
+        // update if text nodes are available and fonts are not missing
+        const typefaces: Array<FontName> = readTypefaces(textNodes);
+        const languageTypefaces: Array<FontName> = null;
 
-      // load typefaces
-      if (languageTypefaces) {
-        languageTypefaces.forEach(languageTypeface => typefaces.push(languageTypeface));
+        // load typefaces
+        if (languageTypefaces) {
+          languageTypefaces.forEach(languageTypeface => typefaces.push(languageTypeface));
+        }
+        await loadTypefaces(typefaces, messenger);
+
+        // replace existing text with proposed text
+        manipulateText(textNodes);
       }
-      await loadTypefaces(typefaces, messenger);
 
-      // replace existing text with proposed text
-      manipulateText(textNodes);
+      // update if shape nodes are available
+      if (shapeNodes && (shapeNodes.length > 0)) {
+        // update fills on shape layers with proposed images
+        manipulateShapes(shapeNodes);
+      }
 
       // update the UI to reflect changes
       App.refreshGUI(sessionKey);
 
       return this.closeOrReset();
     }
-
 
     // otherwise set/display appropriate error messages
     let toastErrorMessage = 'Something went wrong 😬';
