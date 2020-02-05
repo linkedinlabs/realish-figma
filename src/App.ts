@@ -167,6 +167,33 @@ const readTypefaces = (textNodes: Array<TextNode>) => {
   return uniqueTypefaces;
 };
 
+const extractImage = async (
+  node: EllipseNode
+    | PolygonNode
+    | RectangleNode
+    | StarNode,
+) => {
+  const fills: Array<Paint> = node.fills as Array<Paint>;
+  let image: Image = null;
+  let imageData: Uint8Array = null;
+
+  // iterate fills and find an image
+  fills.forEach((fill: Paint) => {
+    if (fill.type === 'IMAGE') {
+      // grab the hash that represent the actual image on disk
+      const { imageHash } = fill;
+      image = figma.getImageByHash(imageHash);
+    }
+  });
+
+  if (image) {
+    // use the hash to read the image bytes
+    imageData = await image.getBytesAsync();
+  }
+
+  return imageData;
+};
+
 /**
  * @description A class to handle core app logic and dispatch work to other classes.
  *
@@ -248,7 +275,7 @@ export default class App {
    *
    * @param {string} sessionKey A rotating key used during the single run of the plugin.
    */
-  static refreshGUI(sessionKey: number) {
+  static async refreshGUI(sessionKey: number) {
     const { messenger, selection } = assemble(figma);
     const nodes: Array<
       TextNode
@@ -260,7 +287,7 @@ export default class App {
 
     // set array of data with information from each text node
     const selected = [];
-    nodes.forEach((node) => {
+    await asyncForEach(nodes, async (node) => {
       type Assignment =
         'unassigned'
         | 'avatar-company'
@@ -280,10 +307,13 @@ export default class App {
       // const assignmentData = getNodeAssignmentData(node);
       // let assignment: string = JSON.parse(assignmentData || null);
       let nodeType: 'shape' | 'text' = 'shape';
+      let originalImage: Uint8Array = null;
       let originalText: string = node.type;
       if (node.type === 'TEXT') {
         nodeType = 'text';
         originalText = node.characters;
+      } else {
+        originalImage = await extractImage(node);
       }
       let proposedText: string = node.type === 'TEXT' ? node.characters : node.type;
       const lockedData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
@@ -313,10 +343,10 @@ export default class App {
       }
 
       // update the bundle of info for the current `node` in the selection
-
       selected.push({
         id: node.id,
         assignment,
+        originalImage,
         originalText,
         proposedText,
         nodeType,

@@ -157,11 +157,11 @@ const watchActions = (): void => {
   return null;
 };
 
-/**
+/** WIP
  * @description Watch UI clicks for changes to pass on to the main plugin thread.
  *
  * @kind function
- * @name watchLayer
+ * @name makeImageRequest
  *
  * @param {Object} layerElement The html element in the DOM to watch.
  *
@@ -298,6 +298,7 @@ const watchLayer = (layerElement: HTMLElement): void => {
 const updateSelectedLayers = (layers: Array<{
   id: string,
   assignment: string,
+  originalImage: Uint8Array,
   originalText: string,
   proposedText: string,
   nodeType: 'text' | 'shape',
@@ -315,6 +316,7 @@ const updateSelectedLayers = (layers: Array<{
         const {
           id,
           assignment,
+          originalImage,
           originalText,
           proposedText,
           nodeType,
@@ -354,8 +356,9 @@ const updateSelectedLayers = (layers: Array<{
           newLayerElement.classList.remove('locked');
         }
 
-        // grab the `proposedText` element; used by both types
+        // grab the `proposedText`/`originalText` elements; used by both types
         const proposedTextElement = newLayerElement.querySelector(`.new-${nodeType} .${nodeType}`);
+        const originalTextElement = newLayerElement.querySelector(`.original-${nodeType} .${nodeType}`);
 
         // set image url
         if (nodeType === 'shape') {
@@ -366,11 +369,18 @@ const updateSelectedLayers = (layers: Array<{
           if (fullUrl && assignment !== ASSIGNMENTS.unassigned.id) {
             proposedTextElement.style.backgroundImage = `url(${fullUrl})`;
           }
+
+          // set/update original image
+          if (originalImage) {
+            const blobUrl = URL.createObjectURL(
+              new Blob([originalImage]), // eslint-disable-line no-undef
+            );
+            originalTextElement.style.backgroundImage = `url(${blobUrl})`;
+          }
         }
 
         // set text
         if (nodeType === 'text') {
-          const originalTextElement = newLayerElement.querySelector(`.original-${nodeType} .${nodeType}`);
           originalTextElement.firstChild.nodeValue = originalText;
           proposedTextElement.firstChild.nodeValue = proposedText;
         }
