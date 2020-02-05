@@ -173,25 +173,32 @@ const extractImage = async (
     | RectangleNode
     | StarNode,
 ) => {
-  const fills: Array<Paint> = node.fills as Array<Paint>;
   let image: Image = null;
-  let imageData: Uint8Array = null;
+  const fills: Array<Paint> = node.fills as Array<Paint>;
+  const imageResults: {
+    hash: string,
+    data: Uint8Array,
+  } = {
+    hash: null,
+    data: null,
+  };
 
   // iterate fills and find an image
   fills.forEach((fill: Paint) => {
     if (fill.type === 'IMAGE') {
       // grab the hash that represent the actual image on disk
       const { imageHash } = fill;
+      imageResults.hash = imageHash;
       image = figma.getImageByHash(imageHash);
     }
   });
 
   if (image) {
     // use the hash to read the image bytes
-    imageData = await image.getBytesAsync();
+    imageResults.data = await image.getBytesAsync();
   }
 
-  return imageData;
+  return imageResults;
 };
 
 /**
@@ -308,14 +315,17 @@ export default class App {
       // let assignment: string = JSON.parse(assignmentData || null);
       let nodeType: 'shape' | 'text' = 'shape';
       let originalImage: Uint8Array = null;
-      let originalText: string = node.type;
+      let originalText: string = null;
       if (node.type === 'TEXT') {
         nodeType = 'text';
         originalText = node.characters;
       } else {
-        originalImage = await extractImage(node);
+        const imageResults = await extractImage(node);
+        const { data, hash } = imageResults;
+        originalImage = data;
+        originalText = hash;
       }
-      let proposedText: string = node.type === 'TEXT' ? node.characters : node.type;
+      let proposedText: string = node.type === 'TEXT' ? node.characters : originalText;
       const lockedData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
       const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
 
@@ -856,10 +866,10 @@ export default class App {
      *
      * @param {Array} nodesToPaint The array of text nodes (`TextNode`) to modify.
      */
-    const manipulateShapes = (nodesToPaint) => {
+    const manipulateShapes = async (nodesToPaint) => {
       messenger.log('Begin manipulating shape nodes');
 
-      asyncForEach(nodesToPaint, async (shapeNode: SceneNode) => {
+      await asyncForEach(nodesToPaint, async (shapeNode: SceneNode) => {
         // set up Painter instance for the layer
         const painter = new Painter({ node: shapeNode, sessionKey });
 
@@ -907,7 +917,7 @@ export default class App {
       // update if shape nodes are available
       if (shapeNodes && (shapeNodes.length > 0)) {
         // update fills on shape layers with proposed images
-        manipulateShapes(shapeNodes);
+        await manipulateShapes(shapeNodes);
       }
 
       // update the UI to reflect changes

@@ -190,6 +190,13 @@ export default class Painter {
       // set the image as the new fill
       shapeNode.fills = newFills;
 
+      // update the proposed text to match the new fill
+      shapeNode.setSharedPluginData(
+        dataNamespace(),
+        textProposedKey,
+        JSON.stringify(newImage.hash),
+      );
+
       // return a successful result
       result.status = 'success';
       result.messages.log = `Layer ${shapeNode.id} fill updated`;

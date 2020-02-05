@@ -372,10 +372,14 @@ const updateSelectedLayers = (layers: Array<{
 
           // set/update original image
           if (originalImage) {
-            const blobUrl = URL.createObjectURL(
+            const blobUrl: string = URL.createObjectURL(
               new Blob([originalImage]), // eslint-disable-line no-undef
             );
             originalTextElement.style.backgroundImage = `url(${blobUrl})`;
+
+            if (proposedText === originalText) {
+              proposedTextElement.style.backgroundImage = `url(${blobUrl})`;
+            }
           }
         }
 
