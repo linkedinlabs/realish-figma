@@ -213,7 +213,7 @@ const generateFilepath = (assignment): string => {
       style: 'lowerCase',
     }).replace(' ', '-');
 
-    filepath = `/linkedin/companies/${randomCompany}.png`;
+    filepath = `/companies/${randomCompany}.png`;
   }
 
   if (assignment === ASSIGNMENTS.avatarPerson.id) {
@@ -222,7 +222,7 @@ const generateFilepath = (assignment): string => {
     const randomNumber: number = getRandomInt(1, 35);
     const formattedNumber: string = randomNumber < 10 ? `0${randomNumber}` : `${randomNumber}`;
 
-    filepath = `/linkedin/people/${randomSex}-${formattedNumber}.png`;
+    filepath = `/people/${randomSex}-${formattedNumber}.png`;
   }
 
   return filepath;
