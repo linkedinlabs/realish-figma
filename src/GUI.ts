@@ -186,13 +186,13 @@ const makeImageRequest = async (requestUrl) => {
     const sandboxImgElement: HTMLImageElement = (<HTMLImageElement> document.getElementById('image-sandbox'));
 
     if (sandboxImgElement) {
-      const imageLoaded = () => sandboxImgElement.complete;
+      const imageLoaded = imageElement => imageElement.complete;
 
       sandboxImgElement.crossOrigin = 'anonymous';
       sandboxImgElement.src = requestUrl.route;
 
       // wait to make sure the image is loaded
-      await pollWithPromise(imageLoaded);
+      await pollWithPromise(() => imageLoaded(sandboxImgElement));
 
       // create an empty canvas element, same dimensions as the image
       const canvas = document.createElement('canvas');
