@@ -188,7 +188,7 @@ const makeImageRequest = async (requestUrl) => {
     if (sandboxImgElement) {
       const imageLoaded = imageElement => imageElement.complete;
 
-      sandboxImgElement.crossOrigin = 'anonymous';
+      // sandboxImgElement.crossOrigin = 'anonymous';
       sandboxImgElement.src = requestUrl.route;
 
       // wait to make sure the image is loaded
