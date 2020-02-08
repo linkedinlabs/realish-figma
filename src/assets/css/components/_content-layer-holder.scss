@@ -49,7 +49,7 @@
     display: block;
     width: em($size);
     height: em($size);
-    border-radius: em($size);
+    border-radius: em($size/6);
     background-color: $wl-action-tertiary;
     background-image: linear-gradient(0deg, $wl-accent-tertiary 0%, $wl-action-tertiary 100%);
     background-size: cover;

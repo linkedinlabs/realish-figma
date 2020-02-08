@@ -302,6 +302,7 @@ const updateSelectedLayers = (layers: Array<{
   originalText: string,
   proposedText: string,
   nodeType: 'text' | 'shape',
+  rounded: 'all' | 'none' | 'some',
   locked: boolean,
 }>): void => {
   const layerCount = layers.length;
@@ -320,6 +321,7 @@ const updateSelectedLayers = (layers: Array<{
           originalText,
           proposedText,
           nodeType,
+          rounded,
           locked,
         } = layer;
 
@@ -383,6 +385,20 @@ const updateSelectedLayers = (layers: Array<{
               proposedTextElement.style.backgroundImage = `url(${blobUrl})`;
             }
           }
+
+          // set border radius
+          switch (rounded) {
+            case 'all':
+              originalTextElement.style.borderRadius = '100%';
+              proposedTextElement.style.borderRadius = '100%';
+              break;
+            case 'none':
+              originalTextElement.style.borderRadius = '0';
+              proposedTextElement.style.borderRadius = '0';
+              break;
+            default:
+              return null;
+          }
         }
 
         // set text
@@ -395,7 +411,7 @@ const updateSelectedLayers = (layers: Array<{
         layerListElement.appendChild(newLayerElement);
 
         // set control watchers
-        watchLayer(newLayerElement);
+        return watchLayer(newLayerElement);
       });
     }
 

@@ -360,6 +360,20 @@ export default class App {
         assignment = ASSIGNMENTS.unassigned.id as Assignment;
       }
 
+      let rounded: 'all' | 'none' | 'some' = 'some';
+      if (node.type === 'ELLIPSE') {
+        rounded = 'all';
+      } else if (node.type === 'RECTANGLE') {
+        if (node.bottomLeftRadius === 0) {
+          rounded = 'none';
+        } else {
+          const { bottomLeftRadius, width } = node;
+          if (bottomLeftRadius >= width) {
+            rounded = 'all';
+          }
+        }
+      }
+
       // update the bundle of info for the current `node` in the selection
       selected.push({
         id: node.id,
@@ -368,6 +382,7 @@ export default class App {
         originalText,
         proposedText,
         nodeType,
+        rounded,
         locked,
       });
     });
