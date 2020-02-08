@@ -387,7 +387,7 @@ const updateSelectedLayers = (layers: Array<{
           }
 
           // set border radius
-          switch (rounded) {
+          switch (rounded) { // eslint-disable-line default-case
             case 'all':
               originalTextElement.style.borderRadius = '100%';
               proposedTextElement.style.borderRadius = '100%';
@@ -396,8 +396,6 @@ const updateSelectedLayers = (layers: Array<{
               originalTextElement.style.borderRadius = '0';
               proposedTextElement.style.borderRadius = '0';
               break;
-            default:
-              return null;
           }
         }
 

@@ -368,7 +368,7 @@ export default class App {
           rounded = 'none';
         } else {
           const { bottomLeftRadius, width } = node;
-          if (bottomLeftRadius >= width) {
+          if ((bottomLeftRadius / width) >= 0.44) {
             rounded = 'all';
           }
         }
