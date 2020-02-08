@@ -316,7 +316,6 @@ export default class App {
       let nodeType: 'shape' | 'text' = 'shape';
       let originalImage: Uint8Array = null;
       let originalText: string = null;
-      let proposedText: string = null;
       if (node.type === 'TEXT') {
         nodeType = 'text';
         originalText = node.characters;
@@ -328,14 +327,15 @@ export default class App {
       }
       const lockedData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
       const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
+      let proposedText: string = nodeType === 'text' ? node.characters : 'original';
 
       // if text is already assigned, generate/rotate the new proposed text
       if (assignment && (assignment !== 'unassigned')) {
         const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
         const proposedTextData = node.getSharedPluginData(dataNamespace(), textProposedKey);
+        proposedText = JSON.parse(proposedTextData || null);
 
         if (!locked) {
-          proposedText = JSON.parse(proposedTextData || null);
           if (!proposedText) {
             const data = new Data({ for: node });
             proposedText = data.randomContent();
@@ -352,6 +352,9 @@ export default class App {
           if (nodeType === 'shape' && proposedText === 'original') {
             proposedText = originalText;
           }
+        } else {
+          // restore original
+          proposedText = originalText;
         }
       } else {
         assignment = ASSIGNMENTS.unassigned.id as Assignment;
@@ -596,7 +599,7 @@ export default class App {
 
       // new randomization based on assignment if layer was previously locked
       // otherwise the proposed text should restore to the original text if locking the layer
-      let proposedText: string = nodeToSecure.type === 'TEXT' ? nodeToSecure.characters : nodeToSecure.type;
+      let proposedText: string = nodeToSecure.type === 'TEXT' ? nodeToSecure.characters : 'original';
       if (locked) {
         const data = new Data({ for: nodeToSecure });
         proposedText = data.randomContent();
