@@ -316,6 +316,7 @@ export default class App {
       let nodeType: 'shape' | 'text' = 'shape';
       let originalImage: Uint8Array = null;
       let originalText: string = null;
+      let proposedText: string = null;
       if (node.type === 'TEXT') {
         nodeType = 'text';
         originalText = node.characters;
@@ -325,7 +326,6 @@ export default class App {
         originalImage = data;
         originalText = hash;
       }
-      let proposedText: string = node.type === 'TEXT' ? node.characters : originalText;
       const lockedData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
       const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
 
@@ -346,6 +346,11 @@ export default class App {
               textProposedKey,
               JSON.stringify(proposedText),
             );
+          }
+
+          // restore original image
+          if (nodeType === 'shape' && proposedText === 'original') {
+            proposedText = originalText;
           }
         }
       } else {
@@ -551,9 +556,8 @@ export default class App {
         | RectangleNode
         | StarNode,
     ): void => {
-      // set to the current (original) text
-      const proposedText = nodeToRestore.type === 'TEXT' ? nodeToRestore.characters : nodeToRestore.type;
-
+      // set to the current (original) text (or `null` for shapes)
+      const proposedText = nodeToRestore.type === 'TEXT' ? nodeToRestore.characters : 'original';
       // commit the proposed text
       nodeToRestore.setSharedPluginData(
         dataNamespace(),

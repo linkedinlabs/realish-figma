@@ -161,6 +161,13 @@ export default class Painter {
       return result;
     }
 
+    // nothing to do if `proposedText` is “original”
+    if (proposedText === 'original') {
+      result.status = 'success';
+      result.messages.log = `Layer ${this.node.id} does not need to change`;
+      return result;
+    }
+
     // update the node’s fill with the proposed image
     const shapeNode: EllipseNode
       | PolygonNode

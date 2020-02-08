@@ -188,7 +188,7 @@ const makeImageRequest = async (requestUrl) => {
     if (sandboxImgElement) {
       const imageLoaded = imageElement => imageElement.complete;
 
-      // sandboxImgElement.crossOrigin = 'anonymous';
+      sandboxImgElement.crossOrigin = 'anonymous';
       sandboxImgElement.src = requestUrl.route;
 
       // wait to make sure the image is loaded
@@ -362,12 +362,14 @@ const updateSelectedLayers = (layers: Array<{
 
         // set image url
         if (nodeType === 'shape') {
-          let fullUrl: string = null;
-          const serverLocation: string = process.env.MEDIA_URL ? process.env.MEDIA_URL : 'https://somewhere.com';
-          fullUrl = `${serverLocation}${proposedText}`;
+          if (proposedText !== originalText) {
+            let fullUrl: string = null;
+            const serverLocation: string = process.env.MEDIA_URL ? process.env.MEDIA_URL : 'https://somewhere.com';
+            fullUrl = `${serverLocation}${proposedText}`;
 
-          if (fullUrl && assignment !== ASSIGNMENTS.unassigned.id) {
-            proposedTextElement.style.backgroundImage = `url(${fullUrl})`;
+            if (fullUrl && assignment !== ASSIGNMENTS.unassigned.id) {
+              proposedTextElement.style.backgroundImage = `url(${fullUrl})`;
+            }
           }
 
           // set/update original image
