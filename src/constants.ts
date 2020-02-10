@@ -86,6 +86,20 @@ const CONTAINER_NODE_TYPES = {
 };
 
 /**
+ * @description An object containing snippets of copy (text) to re-use across the plugin’s UI.
+ *
+ * @kind constant
+ * @name GUI_CONTENT
+ * @type {Object}
+ */
+const GUI_CONTENT = {
+  relaunch: {
+    layer: 'Generate random content for this layer.',
+    component: 'Generate random content for layers inside this component.',
+  },
+};
+
+/**
  * @description An object containing `height`/`width` settings for the plugin GUI window.
  *
  * @kind constant
@@ -111,6 +125,7 @@ export {
   ASSIGNMENTS,
   CONTAINER_NODE_TYPES,
   DATA_KEYS,
+  GUI_CONTENT,
   GUI_SETTINGS,
   PLUGIN_IDENTIFIER,
   PLUGIN_NAME,
