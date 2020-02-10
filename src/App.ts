@@ -382,6 +382,12 @@ export default class App {
           JSON.stringify(proposedText),
         );
 
+        // set the re-launch command
+        // quick-randomize-assigned
+        textNodeToReassign.setRelaunchData({
+          'quick-randomize-assigned': 'Generate random content for this layer.',
+        });
+
         triggerFigmaChangeWatcher(textNodeToReassign);
 
         messenger.log(`Updated ${id}’s assignment to: “${assignment}”`);
