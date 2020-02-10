@@ -11,6 +11,7 @@ import {
 import {
   ASSIGNMENTS,
   DATA_KEYS,
+  GUI_CONTENT,
   GUI_SETTINGS,
 } from './constants';
 
@@ -383,9 +384,8 @@ export default class App {
         );
 
         // set the re-launch command
-        // quick-randomize-assigned
         textNodeToReassign.setRelaunchData({
-          'quick-randomize-assigned': 'Generate random content for this layer.',
+          'quick-randomize-assigned': GUI_CONTENT.relaunch.layer,
         });
 
         triggerFigmaChangeWatcher(textNodeToReassign);
@@ -638,6 +638,11 @@ export default class App {
           DATA_KEYS.assignment,
           JSON.stringify(assignment),
         );
+
+        // set the re-launch command
+        textNode.setRelaunchData({
+          'quick-randomize-assigned': GUI_CONTENT.relaunch.layer,
+        });
 
         triggerFigmaChangeWatcher(textNode);
 
