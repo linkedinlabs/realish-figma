@@ -109,7 +109,7 @@
   "relaunchButtons": [
     {
       "command": "quick-randomize-assigned",
-      "name": "Run assigned randomizations…",
+      "name": "Generate content…",
       "multipleSelection": true
     }
   ]
