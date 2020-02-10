@@ -105,5 +105,12 @@
       "name": "Run assigned randomizations…",
       "command": "quick-randomize-assigned"
     }
+  ],
+  "relaunchButtons": [
+    {
+      "command": "quick-randomize-assigned",
+      "name": "Run assigned randomizations…",
+      "multipleSelection": true
+    }
   ]
 }
