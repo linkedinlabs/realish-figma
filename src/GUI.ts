@@ -157,15 +157,18 @@ const watchActions = (): void => {
   return null;
 };
 
-/** WIP
- * @description Watch UI clicks for changes to pass on to the main plugin thread.
+/**
+ * @description Requests an image (based on URL), loads it to a holder in the DOM
+ * and then reads the image into a generated canvas element. The image data is
+ * pulled from the canvas element using `getImageData` and the result is passed
+ * back to the main thread.
  *
  * @kind function
  * @name makeImageRequest
  *
- * @param {Object} layerElement The html element in the DOM to watch.
+ * @param {Object} requestUrl The full URL of the image to request.
  *
- * @returns {null}
+ * @returns {Promise} Returns a promise for resolution.
  */
 const makeImageRequest = async (requestUrl) => {
   if (requestUrl && requestUrl.route) {
