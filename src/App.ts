@@ -116,13 +116,14 @@ const setRelaunchCommands = (node: SceneNode): void => {
     node.setRelaunchData({
       'quick-randomize-assigned': GUI_CONTENT.relaunch.layer,
     });
+  }
 
-    const componentNode: ComponentNode = findTopComponent(node);
-    if (componentNode && !componentNode.remote) {
-      componentNode.setRelaunchData({
-        'quick-randomize-assigned': GUI_CONTENT.relaunch.component,
-      });
-    }
+  // apply to top-level component
+  const componentNode: ComponentNode = findTopComponent(node);
+  if (componentNode && !componentNode.remote) {
+    componentNode.setRelaunchData({
+      'quick-randomize-assigned': GUI_CONTENT.relaunch.component,
+    });
   }
 
   // apply to the instance node
