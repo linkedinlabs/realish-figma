@@ -118,9 +118,9 @@ export default class Painter {
     return result;
   }
 
-  /** WIP
-   * @description Locates proposed text in a text node’s Settings object and updates
-   * the node’s characters.
+  /**
+   * @description Locates proposed content in a shape node’s Settings object and updates
+   * the node’s fill.
    *
    * @kind function
    * @name replaceFill
@@ -156,7 +156,7 @@ export default class Painter {
       return result;
     }
 
-    // if there is no proposed text, return with error
+    // if there is no proposed content, return with error
     if (!proposedText) {
       result.status = 'error';
       result.messages.log = `Layer ${this.node.id} is missing proposed shape`;
@@ -199,7 +199,7 @@ export default class Painter {
       // set the image as the new fill
       shapeNode.fills = newFills;
 
-      // update the proposed text to match the new fill
+      // update the proposed content to match the new fill
       shapeNode.setSharedPluginData(
         dataNamespace(),
         textProposedKey,
