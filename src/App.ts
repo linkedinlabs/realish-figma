@@ -96,15 +96,13 @@ const triggerFigmaChangeWatcher = (textNode: TextNode): void => {
 };
 
 /**
- * @description Triggers Figma’s change watcher by randomly re-naming a node and then returning
- * it to it’s original name. This is used in the context of applying new data to a master
- * component that needs to be re-published in a library. Data updates do not currently
- * trigger Figma’s awareness of changes within the component.
+ * @description Invokes Figma’s `setRelaunchData` on the passed node and (if applicable),
+ * the container component node.
  *
  * @kind function
  * @name setRelaunchCommands
  *
- * @param {Object} textNode The text node (`TextNode`) to trigger changes on.
+ * @param {Object} node The node (`SceneNode`) to use with `setRelaunchData`.
  *
  * @returns {null}
  */
@@ -127,7 +125,7 @@ const setRelaunchCommands = (node: SceneNode): void => {
   }
 
   // apply to the instance node
-  // (currently not possible)
+  // (currently not possible - but coming soon)
   // if (topInstanceNode) {
   //   topInstanceNode.setRelaunchData({
   //     'quick-randomize-assigned': GUI_CONTENT.relaunch.component,
@@ -139,6 +137,8 @@ const setRelaunchCommands = (node: SceneNode): void => {
   //     });
   //   }
   // }
+
+  return null;
 };
 
 /**
