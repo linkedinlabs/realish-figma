@@ -128,16 +128,15 @@ const asyncNetworkRequest = async (options: {
   return response;
 };
 
-/** WIP
- * @description Manages the process of passing a network request along to the plugin
- * UI and waiting for the response.
+/**
+ * @description Similar to `asyncNetworkRequest`, manages the process for requesting the
+ * download of a remote image.
  *
  * @kind function
  * @name asyncImageRequest
  *
  * @param {Object} options An object including the request options: The URL the request should
- * go to (`requestUrl`), headers to pass along to the request (optional), an optional request
- * body (`bodyToSend`), and an initialized instance of the Messenger class for logging (optional).
+ * go to (`requestUrl`) and an initialized instance of the Messenger class for logging (optional).
  *
  * @returns {Object} Returns the result of the network request (response).
  */
