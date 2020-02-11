@@ -7,13 +7,13 @@ import { DATA_KEYS } from './constants';
  * retrieve the image data, and load it into a Figma `Image` object.
  *
  * @kind function
- * @name loadImage
+ * @name loadRemoteImage
  *
  * @param {string} remoteUrl The full URL of the image to request.
  *
  * @returns {Object} A result object container success/error status and log/toast messages.
  */
-const loadImage = async (remoteUrl) => {
+const loadRemoteImage = async (remoteUrl) => {
   const messenger = new Messenger({ for: figma, in: figma.currentPage });
 
   // load the remote image and extract the data
@@ -182,7 +182,7 @@ export default class Painter {
     remoteUrl = `${serverLocation}${proposedText}`;
 
     // load the remote image
-    const newImage = await loadImage(remoteUrl);
+    const newImage = await loadRemoteImage(remoteUrl);
 
     // apply the image as a fill
     if (newImage) {
