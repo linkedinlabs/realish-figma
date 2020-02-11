@@ -212,7 +212,7 @@ const makeImageRequest = async (requestUrl) => {
       );
 
       // encode the data for figma
-      const imageData = await encode(canvas, ctx, canvasImageData);
+      const imageData: Uint8Array = await encode(canvas, ctx, canvasImageData) as Uint8Array;
 
       // remove the temporary canvas element; reset the image
       canvas.remove();

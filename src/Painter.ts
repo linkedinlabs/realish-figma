@@ -2,20 +2,22 @@ import Messenger from './Messenger';
 import { asyncImageRequest, dataNamespace } from './Tools';
 import { DATA_KEYS } from './constants';
 
-/** WIP
- * @description Locates proposed text in a text node’s Settings object and updates
- * the node’s characters.
+/**
+ * @description Makes an async call to the plugin UI thread to load a remote image,
+ * retrieve the image data, and load it into a Figma `Image` object.
  *
  * @kind function
  * @name loadImage
+ *
+ * @param {string} remoteUrl The full URL of the image to request.
  *
  * @returns {Object} A result object container success/error status and log/toast messages.
  */
 const loadImage = async (remoteUrl) => {
   const messenger = new Messenger({ for: figma, in: figma.currentPage });
 
-  // const bytes = await image.getBytesAsync()
-  const imageData = await asyncImageRequest({
+  // load the remote image and extract the data
+  const imageData: Uint8Array = await asyncImageRequest({
     requestUrl: remoteUrl,
     messenger,
   });
