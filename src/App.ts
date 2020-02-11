@@ -292,7 +292,7 @@ export default class App {
       | StarNode> = getFilteredNodes(selection, false);
     const nodesCount = nodes.length;
 
-    // set array of data with information from each text node
+    // set array of data with information from each node
     const selected = [];
     await asyncForEach(nodes, async (node) => {
       type Assignment =
@@ -408,16 +408,16 @@ export default class App {
   }
 
   /**
-   * @description The core action of the app. Retrieve a text node (`TextNode`) by `id` and
-   * lock it (`lock-toggle`), assign it to a specific type (`reassign`), propose new randomized
-   * text (`remix`), or restore the proposed text to the node’s original text (`restore`).
+   * @description The core action of the app. Retrieve a node (`SceneNode`) by `id` and lock it
+   * (`lock-toggle`), assign it to a specific type (`reassign`), propose new randomized content
+   * (`remix`), or restore the proposed content to the node’s original content (`restore`).
    *
    * @kind function
    * @name actOnNode
    *
    * @param {string} actionType The action to take on the node: lock it (`lock-toggle`), assign
-   * it to a specific type (`reassign`), propose new randomized text (`remix`), or restore the
-   * proposed text to the node’s original text (`restore`).
+   * it to a specific type (`reassign`), propose new randomized content (`remix`), or restore the
+   * proposed content to the node’s original content (`restore`).
    * @param {string} payload The `id` of the node to act on and, optionally, the data type to
    * assign the layer to (`assignment`). The `assignment` should match an `id` in the
    * `ASSIGNMENTS` constant.
@@ -454,7 +454,8 @@ export default class App {
      * @kind function
      * @name retrieveNode
      *
-     * @returns {Object} The text node (`TextNode`) retrieved.
+     * @returns {Object} The node (`TextNode | EllipseNode | PolygonNode | RectangleNode
+     * | StarNode`) retrieved.
      */
     const retrieveNode = ():
       TextNode
@@ -480,12 +481,12 @@ export default class App {
 
     /**
      * @description Assigns or re-assigns a new data assignment type to supplied
-     * text node (`TextNode`).
+     * node (`TextNode | EllipseNode | PolygonNode | RectangleNode | StarNode`).
      *
      * @kind function
      * @name reassignNode
      *
-     * @param {string} nodeToReassign The text node (`TextNode`) to modify.
+     * @param {string} nodeToReassign The node to modify.
      */
     const reassignNode = (
       nodeToReassign:
@@ -528,12 +529,12 @@ export default class App {
     };
 
     /**
-     * @description Sets a new `proposedText` in a node’s data based on assignment.
+     * @description Sets a new `proposedText` content in a node’s data based on assignment.
      *
      * @kind function
      * @name remixProposedContent
      *
-     * @param {string} nodeToRemix The text node (`TextNode`) to modify.
+     * @param {string} nodeToRemix The node to modify.
      */
     const remixProposedContent = (
       nodeToRemix:
@@ -547,24 +548,24 @@ export default class App {
       const data = new Data({ for: nodeToRemix });
       const proposedText: string = data.randomContent();
 
-      // commit the proposed text
+      // commit the proposed content
       nodeToRemix.setSharedPluginData(
         dataNamespace(),
         textProposedKey,
         JSON.stringify(proposedText),
       );
 
-      messenger.log(`Remixed ${id}’s proposed text`);
+      messenger.log(`Remixed ${id}’s proposed content`);
     };
 
     /**
-     * @description Sets a text node’s (`TextNode`) `proposedText` to it’s
-     * current text (`characters`).
+     * @description Sets a node’s `proposedText` to it’s current content.
      *
      * @kind function
      * @name restoreContent
      *
-     * @param {string} nodeToRestore The text node (`TextNode`) to modify.
+     * @param {string} nodeToRestore The node (`TextNode | EllipseNode | PolygonNode
+     * | RectangleNode | StarNode`) to modify.
      */
     const restoreContent = (
       nodeToRestore:
@@ -574,26 +575,25 @@ export default class App {
         | RectangleNode
         | StarNode,
     ): void => {
-      // set to the current (original) text (or `null` for shapes)
+      // set to the current (original) content (or `null` for shapes)
       const proposedText = nodeToRestore.type === 'TEXT' ? nodeToRestore.characters : 'original';
-      // commit the proposed text
+      // commit the proposed content
       nodeToRestore.setSharedPluginData(
         dataNamespace(),
         textProposedKey,
         JSON.stringify(proposedText),
       );
 
-      messenger.log(`Restored ${id} to the original text`);
+      messenger.log(`Restored ${id} to the original content`);
     };
 
     /**
-     * @description Locks or unlocks the supplied text node (`TextNode`) for the plugin
-     * not at the Figma level.
+     * @description Locks or unlocks the supplied node for the plugin (not at the Figma level).
      *
      * @kind function
      * @name toggleNodeLock
      *
-     * @param {string} nodeToSecure The text node (`TextNode`) to modify.
+     * @param {string} nodeToSecure The node to modify.
      * @param {boolean} locked Current locked (`true`) status of the node. Unlocked is `false`.
      */
     const toggleNodeLock = (
@@ -613,14 +613,14 @@ export default class App {
       );
 
       // new randomization based on assignment if layer was previously locked
-      // otherwise the proposed text should restore to the original text if locking the layer
+      // otherwise the proposed content should restore to the original content if locking the layer
       let proposedText: string = nodeToSecure.type === 'TEXT' ? nodeToSecure.characters : 'original';
       if (locked) {
         const data = new Data({ for: nodeToSecure });
         proposedText = data.randomContent();
       }
 
-      // commit the proposed text
+      // commit the proposed content
       nodeToSecure.setSharedPluginData(
         dataNamespace(),
         textProposedKey,
@@ -630,23 +630,23 @@ export default class App {
       messenger.log(`Updated ${id}’s locking to: “${locked}”`);
     };
 
-    const textNode = retrieveNode();
-    if (textNode) {
-      const lockedData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
+    const node = retrieveNode();
+    if (node) {
+      const lockedData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
       const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
 
       switch (actionType) {
         case 'reassign':
-          if (!locked) { reassignNode(textNode); }
+          if (!locked) { reassignNode(node); }
           break;
         case 'remix':
-          if (!locked) { remixProposedContent(textNode); }
+          if (!locked) { remixProposedContent(node); }
           break;
         case 'restore':
-          if (!locked) { restoreContent(textNode); }
+          if (!locked) { restoreContent(node); }
           break;
         case 'lock-toggle':
-          toggleNodeLock(textNode, locked);
+          toggleNodeLock(node, locked);
           break;
         default:
           return null;
@@ -674,7 +674,7 @@ export default class App {
    */
   static remixAll(sessionKey: number): void {
     const { messenger, selection } = assemble(figma);
-    const textNodes: Array<
+    const nodes: Array<
       TextNode
       | EllipseNode
       | PolygonNode
@@ -682,7 +682,13 @@ export default class App {
       | StarNode> = getFilteredNodes(selection, false);
 
     // iterate through each selected layer and apply the `remix` action
-    textNodes.forEach((textNode: TextNode) => App.actOnNode('remix', { id: textNode.id }, sessionKey));
+    nodes.forEach((
+      node: TextNode
+        | EllipseNode
+        | PolygonNode
+        | RectangleNode
+        | StarNode,
+    ) => App.actOnNode('remix', { id: node.id }, sessionKey));
 
     // reset the working state
     const message: {
@@ -698,9 +704,9 @@ export default class App {
   }
 
   /**
-   * @description Sets new random text based on a supplied assignment on currently-selected
-   * (and unlocked) text nodes (`TextNode`). A node’s existing `assignment` is ignored. If
-   * a node does not already have an assignment, it is assigned the supplied type.
+   * @description Sets new random content based on a supplied assignment on currently-selected
+   * (and unlocked) nodes. A node’s existing `assignment` is ignored. If a node does not already
+   * have an assignment, it is assigned the supplied type.
    *
    * @kind function
    * @name quickRandomize
@@ -713,7 +719,7 @@ export default class App {
   quickRandomize(assignment: string, sessionKey: number): void {
     const { messenger, selection } = assemble(figma);
     const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
-    const textNodes: Array<
+    const nodes: Array<
       TextNode
       | EllipseNode
       | PolygonNode
@@ -721,25 +727,25 @@ export default class App {
       | StarNode> = getFilteredNodes(selection, false);
 
     // iterate through each selected layer and apply the `remix` action
-    textNodes.forEach((textNode: TextNode) => {
-      const lockedData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
+    nodes.forEach((node: TextNode) => {
+      const lockedData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
       const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
 
       if (!locked) {
         if (assignment === 'assigned') {
-          App.actOnNode('remix', { id: textNode.id }, sessionKey);
+          App.actOnNode('remix', { id: node.id }, sessionKey);
         } else {
-          const data = new Data({ for: textNode });
+          const data = new Data({ for: node });
           const proposedText: string = data.randomContent(assignment);
 
-          // commit the proposed text
-          textNode.setSharedPluginData(
+          // commit the proposed content
+          node.setSharedPluginData(
             dataNamespace(),
             textProposedKey,
             JSON.stringify(proposedText),
           );
 
-          messenger.log(`Set ${textNode.id}’s proposed text for: “${assignment}”`);
+          messenger.log(`Set ${node.id}’s proposed content for: “${assignment}”`);
 
           // set the assignment on unassigned nodes, otherwise ignore it
           if (isValidAssignment(assignment, 'text')) {
@@ -754,18 +760,18 @@ export default class App {
               | 'email'
               | 'job-title'
               | 'timestamp';
-            const currentAssignmentData = getNodeAssignmentData(textNode);
+            const currentAssignmentData = getNodeAssignmentData(node);
             const currentAssignment = JSON.parse(currentAssignmentData || null) as Assignment;
             if (!currentAssignment || currentAssignment === 'unassigned') {
               const newAssignment: Assignment = assignment as Assignment;
-              App.actOnNode('reassign', { id: textNode.id, assignment: newAssignment }, sessionKey);
+              App.actOnNode('reassign', { id: node.id, assignment: newAssignment }, sessionKey);
             }
           } else {
-            messenger.log(`Could not assign ${textNode.id}; Invalid assignment`, 'error');
+            messenger.log(`Could not assign ${node.id}; Invalid assignment`, 'error');
           }
         }
       } else {
-        messenger.log(`Ignored ${textNode.id}: locked`);
+        messenger.log(`Ignored ${node.id}: locked`);
       }
     });
 
@@ -789,7 +795,7 @@ export default class App {
    */
   quickAssign(assignment: string): void {
     const { messenger, selection } = assemble(figma);
-    const textNodes: Array<
+    const nodes: Array<
       TextNode
       | EllipseNode
       | PolygonNode
@@ -797,30 +803,30 @@ export default class App {
       | StarNode> = getFilteredNodes(selection, false);
 
     // iterate through each selected layer and apply the `remix` action
-    textNodes.forEach((textNode: TextNode) => {
-      const lockedData = textNode.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
+    nodes.forEach((node: TextNode) => {
+      const lockedData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
       const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
 
       if (!locked) {
         // commit the new assignment
-        textNode.setSharedPluginData(
+        node.setSharedPluginData(
           dataNamespace(),
           DATA_KEYS.assignment,
           JSON.stringify(assignment),
         );
 
-        triggerFigmaChangeWatcher(textNode);
+        triggerFigmaChangeWatcher(node);
 
-        messenger.log(`Updated ${textNode.id}’s assignment to: “${assignment}”`);
+        messenger.log(`Updated ${node.id}’s assignment to: “${assignment}”`);
       } else {
-        messenger.log(`Ignored ${textNode.id}: locked`);
+        messenger.log(`Ignored ${node.id}: locked`);
       }
     });
 
     messenger.log(`Quickly reassign all selected TextNodes to: “${assignment}”`);
 
     // give the user some feedback via toast
-    const layerCount = textNodes.length;
+    const layerCount = nodes.length;
     if (assignment !== 'unassigned') {
       let assignmentObject = null;
       Object.keys(ASSIGNMENTS).forEach((key) => {
@@ -880,13 +886,15 @@ export default class App {
       messenger.log('End manipulating text');
     };
 
-    /** WIP
-     * @description Applies a `Painter` instance to each node in an array, updating the text.
+    /**
+     * @description Applies a `Painter` instance to each node in an array, updating the shape node.
+     * Nodes should be typed as: `EllipseNode | PolygonNode | RectangleNode | StarNode`.
      *
      * @kind function
      * @name manipulateShapes
      *
-     * @param {Array} nodesToPaint The array of text nodes (`TextNode`) to modify.
+     * @param {Array} nodesToPaint The array of shape nodes
+     * (`EllipseNode | PolygonNode | RectangleNode | StarNode`) to modify.
      */
     const manipulateShapes = async (nodesToPaint) => {
       messenger.log('Begin manipulating shape nodes');
@@ -959,9 +967,9 @@ export default class App {
       messenger.log('Text node(s) contained missing fonts');
     } else {
       toastErrorMessage = includeLocked
-        ? '❌ You need to select at least one text layer'
-        : '❌ You need to select at least one unlocked text layer';
-      messenger.log('No text nodes were selected/found');
+        ? '❌ You need to select at least one layer'
+        : '❌ You need to select at least one unlocked layer';
+      messenger.log('No nodes were selected/found');
     }
 
     // display the message and terminate the plugin
