@@ -268,12 +268,12 @@ const findTopFrame = (node: any) => {
  *
  * @param {Object} node A Figma node object (`SceneNode`).
  *
- * @returns {Object} Returns the master component (`ComponentNode`) or `null`.
+ * @returns {Object} Returns the top component instance (`InstanceNode`) or `null`.
  */
 const findTopInstance = (node: any) => {
   let { parent } = node;
   let currentNode = node;
-  let currentTopInstance = null;
+  let currentTopInstance: InstanceNode = null;
 
   if (parent) {
     // iterate until the parent is a page
@@ -289,6 +289,46 @@ const findTopInstance = (node: any) => {
 
   if (currentTopInstance) {
     return currentTopInstance;
+  }
+  return null;
+};
+
+/**
+ * @description Reverse iterates the node tree to determine the top-level component
+ * (if one exists) for the node. This allows you to check if a node is part of a component.
+ *
+ * @kind function
+ * @name findTopComponent
+ *
+ * @param {Object} node A Figma node object (`SceneNode`).
+ *
+ * @returns {Object} Returns the component (`ComponentNode`) or `null`.
+ */
+const findTopComponent = (node: any) => {
+  // return self if component
+  if (node.type === CONTAINER_NODE_TYPES.component) {
+    return node;
+  }
+
+  let { parent } = node;
+  let currentNode = node;
+  let componentNode: ComponentNode = null;
+  if (parent) {
+    // iterate until the parent is a page or component is found;
+    // components cannot nest inside other components, so we can stop at the first
+    // found component
+    while (parent && parent.type !== 'PAGE' && componentNode === null) {
+      currentNode = parent;
+      if (currentNode.type === CONTAINER_NODE_TYPES.component) {
+        // update the top-most master component with the current one
+        componentNode = currentNode;
+      }
+      parent = parent.parent;
+    }
+  }
+
+  if (componentNode) {
+    return componentNode;
   }
   return null;
 };
@@ -473,6 +513,7 @@ export {
   asyncNetworkRequest,
   awaitUIReadiness,
   dataNamespace,
+  findTopComponent,
   findTopFrame,
   findTopInstance,
   getNodeAssignmentData,
