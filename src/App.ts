@@ -5,6 +5,8 @@ import Painter from './Painter';
 import {
   asyncForEach,
   dataNamespace,
+  findTopComponent,
+  findTopInstance,
   getNodeAssignmentData,
   isValidAssignment,
   loadTypefaces,
@@ -13,6 +15,7 @@ import {
 import {
   ASSIGNMENTS,
   DATA_KEYS,
+  GUI_CONTENT,
   GUI_SETTINGS,
 } from './constants';
 
@@ -112,6 +115,52 @@ const triggerFigmaChangeWatcher = (
     node.autoRename = originalAutoRename;
   }
   /* eslint-enable no-param-reassign */
+
+  return null;
+};
+
+/**
+ * @description Invokes Figma’s `setRelaunchData` on the passed node and (if applicable),
+ * the container component node.
+ *
+ * @kind function
+ * @name setRelaunchCommands
+ *
+ * @param {Object} node The node (`SceneNode`) to use with `setRelaunchData`.
+ *
+ * @returns {null}
+ */
+const setRelaunchCommands = (node: SceneNode): void => {
+  const topInstanceNode: InstanceNode = findTopInstance(node);
+
+  // currently cannot apply `setRelaunchData` to a node inside of an `InstanceNode`
+  if (!topInstanceNode) {
+    node.setRelaunchData({
+      'quick-randomize-assigned': GUI_CONTENT.relaunch.layer,
+    });
+  }
+
+  // apply to top-level component
+  const componentNode: ComponentNode = findTopComponent(node);
+  if (componentNode && !componentNode.remote) {
+    componentNode.setRelaunchData({
+      'quick-randomize-assigned': GUI_CONTENT.relaunch.component,
+    });
+  }
+
+  // apply to the instance node
+  // (currently not possible - but coming soon)
+  // if (topInstanceNode) {
+  //   topInstanceNode.setRelaunchData({
+  //     'quick-randomize-assigned': GUI_CONTENT.relaunch.component,
+  //   });
+
+  //   if (topInstanceNode.masterComponent && !topInstanceNode.masterComponent.remote) {
+  //     topInstanceNode.masterComponent.setRelaunchData({
+  //       'quick-randomize-assigned': GUI_CONTENT.relaunch.component,
+  //     });
+  //   }
+  // }
 
   return null;
 };
@@ -520,6 +569,9 @@ export default class App {
           JSON.stringify(proposedText),
         );
 
+        // set the re-launch command
+        setRelaunchCommands(nodeToReassign);
+
         triggerFigmaChangeWatcher(nodeToReassign);
 
         messenger.log(`Updated ${id}’s assignment to: “${assignment}”`);
@@ -814,6 +866,9 @@ export default class App {
           DATA_KEYS.assignment,
           JSON.stringify(assignment),
         );
+
+        // set the re-launch command
+        setRelaunchCommands(node);
 
         triggerFigmaChangeWatcher(node);
 
