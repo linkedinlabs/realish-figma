@@ -9,3 +9,4 @@ npm-debug.log
 # config
 .env
 .plugin-id
+manifest.json
