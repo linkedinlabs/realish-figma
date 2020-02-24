@@ -1,6 +1,6 @@
 {
   "name": "Realish",
-  "id": "784196046919632854",
+  "id": "PLUGIN_ID",
   "api": "1.0.0",
   "main": "dist/main.js",
   "ui": "dist/webview.html",
