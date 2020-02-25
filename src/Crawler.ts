@@ -50,6 +50,7 @@ export default class Crawler {
         && node.type !== CONTAINER_NODE_TYPES.component
         && node.type !== CONTAINER_NODE_TYPES.instance
         && node.visible
+        && !node.locked
       ) {
         // non-frame or -group nodes get added to the final selection
         flatSelection.push(node);
@@ -58,9 +59,9 @@ export default class Crawler {
 
         // set initial holding array and add first level of children
         let innerLayers = [];
-        if (node.visible) {
+        if (node.visible && !node.locked) {
           node.children.forEach((child) => {
-            if (child.visible) {
+            if (child.visible && !node.locked) {
               innerLayers.push(child);
             }
           });
@@ -85,6 +86,7 @@ export default class Crawler {
               id: string,
               type: string,
               visible: boolean,
+              locked: boolean,
             },
           ) => {
             if (
@@ -93,12 +95,13 @@ export default class Crawler {
               && innerLayer.type !== CONTAINER_NODE_TYPES.component
               && innerLayer.type !== CONTAINER_NODE_TYPES.instance
               && innerLayer.visible
+              && !innerLayer.locked
             ) {
               // non-frame or -group nodes get added to the final selection
               flatSelection.push(innerLayer);
-            } else if (innerLayer.visible) {
+            } else if (innerLayer.visible && !innerLayer.locked) {
               innerLayer.children.forEach((child) => {
-                if (child.visible) {
+                if (child.visible && !child.locked) {
                   innerLayers.push(child);
                 }
               });
@@ -162,22 +165,20 @@ export default class Crawler {
    *
    * @kind function
    * @name text
-   * @param {boolean} includeLocked Determines whether or not locked nodes are included
-   * in the selection.
    *
    * @returns {Array} All TextNode items in an array.
    */
-  text(includeLocked: boolean = false): Array<TextNode> {
+  text(): Array<TextNode> {
     // start with flattened selection of all nodes, ordered by position on the artboard
     const nodes = this.allSorted();
 
     // filter and retain immediate text nodes
-    let textNodes: Array<TextNode> = nodes.filter((node: SceneNode) => node.type === 'TEXT');
+    const textNodes: Array<TextNode> = nodes.filter((node: SceneNode) => node.type === 'TEXT');
 
     // iterate through components to find additional text nodes
     const componentNodes: Array<ComponentNode | InstanceNode> = nodes.filter(
       (node: SceneNode) => (
-        (node.type === 'COMPONENT' || node.type === 'INSTANCE') && node.visible
+        (node.type === 'COMPONENT' || node.type === 'INSTANCE') && node.visible && !node.locked
       ),
     );
     if (componentNodes) {
@@ -195,11 +196,6 @@ export default class Crawler {
           innerTextNodes.forEach(innerTextNode => textNodes.push(innerTextNode));
         }
       });
-    }
-
-    // remove locked text nodes, if necessary
-    if (!includeLocked) {
-      textNodes = textNodes.filter((node: TextNode) => !node.locked);
     }
 
     return textNodes;
