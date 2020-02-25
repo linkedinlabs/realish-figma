@@ -162,17 +162,15 @@ export default class Crawler {
    *
    * @kind function
    * @name text
-   * @param {boolean} includeLocked Determines whether or not locked nodes are included
-   * in the selection.
    *
    * @returns {Array} All TextNode items in an array.
    */
-  text(includeLocked: boolean = false): Array<TextNode> {
+  text(): Array<TextNode> {
     // start with flattened selection of all nodes, ordered by position on the artboard
     const nodes = this.allSorted();
 
     // filter and retain immediate text nodes
-    let textNodes: Array<TextNode> = nodes.filter((node: SceneNode) => node.type === 'TEXT');
+    const textNodes: Array<TextNode> = nodes.filter((node: SceneNode) => node.type === 'TEXT');
 
     // iterate through components to find additional text nodes
     const componentNodes: Array<ComponentNode | InstanceNode> = nodes.filter(
@@ -195,11 +193,6 @@ export default class Crawler {
           innerTextNodes.forEach(innerTextNode => textNodes.push(innerTextNode));
         }
       });
-    }
-
-    // remove locked text nodes, if necessary
-    if (!includeLocked) {
-      textNodes = textNodes.filter((node: TextNode) => !node.locked);
     }
 
     return textNodes;

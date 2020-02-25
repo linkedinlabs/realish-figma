@@ -48,21 +48,16 @@ const assemble = (context: any = null) => {
  * @name filterTextNodes
  *
  * @param {Array} selection The resulting array of text nodes.
- * @param {boolean} includeLocked Include locked nodes in the returned results (`true`)
- * or omit them (`false`).
  *
  * @returns {Array} The resulting array of text nodes.
  */
-const filterTextNodes = (
-  selection: Array<any>,
-  includeLocked: boolean = false,
-): Array<TextNode> => {
+const filterTextNodes = (selection: Array<any>): Array<TextNode> => {
   const consolidatedSelection: Array<SceneNode | PageNode> = selection;
 
   // retrieve selection of text nodes and filter for unlocked
   const textNodes: Array<TextNode> = new Crawler(
     { for: consolidatedSelection },
-  ).text(includeLocked);
+  ).text();
 
   return textNodes;
 };
@@ -729,8 +724,7 @@ export default class App {
    */
   async commitText(sessionKey: number) {
     const { messenger, selection } = assemble(figma);
-    const includeLocked: boolean = false;
-    const textNodes: Array<TextNode> = filterTextNodes(selection, includeLocked);
+    const textNodes: Array<TextNode> = filterTextNodes(selection);
 
     /**
      * @description Applies a `Painter` instance to each node in an array, updating the text.
@@ -789,9 +783,7 @@ export default class App {
         : '❌ This text layer contains a missing font';
       messenger.log('Text node(s) contained missing fonts');
     } else {
-      toastErrorMessage = includeLocked
-        ? '❌ You need to select at least one text layer'
-        : '❌ You need to select at least one unlocked text layer';
+      toastErrorMessage = '❌ You need to select at least one text layer';
       messenger.log('No text nodes were selected/found');
     }
 
