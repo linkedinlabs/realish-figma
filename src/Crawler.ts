@@ -50,6 +50,7 @@ export default class Crawler {
         && node.type !== CONTAINER_NODE_TYPES.component
         && node.type !== CONTAINER_NODE_TYPES.instance
         && node.visible
+        && !node.locked
       ) {
         // non-frame or -group nodes get added to the final selection
         flatSelection.push(node);
@@ -58,9 +59,9 @@ export default class Crawler {
 
         // set initial holding array and add first level of children
         let innerLayers = [];
-        if (node.visible) {
+        if (node.visible && !node.locked) {
           node.children.forEach((child) => {
-            if (child.visible) {
+            if (child.visible && !node.locked) {
               innerLayers.push(child);
             }
           });
@@ -85,6 +86,7 @@ export default class Crawler {
               id: string,
               type: string,
               visible: boolean,
+              locked: boolean,
             },
           ) => {
             if (
@@ -93,12 +95,13 @@ export default class Crawler {
               && innerLayer.type !== CONTAINER_NODE_TYPES.component
               && innerLayer.type !== CONTAINER_NODE_TYPES.instance
               && innerLayer.visible
+              && !innerLayer.locked
             ) {
               // non-frame or -group nodes get added to the final selection
               flatSelection.push(innerLayer);
-            } else if (innerLayer.visible) {
+            } else if (innerLayer.visible && !innerLayer.locked) {
               innerLayer.children.forEach((child) => {
-                if (child.visible) {
+                if (child.visible && !child.locked) {
                   innerLayers.push(child);
                 }
               });
@@ -175,7 +178,7 @@ export default class Crawler {
     // iterate through components to find additional text nodes
     const componentNodes: Array<ComponentNode | InstanceNode> = nodes.filter(
       (node: SceneNode) => (
-        (node.type === 'COMPONENT' || node.type === 'INSTANCE') && node.visible
+        (node.type === 'COMPONENT' || node.type === 'INSTANCE') && node.visible && !node.locked
       ),
     );
     if (componentNodes) {

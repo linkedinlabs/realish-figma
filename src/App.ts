@@ -270,7 +270,7 @@ export default class App {
    */
   static refreshGUI(sessionKey: number) {
     const { messenger, selection } = assemble(figma);
-    const textNodes: Array<TextNode> = filterTextNodes(selection, false);
+    const textNodes: Array<TextNode> = filterTextNodes(selection);
     const textNodesCount = textNodes.length;
 
     // set array of data with information from each text node
@@ -385,7 +385,7 @@ export default class App {
      * @returns {Object} The text node (`TextNode`) retrieved.
      */
     const retrieveTextNode = (): TextNode => {
-      const textNodes: Array<TextNode> = filterTextNodes(selection, false);
+      const textNodes: Array<TextNode> = filterTextNodes(selection);
 
       const index = 0;
       const textNodesToUpdate: Array<TextNode> = textNodes.filter(
@@ -564,7 +564,7 @@ export default class App {
    */
   static remixAll(sessionKey: number): void {
     const { messenger, selection } = assemble(figma);
-    const textNodes: Array<TextNode> = filterTextNodes(selection, false);
+    const textNodes: Array<TextNode> = filterTextNodes(selection);
 
     // iterate through each selected layer and apply the `remix` action
     textNodes.forEach((textNode: TextNode) => App.actOnNode('remix', { id: textNode.id }, sessionKey));
@@ -598,7 +598,7 @@ export default class App {
   quickRandomize(assignment: string, sessionKey: number): void {
     const { messenger, selection } = assemble(figma);
     const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
-    const textNodes: Array<TextNode> = filterTextNodes(selection, false);
+    const textNodes: Array<TextNode> = filterTextNodes(selection);
 
     // iterate through each selected layer and apply the `remix` action
     textNodes.forEach((textNode: TextNode) => {
@@ -665,7 +665,7 @@ export default class App {
    */
   quickAssign(assignment: string): void {
     const { messenger, selection } = assemble(figma);
-    const textNodes: Array<TextNode> = filterTextNodes(selection, false);
+    const textNodes: Array<TextNode> = filterTextNodes(selection);
 
     // iterate through each selected layer and apply the `remix` action
     textNodes.forEach((textNode: TextNode) => {
