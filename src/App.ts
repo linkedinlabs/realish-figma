@@ -50,14 +50,11 @@ const assemble = (context: any = null) => {
  * @name getFilteredNodes
  *
  * @param {Array} selection The resulting array of text nodes.
- * @param {boolean} includeLocked Include locked nodes in the returned results (`true`)
- * or omit them (`false`).
  *
  * @returns {Array} The resulting array of text nodes.
  */
 const getFilteredNodes = (
   selection: Array<any>,
-  includeLocked: boolean = false,
 ): Array<TextNode | EllipseNode | PolygonNode | RectangleNode | StarNode> => {
   const consolidatedSelection: Array<SceneNode | PageNode> = selection;
 
@@ -73,7 +70,7 @@ const getFilteredNodes = (
     | StarNode
   > = new Crawler(
     { for: consolidatedSelection },
-  ).filterByTypes(filterTypes, includeLocked);
+  ).filterByTypes(filterTypes);
 
   return filteredNodes;
 };
@@ -338,7 +335,7 @@ export default class App {
       | EllipseNode
       | PolygonNode
       | RectangleNode
-      | StarNode> = getFilteredNodes(selection, false);
+      | StarNode> = getFilteredNodes(selection);
     const nodesCount = nodes.length;
 
     // set array of data with information from each node
@@ -517,7 +514,7 @@ export default class App {
         | EllipseNode
         | PolygonNode
         | RectangleNode
-        | StarNode> = getFilteredNodes(selection, false);
+        | StarNode> = getFilteredNodes(selection);
 
       const index = 0;
       const filteredNodesToUpdate: Array<any> = filteredNodes.filter(
@@ -731,7 +728,7 @@ export default class App {
       | EllipseNode
       | PolygonNode
       | RectangleNode
-      | StarNode> = getFilteredNodes(selection, false);
+      | StarNode> = getFilteredNodes(selection);
 
     // iterate through each selected layer and apply the `remix` action
     nodes.forEach((
@@ -776,7 +773,7 @@ export default class App {
       | EllipseNode
       | PolygonNode
       | RectangleNode
-      | StarNode> = getFilteredNodes(selection, false);
+      | StarNode> = getFilteredNodes(selection);
 
     // iterate through each selected layer and apply the `remix` action
     nodes.forEach((node: TextNode) => {
@@ -852,7 +849,7 @@ export default class App {
       | EllipseNode
       | PolygonNode
       | RectangleNode
-      | StarNode> = getFilteredNodes(selection, false);
+      | StarNode> = getFilteredNodes(selection);
 
     // iterate through each selected layer and apply the `remix` action
     nodes.forEach((node: TextNode) => {
@@ -911,14 +908,13 @@ export default class App {
    */
   async commitContent(sessionKey: number) {
     const { messenger, selection } = assemble(figma);
-    const includeLocked: boolean = false;
     const nodes: Array<
       TextNode
       | EllipseNode
       | PolygonNode
       | RectangleNode
       | StarNode
-    > = getFilteredNodes(selection, false);
+    > = getFilteredNodes(selection);
 
     /**
      * @description Applies a `Painter` instance to each node in an array, updating the text.
@@ -1021,9 +1017,7 @@ export default class App {
         : '❌ This text layer contains a missing font';
       messenger.log('Text node(s) contained missing fonts');
     } else {
-      toastErrorMessage = includeLocked
-        ? '❌ You need to select at least one layer'
-        : '❌ You need to select at least one unlocked layer';
+      toastErrorMessage = '❌ You need to select at least one layer';
       messenger.log('No nodes were selected/found');
     }
 
