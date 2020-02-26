@@ -17,10 +17,25 @@
 }
 
 @mixin type-03 {
-  @include type-01(400);
+  @include type-01;
   font-size: 15px;
   line-height: 22px;
-  letter-spacing: -0.1;
+  letter-spacing: -0.15;
+}
+
+// force some other weights to pre-load (prevents the flout effect)
+#font-preload {
+  @include hide-visually;
+  @include type-01(300);
+
+  em {
+    font-style: normal;
+    @include type-01(300);
+  }
+
+  strong {
+    @include type-01(500);
+  }
 }
 
 h2, h3 {
