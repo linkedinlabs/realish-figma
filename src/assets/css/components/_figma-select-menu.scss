@@ -109,7 +109,7 @@
 
 .styled-select__icon {
   position: absolute;
-  top: -1px;
+  top: 0;
   right: -3px;
   width: 30px;
   height: 30px;
@@ -126,8 +126,8 @@
   flex-direction: column;
   margin: 0;
   padding: 8px 0 8px 0;
-  width: 135px;
-  left: -30px;
+  width: 130px;
+  left: -20px;
   border-radius: 2px;
   background-color: $wl-canvas-invert;
   box-shadow: 0 5px 17px rgba(0, 0, 0, 0.2), 0 2px 7px rgba(0, 0, 0, 0.15);
