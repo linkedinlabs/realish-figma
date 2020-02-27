@@ -26,7 +26,7 @@
 
   &:enabled:active,
   &:enabled:focus {
-    border: 2px solid rgba($wl-accent, 0.3);
+    border: 2px solid rgba($wl-ctrl-primary, 0.3);
   }
 
   &:disabled {
@@ -43,8 +43,8 @@
   @include figma-button;
   padding: 6px 16px 6px 16px;
   color: rgba($wl-type-01, 0.8);
-  border: 1px solid rgba($wl-accent, 0.8);
-  background-color: $wl-canvas;
+  border: 1px solid rgba($wl-ctrl-primary, 0.8);
+  background-color: $wl-ctrl-secondary;
   letter-spacing: 0.005em;
 
   &:enabled:active,
@@ -55,7 +55,7 @@
 
   &:disabled {
     color: rgba($wl-type-01, 0.3);
-    border-color: rgba($wl-accent, 0.3);
+    border-color: rgba($wl-ctrl-primary, 0.3);
   }
 }
 
