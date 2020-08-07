@@ -2,8 +2,9 @@
  * @description A set of functions to operate the plugin GUI.
  */
 import './assets/css/main.scss';
-import './vendor/figma-select-menu';
+import { pollWithPromise } from './Tools';
 import { ASSIGNMENTS } from './constants';
+import './vendor/figma-select-menu';
 
 /**
  * @description Sends a message and applicable payload to the main thread.
@@ -157,6 +158,73 @@ const watchActions = (): void => {
 };
 
 /**
+ * @description Requests an image (based on URL), loads it to a holder in the DOM
+ * and then reads the image into a generated canvas element. The image data is
+ * pulled from the canvas element using `getImageData` and the result is passed
+ * back to the main thread.
+ *
+ * @kind function
+ * @name makeImageRequest
+ *
+ * @param {Object} requestUrl The full URL of the image to request.
+ *
+ * @returns {Promise} Returns a promise for resolution.
+ */
+const makeImageRequest = async (requestUrl) => {
+  if (requestUrl && requestUrl.route) {
+    // helper to encode canvas image data into Uint8Array
+    const encode = async (canvas, ctx, imageData) => {
+      ctx.putImageData(imageData, 0, 0);
+      return new Promise((resolve, reject) => {
+        canvas.toBlob((blob) => {
+          const reader: any = new FileReader(); // eslint-disable-line no-undef
+          reader.onload = () => resolve(new Uint8Array(reader.result));
+          reader.onerror = () => reject(new Error('Could not read from blob'));
+          reader.readAsArrayBuffer(blob);
+        });
+      });
+    };
+
+    // grab the sandbox image
+    const sandboxImgElement: HTMLImageElement = (<HTMLImageElement> document.getElementById('image-sandbox'));
+
+    if (sandboxImgElement) {
+      const imageLoaded = imageElement => imageElement.complete;
+
+      sandboxImgElement.crossOrigin = 'anonymous';
+      sandboxImgElement.src = requestUrl.route;
+
+      // wait to make sure the image is loaded
+      await pollWithPromise(() => imageLoaded(sandboxImgElement));
+
+      // create an empty canvas element, same dimensions as the image
+      const canvas = document.createElement('canvas');
+      canvas.width = sandboxImgElement.width;
+      canvas.height = sandboxImgElement.height;
+
+      // copy the image contents to the canvas
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(sandboxImgElement, 0, 0);
+
+      // read the raw data from the canvas
+      const canvasImageData = await ctx.getImageData(
+        0, 0, sandboxImgElement.width, sandboxImgElement.height,
+      );
+
+      // encode the data for figma
+      const imageData: Uint8Array = await encode(canvas, ctx, canvasImageData) as Uint8Array;
+
+      // remove the temporary canvas element; reset the image
+      canvas.remove();
+      sandboxImgElement.removeAttribute('SRC');
+
+      // send the encoded data back to the main thread
+      parent.postMessage({ pluginMessage: { imageResponse: imageData } }, '*');
+    }
+  }
+};
+
+/**
  * @description Watch UI clicks for changes to pass on to the main plugin thread.
  *
  * @kind function
@@ -233,13 +301,15 @@ const watchLayer = (layerElement: HTMLElement): void => {
 const updateSelectedLayers = (layers: Array<{
   id: string,
   assignment: string,
+  originalImage: Uint8Array,
   originalText: string,
   proposedText: string,
+  nodeType: 'text' | 'shape',
+  rounded: 'all' | 'none' | 'some',
   locked: boolean,
 }>): void => {
   const layerCount = layers.length;
   const layerListElement: HTMLUListElement = (<HTMLUListElement> document.getElementById('layer-list'));
-  const templateElement: HTMLLIElement = (<HTMLLIElement> document.getElementById('layer-holder-original'));
 
   if (layerListElement && layers) {
     // remove everything to start
@@ -247,23 +317,35 @@ const updateSelectedLayers = (layers: Array<{
 
     if (layerCount > 0) {
       layers.forEach((layer) => {
+        const {
+          id,
+          assignment,
+          originalImage,
+          originalText,
+          proposedText,
+          nodeType,
+          rounded,
+          locked,
+        } = layer;
+
+        const templateElement: HTMLLIElement = (<HTMLLIElement> document.getElementById(`${nodeType}-layer-holder-original`));
         const newLayerElement: any = templateElement.cloneNode(true);
         newLayerElement.removeAttribute('style');
-        newLayerElement.id = layer.id;
+        newLayerElement.id = id;
 
         const assignmentsElement: HTMLSelectElement = newLayerElement.querySelector('.assignments');
-        assignmentsElement.value = layer.assignment;
+        assignmentsElement.value = assignment;
 
-        if (!layer.locked) {
+        if (!locked) {
           assignmentsElement.disabled = false;
         }
 
         assignmentsElement.classList.add('styled-select');
 
         // set reset / remix button states
-        if (layer.assignment !== ASSIGNMENTS.unassigned.id && !layer.locked) {
+        if (assignment !== ASSIGNMENTS.unassigned.id && !locked) {
           const resetButtonElement: HTMLButtonElement = newLayerElement.querySelector('.reset-control button');
-          if (resetButtonElement && (layer.originalText !== layer.proposedText)) {
+          if (resetButtonElement && (originalText !== proposedText)) {
             resetButtonElement.disabled = false;
           }
 
@@ -275,22 +357,62 @@ const updateSelectedLayers = (layers: Array<{
 
         // set locking toggle state
         const lockingButtonElement: HTMLButtonElement = newLayerElement.querySelector('.locking-control button');
-        if (lockingButtonElement && !layer.locked) {
+        if (lockingButtonElement && !locked) {
           newLayerElement.classList.remove('locked');
         }
 
-        // set text
-        const originalTextElement = newLayerElement.querySelector('.original-text .text');
-        originalTextElement.firstChild.nodeValue = layer.originalText;
+        // grab the `proposedText`/`originalText` elements; used by both types
+        const proposedTextElement = newLayerElement.querySelector(`.new-${nodeType} .${nodeType}`);
+        const originalTextElement = newLayerElement.querySelector(`.original-${nodeType} .${nodeType}`);
 
-        const proposedTextElement = newLayerElement.querySelector('.new-text .text');
-        proposedTextElement.firstChild.nodeValue = layer.proposedText;
+        // set image url
+        if (nodeType === 'shape') {
+          if (proposedText !== originalText) {
+            let fullUrl: string = null;
+            const serverLocation: string = process.env.MEDIA_URL ? process.env.MEDIA_URL : 'https://somewhere.com';
+            fullUrl = `${serverLocation}${proposedText}`;
+
+            if (fullUrl && assignment !== ASSIGNMENTS.unassigned.id) {
+              proposedTextElement.style.backgroundImage = `url(${fullUrl})`;
+            }
+          }
+
+          // set/update original image
+          if (originalImage) {
+            const blobUrl: string = URL.createObjectURL(
+              new Blob([originalImage]), // eslint-disable-line no-undef
+            );
+            originalTextElement.style.backgroundImage = `url(${blobUrl})`;
+
+            if (proposedText === originalText) {
+              proposedTextElement.style.backgroundImage = `url(${blobUrl})`;
+            }
+          }
+
+          // set border radius
+          switch (rounded) { // eslint-disable-line default-case
+            case 'all':
+              originalTextElement.style.borderRadius = '100%';
+              proposedTextElement.style.borderRadius = '100%';
+              break;
+            case 'none':
+              originalTextElement.style.borderRadius = '0';
+              proposedTextElement.style.borderRadius = '0';
+              break;
+          }
+        }
+
+        // set text
+        if (nodeType === 'text') {
+          originalTextElement.firstChild.nodeValue = originalText;
+          proposedTextElement.firstChild.nodeValue = proposedText;
+        }
 
         // add the layer to the list
         layerListElement.appendChild(newLayerElement);
 
         // set control watchers
-        watchLayer(newLayerElement);
+        return watchLayer(newLayerElement);
       });
     }
 
@@ -341,6 +463,9 @@ const watchIncomingMessages = (): void => {
     const { pluginMessage } = event.data;
 
     switch (pluginMessage.action) {
+      case 'imageRequest':
+        makeImageRequest(pluginMessage.payload);
+        break;
       case 'refreshState':
         updateSelectedLayers(pluginMessage.payload);
         break;

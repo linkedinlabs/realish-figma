@@ -33,7 +33,7 @@ export default class Messenger {
    * @param {string} type The optional string declaring the type of log: error or normal (default).
    */
   log(message: string, type: 'normal' | 'error' = 'normal') {
-    const logType = type === 'error' ? '🌍🆘' : '🌍';
+    const logType = type === 'error' ? '📝🆘' : '📝';
     const pageIdString = this.page ? ` ${this.page.id} :` : '';
 
     if (process.env.NODE_ENV === 'development') {

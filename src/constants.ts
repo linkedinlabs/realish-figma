@@ -48,18 +48,22 @@ const DATA_KEYS = {
  * @type {Object}
  */
 const ASSIGNMENTS = {
-  unassigned: { id: 'unassigned', text: 'Unassigned' },
-  company: { id: 'company', text: 'Company' },
-  country: { id: 'country', text: 'Country' },
-  date: { id: 'date', text: 'Date' },
-  degreeBadge: { id: 'degree-badge', text: 'Degree Badge' },
-  domain: { id: 'domain', text: 'Domain Name' },
-  email: { id: 'email', text: 'Email' },
-  jobTitle: { id: 'job-title', text: 'Job Title' },
-  name: { id: 'name', text: 'Name' },
-  timestamp: { id: 'timestamp', text: 'Timestamp' },
+  unassigned: { id: 'unassigned', text: 'Unassigned', nodeType: null },
+  avatarCompany: { id: 'avatar-company', text: 'Company', nodeType: 'shape' },
+  avatarPerson: { id: 'avatar-person', text: 'Person', nodeType: 'shape' },
+  company: { id: 'company', text: 'Company', nodeType: 'text' },
+  country: { id: 'country', text: 'Country', nodeType: 'text' },
+  date: { id: 'date', text: 'Date', nodeType: 'text' },
+  degreeBadge: { id: 'degree-badge', text: 'Degree Badge', nodeType: 'text' },
+  domain: { id: 'domain', text: 'Domain Name', nodeType: 'text' },
+  email: { id: 'email', text: 'Email', nodeType: 'text' },
+  jobTitle: { id: 'job-title', text: 'Job Title', nodeType: 'text' },
+  name: { id: 'name', text: 'Name', nodeType: 'text' },
+  timestamp: { id: 'timestamp', text: 'Timestamp', nodeType: 'text' },
 };
 // unassigned
+// avatar-company
+// avatar-person
 // company
 // country
 // date

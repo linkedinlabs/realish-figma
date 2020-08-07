@@ -6,17 +6,17 @@
   justify-content: space-between;
   align-items: center;
   margin: 0;
-  padding: em(24) 18%;
+  padding: em(24) 14%;
 
   span {
     display: block;
 
     &.mark {
-      flex-basis: 25%;
+      flex-basis: 20%;
     }
 
     &.text {
-      flex-basis: 60%;
+      flex-basis: 65%;
       @include type-03;
     }
   }

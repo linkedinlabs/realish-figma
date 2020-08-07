@@ -1,4 +1,5 @@
 import {
+  ASSIGNMENTS,
   CONTAINER_NODE_TYPES,
   DATA_KEYS,
   GUI_SETTINGS,
@@ -118,6 +119,63 @@ const asyncNetworkRequest = async (options: {
 
     if (messenger) {
       messenger.log(`Network request: ${requestUrl}`);
+    }
+  };
+
+  // do the things
+  makeRequest();
+  await awaitResponse();
+  return response;
+};
+
+/**
+ * @description Similar to `asyncNetworkRequest`, manages the process for requesting the
+ * download of a remote image.
+ *
+ * @kind function
+ * @name asyncImageRequest
+ *
+ * @param {Object} options An object including the request options: The URL the request should
+ * go to (`requestUrl`) and an initialized instance of the Messenger class for logging (optional).
+ *
+ * @returns {Object} Returns the result of the network request (response).
+ */
+const asyncImageRequest = async (options: {
+  requestUrl: string,
+  messenger?: { log: Function },
+}) => {
+  const {
+    messenger,
+    requestUrl,
+  } = options;
+
+  // set blank response
+  let response = null;
+
+  // polling function to check for a response from the plugin UI
+  const awaitResponse = async () => {
+    // simple function to check for existence of a response
+    const responseExists = () => (response !== null);
+
+    // set a one-time use listener
+    figma.ui.once('message', (msg) => {
+      if (msg && msg.imageResponse) { response = msg.imageResponse; }
+    });
+
+    await pollWithPromise(responseExists, messenger);
+  };
+
+  // makes the request by passing the options along to the plugin UI
+  const makeRequest = () => {
+    figma.ui.postMessage({
+      action: 'imageRequest',
+      payload: {
+        route: requestUrl,
+      },
+    });
+
+    if (messenger) {
+      messenger.log(`Request image at: ${requestUrl}`);
     }
   };
 
@@ -419,7 +477,7 @@ const dataNamespace = (): string => {
  *
  * @returns {string} The assignment is returned as an unparsed JSON string.
  */
-const getNodeAssignmentData = (node: TextNode) => {
+const getNodeAssignmentData = (node: SceneNode) => {
   let assignmentData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
 
   if (!assignmentData) {
@@ -495,6 +553,34 @@ const resizeGUI = (
 const isTextNode = (node: any): node is TextNode => node.type === 'TEXT';
 
 /**
+ * @description Checks if a supplied `assignment` string and `nodeType` is valid (it can be
+ * matched with an entry in `ASSIGNMENTS`).
+ *
+ * @kind function
+ * @name isValidAssignment
+ *
+ * @param {string} assignment The assignment to check (`id` in `ASSIGNMENTS`).
+ * @param {string} nodeType The type to check (`nodeType` in `ASSIGNMENTS`).
+ *
+ * @returns {boolean} `true` if the assignment is valid.
+ */
+const isValidAssignment = (assignment: string, nodeType: 'shape' | 'text'): boolean => {
+  let isValid = false;
+
+  if (assignment === ASSIGNMENTS.unassigned.id) {
+    isValid = true;
+    return isValid;
+  }
+
+  Object.keys(ASSIGNMENTS).forEach((key) => {
+    if (ASSIGNMENTS[key].id === assignment && ASSIGNMENTS[key].nodeType === nodeType) {
+      isValid = true;
+    }
+  });
+  return isValid;
+};
+
+/**
  * @description Checks the `FEATURESET` environment variable from webpack and
  * determines if the featureset build should be `internal` or not.
  *
@@ -510,6 +596,7 @@ const isInternal = (): boolean => {
 
 export {
   asyncForEach,
+  asyncImageRequest,
   asyncNetworkRequest,
   awaitUIReadiness,
   dataNamespace,
@@ -519,6 +606,7 @@ export {
   getNodeAssignmentData,
   isInternal,
   isTextNode,
+  isValidAssignment,
   loadTypefaces,
   makeNetworkRequest,
   matchMasterPeerNode,

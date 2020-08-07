@@ -94,7 +94,7 @@ const dispatcher = async (action: {
         App.remixAll(sessionKey);
         break;
       case 'submit':
-        app.commitText(sessionKey);
+        app.commitContent(sessionKey);
         break;
       case 'tools':
         App.showToolbar(sessionKey);
