@@ -156,8 +156,10 @@ const generateDomain = (): string => {
       randomTLD = 'com';
   }
 
+  const companyNames = [];
+  companies.forEach(company => companyNames.push(company.name));
   const randomCompany = uniqueNamesGenerator({
-    dictionaries: [companies],
+    dictionaries: [companyNames],
     length: 1,
   });
 
@@ -211,11 +213,17 @@ const generateFilepath = (assignment: 'avatar-company' | 'avatar-person'): strin
   // company images are named the same as the company names, but
   // set to lowercase – spaces are replaced with hyphens
   if (assignment === ASSIGNMENTS.avatarCompany.id) {
+    const companiesWithImages = [];
+    companies.forEach((company) => {
+      if (company.hasImage) {
+        companiesWithImages.push(company.name);
+      }
+    });
     const randomCompany = uniqueNamesGenerator({
-      dictionaries: [companies],
+      dictionaries: [companiesWithImages],
       length: 1,
       style: 'lowerCase',
-    }).replace(' ', '-');
+    }).replace(' ', '-').replace('.', '');
 
     filepath = `/companies/${randomCompany}.png`;
   }
@@ -264,9 +272,12 @@ const generateRandom = (assignment): string => {
       style = 'lowerCase';
       break;
     }
-    case ASSIGNMENTS.company.id:
-      dictionaries.push(companies);
+    case ASSIGNMENTS.company.id: {
+      const companyNames = [];
+      companies.forEach(company => companyNames.push(company.name));
+      dictionaries.push(companyNames);
       break;
+    }
     case ASSIGNMENTS.country.id:
       dictionaries.push(countries);
       break;
