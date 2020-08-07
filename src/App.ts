@@ -836,7 +836,7 @@ export default class App {
    * `assignment` type.
    *
    * @kind function
-   * @name quickRandomize
+   * @name quickAssign
    *
    * @param {string} assignment A string matching an `id` in `ASSIGNMENTS`.
    *
