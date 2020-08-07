@@ -6,7 +6,6 @@
  * @type {Array}
  */
 export default [
-  'Zoomjax',
   'Codelane',
   'Flexis',
   'Fixedex',
@@ -19,4 +18,5 @@ export default [
   'Techcore',
   'Trustway',
   'Ventofase',
+  'Zoomjax',
 ];
