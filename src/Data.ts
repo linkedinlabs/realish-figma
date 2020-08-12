@@ -161,7 +161,7 @@ const generateDomain = (): string => {
   const randomCompany = uniqueNamesGenerator({
     dictionaries: [companyNames],
     length: 1,
-  });
+  }).replace(/[\W_]+/g, '');
 
   const generatedDomain = `${randomCompany}.${randomTLD}`;
   return generatedDomain;
