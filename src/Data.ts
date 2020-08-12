@@ -128,7 +128,7 @@ const generateDate = (): string => {
  * before picking from the `domainTLDs` dataset.
  *
  * @kind function
- * @name generateEmail
+ * @name generateDomain
  *
  * @returns {string} The formatted date as a string.
  */
