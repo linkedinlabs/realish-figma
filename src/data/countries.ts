@@ -64,7 +64,7 @@ export default [
   'Congo',
   'Cook Islands',
   'Costa Rica',
-  "Côte d'Ivoire",
+  'Côte d’Ivoire',
   'Croatia',
   'Cuba',
   'Curaçao',
