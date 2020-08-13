@@ -877,14 +877,14 @@ export default class App {
 
       if (!locked) {
         // set valid shape/test assignments
-        let newAssignment = assignment;
+        let validAssignment = assignment;
         if (node.type !== 'TEXT') {
           switch (assignment) {
             case ASSIGNMENTS.name.id:
-              newAssignment = ASSIGNMENTS.avatarPerson.id;
+              validAssignment = ASSIGNMENTS.avatarPerson.id;
               break;
             case ASSIGNMENTS.company.id:
-              newAssignment = ASSIGNMENTS.avatarCompany.id;
+              validAssignment = ASSIGNMENTS.avatarCompany.id;
               break;
             case ASSIGNMENTS.unassigned.id:
             case ASSIGNMENTS.avatarPerson.id:
@@ -892,22 +892,22 @@ export default class App {
               // do nothing; valid assignments
               break;
             default:
-              newAssignment = null;
+              validAssignment = null;
               break;
           }
         } else if (
           (assignment === ASSIGNMENTS.avatarPerson.id)
           || (assignment === ASSIGNMENTS.avatarCompany.id)
         ) {
-          newAssignment = null;
+          validAssignment = null;
         }
 
         // commit the new assignment
-        if (newAssignment) {
+        if (validAssignment) {
           node.setSharedPluginData(
             dataNamespace(),
             DATA_KEYS.assignment,
-            JSON.stringify(newAssignment),
+            JSON.stringify(validAssignment),
           );
         }
 
@@ -916,8 +916,8 @@ export default class App {
 
         triggerFigmaChangeWatcher(node);
 
-        if (newAssignment) {
-          messenger.log(`Updated ${node.id}’s assignment to: “${newAssignment}”`);
+        if (validAssignment) {
+          messenger.log(`Updated ${node.id}’s assignment to: “${validAssignment}”`);
         } else {
           messenger.log(`${node.id} could not be assigned to: “${assignment}”`);
         }
