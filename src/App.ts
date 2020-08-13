@@ -394,6 +394,21 @@ export default class App {
             );
           }
 
+          // ensure shape/text have the correct assignment
+          if (nodeType === 'shape') {
+            if (
+              (assignment !== 'avatar-person')
+              && (assignment !== 'avatar-company')
+            ) {
+              assignment = ASSIGNMENTS.unassigned.id as Assignment;
+            }
+          } else if (
+            (assignment === 'avatar-person')
+            || (assignment === 'avatar-company')
+          ) {
+            assignment = ASSIGNMENTS.unassigned.id as Assignment;
+          }
+
           // restore original image
           if (nodeType === 'shape' && proposedText === 'original') {
             proposedText = originalText;
