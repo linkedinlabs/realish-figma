@@ -867,24 +867,60 @@ export default class App {
       | StarNode> = getFilteredNodes(selection);
 
     // iterate through each selected layer and apply the `remix` action
-    nodes.forEach((node: TextNode) => {
+    nodes.forEach((node: TextNode
+      | EllipseNode
+      | PolygonNode
+      | RectangleNode
+      | StarNode) => {
       const lockedData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
       const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
 
       if (!locked) {
+        // set valid shape/test assignments
+        let newAssignment = assignment;
+        if (node.type !== 'TEXT') {
+          switch (assignment) {
+            case ASSIGNMENTS.name.id:
+              newAssignment = ASSIGNMENTS.avatarPerson.id;
+              break;
+            case ASSIGNMENTS.company.id:
+              newAssignment = ASSIGNMENTS.avatarCompany.id;
+              break;
+            case ASSIGNMENTS.unassigned.id:
+            case ASSIGNMENTS.avatarPerson.id:
+            case ASSIGNMENTS.avatarCompany.id:
+              // do nothing; valid assignments
+              break;
+            default:
+              newAssignment = null;
+              break;
+          }
+        } else if (
+          (assignment === ASSIGNMENTS.avatarPerson.id)
+          || (assignment === ASSIGNMENTS.avatarCompany.id)
+        ) {
+          newAssignment = null;
+        }
+
         // commit the new assignment
-        node.setSharedPluginData(
-          dataNamespace(),
-          DATA_KEYS.assignment,
-          JSON.stringify(assignment),
-        );
+        if (newAssignment) {
+          node.setSharedPluginData(
+            dataNamespace(),
+            DATA_KEYS.assignment,
+            JSON.stringify(newAssignment),
+          );
+        }
 
         // set the re-launch command
         setRelaunchCommands(node);
 
         triggerFigmaChangeWatcher(node);
 
-        messenger.log(`Updated ${node.id}’s assignment to: “${assignment}”`);
+        if (newAssignment) {
+          messenger.log(`Updated ${node.id}’s assignment to: “${newAssignment}”`);
+        } else {
+          messenger.log(`${node.id} could not be assigned to: “${assignment}”`);
+        }
       } else {
         messenger.log(`Ignored ${node.id}: locked`);
       }
