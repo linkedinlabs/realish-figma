@@ -16,40 +16,51 @@
       "name": "Quick Randomization",
       "menu": [
         {
-          "name": "Company",
+          "name": "Text to Company",
           "command": "quick-randomize-company"
         },
         {
-          "name": "Country",
+          "name": "Text to Country",
           "command": "quick-randomize-country"
         },
         {
-          "name": "Date",
+          "name": "Text to Date",
           "command": "quick-randomize-date"
         },
         {
-          "name": "Degree Badge",
+          "name": "Text to Degree Badge",
           "command": "quick-randomize-degree-badge"
         },
         {
-          "name": "Domain Name",
+          "name": "Text to Domain Name",
           "command": "quick-randomize-domain"
         },
         {
-          "name": "Email",
+          "name": "Text to Email",
           "command": "quick-randomize-email"
         },
         {
-          "name": "Job Title",
+          "name": "Text to Job Title",
           "command": "quick-randomize-job-title"
         },
         {
-          "name": "Name",
+          "name": "Text to Name",
           "command": "quick-randomize-name"
         },
         {
-          "name": "Timestamp",
+          "name": "Text to Timestamp",
           "command": "quick-randomize-timestamp"
+        },
+        {
+          "separator": true
+        },
+        {
+          "name": "Shape to Company",
+          "command": "quick-randomize-avatar-company"
+        },
+        {
+          "name": "Shape to Person",
+          "command": "quick-randomize-avatar-person"
         }
       ]
     },
