@@ -791,7 +791,11 @@ export default class App {
       | StarNode> = getFilteredNodes(selection);
 
     // iterate through each selected layer and apply the `remix` action
-    nodes.forEach((node: TextNode) => {
+    nodes.forEach((node: TextNode
+      | EllipseNode
+      | PolygonNode
+      | RectangleNode
+      | StarNode) => {
       const lockedData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
       const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
 
@@ -874,17 +878,21 @@ export default class App {
       | StarNode) => {
       const lockedData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
       const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
+      let nodeType: 'shape' | 'text' = 'shape';
+      if (node.type === 'TEXT') {
+        nodeType = 'text';
+      }
 
       if (!locked) {
         // set valid shape/test assignments
-        let validAssignment = assignment;
-        if (node.type !== 'TEXT') {
+        let newAssignment = assignment;
+        if (nodeType !== 'text') {
           switch (assignment) {
             case ASSIGNMENTS.name.id:
-              validAssignment = ASSIGNMENTS.avatarPerson.id;
+              newAssignment = ASSIGNMENTS.avatarPerson.id;
               break;
             case ASSIGNMENTS.company.id:
-              validAssignment = ASSIGNMENTS.avatarCompany.id;
+              newAssignment = ASSIGNMENTS.avatarCompany.id;
               break;
             case ASSIGNMENTS.unassigned.id:
             case ASSIGNMENTS.avatarPerson.id:
@@ -892,23 +900,25 @@ export default class App {
               // do nothing; valid assignments
               break;
             default:
-              validAssignment = null;
+              newAssignment = null;
               break;
           }
         } else if (
           (assignment === ASSIGNMENTS.avatarPerson.id)
           || (assignment === ASSIGNMENTS.avatarCompany.id)
         ) {
-          validAssignment = null;
+          newAssignment = null;
         }
 
         // commit the new assignment
-        if (validAssignment) {
+        let updateCommitted = false;
+        if (newAssignment && isValidAssignment(newAssignment, nodeType)) {
           node.setSharedPluginData(
             dataNamespace(),
             DATA_KEYS.assignment,
-            JSON.stringify(validAssignment),
+            JSON.stringify(newAssignment),
           );
+          updateCommitted = true;
         }
 
         // set the re-launch command
@@ -916,10 +926,10 @@ export default class App {
 
         triggerFigmaChangeWatcher(node);
 
-        if (validAssignment) {
-          messenger.log(`Updated ${node.id}’s assignment to: “${validAssignment}”`);
+        if (newAssignment && updateCommitted) {
+          messenger.log(`Updated ${node.id}’s assignment to: “${newAssignment}”`);
         } else {
-          messenger.log(`${node.id} could not be assigned to: “${assignment}”`);
+          messenger.log(`${node.id} could not be assigned to: “${assignment}”`, 'error');
         }
       } else {
         messenger.log(`Ignored ${node.id}: locked`);
