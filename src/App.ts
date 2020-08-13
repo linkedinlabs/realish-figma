@@ -341,21 +341,8 @@ export default class App {
     // set array of data with information from each node
     const selected = [];
     await asyncForEach(nodes, async (node) => {
-      type Assignment =
-        'unassigned'
-        | 'avatar-company'
-        | 'avatar-person'
-        | 'name'
-        | 'company'
-        | 'country'
-        | 'date'
-        | 'degree-badge'
-        | 'domain'
-        | 'email'
-        | 'job-title'
-        | 'timestamp';
       const assignmentData = getNodeAssignmentData(node);
-      let assignment = JSON.parse(assignmentData || null) as Assignment;
+      let assignment = JSON.parse(assignmentData || null) as RealishAssignment;
 
       // const assignmentData = getNodeAssignmentData(node);
       // let assignment: string = JSON.parse(assignmentData || null);
@@ -400,13 +387,13 @@ export default class App {
               (assignment !== 'avatar-person')
               && (assignment !== 'avatar-company')
             ) {
-              assignment = ASSIGNMENTS.unassigned.id as Assignment;
+              assignment = ASSIGNMENTS.unassigned.id as RealishAssignment;
             }
           } else if (
             (assignment === 'avatar-person')
             || (assignment === 'avatar-company')
           ) {
-            assignment = ASSIGNMENTS.unassigned.id as Assignment;
+            assignment = ASSIGNMENTS.unassigned.id as RealishAssignment;
           }
 
           // restore original image
@@ -418,7 +405,7 @@ export default class App {
           proposedText = originalText;
         }
       } else {
-        assignment = ASSIGNMENTS.unassigned.id as Assignment;
+        assignment = ASSIGNMENTS.unassigned.id as RealishAssignment;
       }
 
       let rounded: 'all' | 'none' | 'some' = 'some';
@@ -490,17 +477,7 @@ export default class App {
     actionType: 'lock-toggle' | 'reassign' | 'remix' | 'restore',
     payload: {
       id: string,
-      assignment?:
-        'unassigned'
-        | 'name'
-        | 'company'
-        | 'country'
-        | 'date'
-        | 'degree-badge'
-        | 'domain'
-        | 'email'
-        | 'job-title'
-        | 'timestamp',
+      assignment?: RealishAssignment,
     },
     sessionKey: number,
   ) {
@@ -798,6 +775,10 @@ export default class App {
       | StarNode) => {
       const lockedData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
       const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
+      let nodeType: 'shape' | 'text' = 'shape';
+      if (node.type === 'TEXT') {
+        nodeType = 'text';
+      }
 
       if (!locked) {
         if (assignment === 'assigned') {
@@ -816,22 +797,11 @@ export default class App {
           messenger.log(`Set ${node.id}’s proposed content for: “${assignment}”`);
 
           // set the assignment on unassigned nodes, otherwise ignore it
-          if (isValidAssignment(assignment, 'text')) {
-            type Assignment =
-              'unassigned'
-              | 'name'
-              | 'company'
-              | 'country'
-              | 'date'
-              | 'degree-badge'
-              | 'domain'
-              | 'email'
-              | 'job-title'
-              | 'timestamp';
+          if (isValidAssignment(assignment, nodeType)) {
             const currentAssignmentData = getNodeAssignmentData(node);
-            const currentAssignment = JSON.parse(currentAssignmentData || null) as Assignment;
+            const currentAssignment = JSON.parse(currentAssignmentData || null) as RealishAssignment;
             if (!currentAssignment || currentAssignment === 'unassigned') {
-              const newAssignment: Assignment = assignment as Assignment;
+              const newAssignment: RealishAssignment = assignment as RealishAssignment;
               App.actOnNode('reassign', { id: node.id, assignment: newAssignment }, sessionKey);
             }
           } else {
@@ -843,7 +813,7 @@ export default class App {
       }
     });
 
-    messenger.log(`Quickly randomize all selected TextNodes for ${assignment}`);
+    messenger.log(`Quickly randomize all selected nodes for ${assignment}`);
 
     this.commitContent(sessionKey);
 
@@ -885,14 +855,14 @@ export default class App {
 
       if (!locked) {
         // set valid shape/test assignments
-        let newAssignment = assignment;
+        let newAssignment: RealishAssignment = assignment as RealishAssignment;
         if (nodeType !== 'text') {
           switch (assignment) {
             case ASSIGNMENTS.name.id:
-              newAssignment = ASSIGNMENTS.avatarPerson.id;
+              newAssignment = ASSIGNMENTS.avatarPerson.id as RealishAssignment;
               break;
             case ASSIGNMENTS.company.id:
-              newAssignment = ASSIGNMENTS.avatarCompany.id;
+              newAssignment = ASSIGNMENTS.avatarCompany.id as RealishAssignment;
               break;
             case ASSIGNMENTS.unassigned.id:
             case ASSIGNMENTS.avatarPerson.id:

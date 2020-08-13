@@ -1,6 +1,21 @@
 // Figma Plugin API version 1, update 14
 
 declare global {
+// Internal Declarations
+type RealishAssignment =
+  'unassigned'
+  | 'avatar-company'
+  | 'avatar-person'
+  | 'company'
+  | 'country'
+  | 'date'
+  | 'degree-badge'
+  | 'domain'
+  | 'email'
+  | 'job-title'
+  | 'name'
+  | 'timestamp';
+
 // Vendor Declarations
 const selectMenu: window.selectMenu
 

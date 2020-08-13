@@ -149,6 +149,8 @@ export default class Painter {
     const proposedTextData = this.node.getSharedPluginData(dataNamespace(), textProposedKey);
     const proposedText = JSON.parse(proposedTextData || null);
 
+    console.log(`proposedText painter ${proposedText}`);
+
     // if the node is marked as locked, shouldn’t do anything to it
     if (locked) {
       result.status = 'error';
