@@ -757,7 +757,7 @@ export default class App {
    *
    * @returns {null} Shows a Toast in the UI if nothing is selected.
    */
-  quickRandomize(assignment: string, sessionKey: number): void {
+  async quickRandomize(assignment: string, sessionKey: number) {
     const { messenger, selection } = assemble(figma);
     const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
     const nodes: Array<
@@ -768,7 +768,7 @@ export default class App {
       | StarNode> = getFilteredNodes(selection);
 
     // iterate through each selected layer and apply the `remix` action
-    nodes.forEach((node: TextNode
+    await asyncForEach(nodes, async (node: TextNode
       | EllipseNode
       | PolygonNode
       | RectangleNode
@@ -799,7 +799,8 @@ export default class App {
           // set the assignment on unassigned nodes, otherwise ignore it
           if (isValidAssignment(assignment, nodeType)) {
             const currentAssignmentData = getNodeAssignmentData(node);
-            const currentAssignment = JSON.parse(currentAssignmentData || null) as RealishAssignment;
+            const currentAssignment = JSON.parse(currentAssignmentData
+              || null) as RealishAssignment;
             if (!currentAssignment || currentAssignment === 'unassigned') {
               const newAssignment: RealishAssignment = assignment as RealishAssignment;
               App.actOnNode('reassign', { id: node.id, assignment: newAssignment }, sessionKey);
