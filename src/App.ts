@@ -783,7 +783,7 @@ export default class App {
       if (!locked) {
         if (assignment === 'assigned') {
           App.actOnNode('remix', { id: node.id }, sessionKey);
-        } else {
+        } else if (isValidAssignment(assignment, nodeType)) {
           const data = new Data({ for: node });
           const proposedText: string = data.randomContent(assignment);
 
@@ -797,17 +797,15 @@ export default class App {
           messenger.log(`Set ${node.id}’s proposed content for: “${assignment}”`);
 
           // set the assignment on unassigned nodes, otherwise ignore it
-          if (isValidAssignment(assignment, nodeType)) {
-            const currentAssignmentData = getNodeAssignmentData(node);
-            const currentAssignment = JSON.parse(currentAssignmentData
-              || null) as RealishAssignment;
-            if (!currentAssignment || currentAssignment === 'unassigned') {
-              const newAssignment: RealishAssignment = assignment as RealishAssignment;
-              App.actOnNode('reassign', { id: node.id, assignment: newAssignment }, sessionKey);
-            }
-          } else {
-            messenger.log(`Could not assign ${node.id}; Invalid assignment`, 'error');
+          const currentAssignmentData = getNodeAssignmentData(node);
+          const currentAssignment = JSON.parse(currentAssignmentData
+            || null) as RealishAssignment;
+          if (!currentAssignment || currentAssignment === 'unassigned') {
+            const newAssignment: RealishAssignment = assignment as RealishAssignment;
+            App.actOnNode('reassign', { id: node.id, assignment: newAssignment }, sessionKey);
           }
+        } else {
+          messenger.log(`Could not assign ${node.id}; Invalid assignment`, 'error');
         }
       } else {
         messenger.log(`Ignored ${node.id}: locked`);
