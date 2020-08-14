@@ -341,21 +341,8 @@ export default class App {
     // set array of data with information from each node
     const selected = [];
     await asyncForEach(nodes, async (node) => {
-      type Assignment =
-        'unassigned'
-        | 'avatar-company'
-        | 'avatar-person'
-        | 'name'
-        | 'company'
-        | 'country'
-        | 'date'
-        | 'degree-badge'
-        | 'domain'
-        | 'email'
-        | 'job-title'
-        | 'timestamp';
       const assignmentData = getNodeAssignmentData(node);
-      let assignment = JSON.parse(assignmentData || null) as Assignment;
+      let assignment = JSON.parse(assignmentData || null) as RealishAssignment;
 
       // const assignmentData = getNodeAssignmentData(node);
       // let assignment: string = JSON.parse(assignmentData || null);
@@ -400,13 +387,13 @@ export default class App {
               (assignment !== 'avatar-person')
               && (assignment !== 'avatar-company')
             ) {
-              assignment = ASSIGNMENTS.unassigned.id as Assignment;
+              assignment = ASSIGNMENTS.unassigned.id as RealishAssignment;
             }
           } else if (
             (assignment === 'avatar-person')
             || (assignment === 'avatar-company')
           ) {
-            assignment = ASSIGNMENTS.unassigned.id as Assignment;
+            assignment = ASSIGNMENTS.unassigned.id as RealishAssignment;
           }
 
           // restore original image
@@ -418,7 +405,7 @@ export default class App {
           proposedText = originalText;
         }
       } else {
-        assignment = ASSIGNMENTS.unassigned.id as Assignment;
+        assignment = ASSIGNMENTS.unassigned.id as RealishAssignment;
       }
 
       let rounded: 'all' | 'none' | 'some' = 'some';
@@ -490,17 +477,7 @@ export default class App {
     actionType: 'lock-toggle' | 'reassign' | 'remix' | 'restore',
     payload: {
       id: string,
-      assignment?:
-        'unassigned'
-        | 'name'
-        | 'company'
-        | 'country'
-        | 'date'
-        | 'degree-badge'
-        | 'domain'
-        | 'email'
-        | 'job-title'
-        | 'timestamp',
+      assignment?: RealishAssignment,
     },
     sessionKey: number,
   ) {
@@ -780,7 +757,7 @@ export default class App {
    *
    * @returns {null} Shows a Toast in the UI if nothing is selected.
    */
-  quickRandomize(assignment: string, sessionKey: number): void {
+  async quickRandomize(assignment: string, sessionKey: number) {
     const { messenger, selection } = assemble(figma);
     const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
     const nodes: Array<
@@ -791,14 +768,22 @@ export default class App {
       | StarNode> = getFilteredNodes(selection);
 
     // iterate through each selected layer and apply the `remix` action
-    nodes.forEach((node: TextNode) => {
+    await asyncForEach(nodes, async (node: TextNode
+      | EllipseNode
+      | PolygonNode
+      | RectangleNode
+      | StarNode) => {
       const lockedData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
       const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
+      let nodeType: 'shape' | 'text' = 'shape';
+      if (node.type === 'TEXT') {
+        nodeType = 'text';
+      }
 
       if (!locked) {
         if (assignment === 'assigned') {
           App.actOnNode('remix', { id: node.id }, sessionKey);
-        } else {
+        } else if (isValidAssignment(assignment, nodeType)) {
           const data = new Data({ for: node });
           const proposedText: string = data.randomContent(assignment);
 
@@ -812,34 +797,22 @@ export default class App {
           messenger.log(`Set ${node.id}’s proposed content for: “${assignment}”`);
 
           // set the assignment on unassigned nodes, otherwise ignore it
-          if (isValidAssignment(assignment, 'text')) {
-            type Assignment =
-              'unassigned'
-              | 'name'
-              | 'company'
-              | 'country'
-              | 'date'
-              | 'degree-badge'
-              | 'domain'
-              | 'email'
-              | 'job-title'
-              | 'timestamp';
-            const currentAssignmentData = getNodeAssignmentData(node);
-            const currentAssignment = JSON.parse(currentAssignmentData || null) as Assignment;
-            if (!currentAssignment || currentAssignment === 'unassigned') {
-              const newAssignment: Assignment = assignment as Assignment;
-              App.actOnNode('reassign', { id: node.id, assignment: newAssignment }, sessionKey);
-            }
-          } else {
-            messenger.log(`Could not assign ${node.id}; Invalid assignment`, 'error');
+          const currentAssignmentData = getNodeAssignmentData(node);
+          const currentAssignment = JSON.parse(currentAssignmentData
+            || null) as RealishAssignment;
+          if (!currentAssignment || currentAssignment === 'unassigned') {
+            const newAssignment: RealishAssignment = assignment as RealishAssignment;
+            App.actOnNode('reassign', { id: node.id, assignment: newAssignment }, sessionKey);
           }
+        } else {
+          messenger.log(`Could not assign ${node.id}; Invalid assignment`, 'error');
         }
       } else {
         messenger.log(`Ignored ${node.id}: locked`);
       }
     });
 
-    messenger.log(`Quickly randomize all selected TextNodes for ${assignment}`);
+    messenger.log(`Quickly randomize all selected nodes for ${assignment}`);
 
     this.commitContent(sessionKey);
 
@@ -867,24 +840,66 @@ export default class App {
       | StarNode> = getFilteredNodes(selection);
 
     // iterate through each selected layer and apply the `remix` action
-    nodes.forEach((node: TextNode) => {
+    nodes.forEach((node: TextNode
+      | EllipseNode
+      | PolygonNode
+      | RectangleNode
+      | StarNode) => {
       const lockedData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
       const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
+      let nodeType: 'shape' | 'text' = 'shape';
+      if (node.type === 'TEXT') {
+        nodeType = 'text';
+      }
 
       if (!locked) {
+        // set valid shape/test assignments
+        let newAssignment: RealishAssignment = assignment as RealishAssignment;
+        if (nodeType !== 'text') {
+          switch (assignment) {
+            case ASSIGNMENTS.name.id:
+              newAssignment = ASSIGNMENTS.avatarPerson.id as RealishAssignment;
+              break;
+            case ASSIGNMENTS.company.id:
+              newAssignment = ASSIGNMENTS.avatarCompany.id as RealishAssignment;
+              break;
+            case ASSIGNMENTS.unassigned.id:
+            case ASSIGNMENTS.avatarPerson.id:
+            case ASSIGNMENTS.avatarCompany.id:
+              // do nothing; valid assignments
+              break;
+            default:
+              newAssignment = null;
+              break;
+          }
+        } else if (
+          (assignment === ASSIGNMENTS.avatarPerson.id)
+          || (assignment === ASSIGNMENTS.avatarCompany.id)
+        ) {
+          newAssignment = null;
+        }
+
         // commit the new assignment
-        node.setSharedPluginData(
-          dataNamespace(),
-          DATA_KEYS.assignment,
-          JSON.stringify(assignment),
-        );
+        let updateCommitted = false;
+        if (newAssignment && isValidAssignment(newAssignment, nodeType)) {
+          node.setSharedPluginData(
+            dataNamespace(),
+            DATA_KEYS.assignment,
+            JSON.stringify(newAssignment),
+          );
+          updateCommitted = true;
+        }
 
         // set the re-launch command
         setRelaunchCommands(node);
 
         triggerFigmaChangeWatcher(node);
 
-        messenger.log(`Updated ${node.id}’s assignment to: “${assignment}”`);
+        if (newAssignment && updateCommitted) {
+          messenger.log(`Updated ${node.id}’s assignment to: “${newAssignment}”`);
+        } else {
+          messenger.log(`${node.id} could not be assigned to: “${assignment}”`, 'error');
+        }
       } else {
         messenger.log(`Ignored ${node.id}: locked`);
       }
