@@ -107,11 +107,11 @@
           "separator": true
         },
         {
-          "name": "Set shape as Company",
+          "name": "Set shape as “Company”",
           "command": "quick-assign-avatar-company"
         },
         {
-          "name": "Set shape as Person",
+          "name": "Set shape as “Person”",
           "command": "quick-assign-avatar-person"
         },
         {
