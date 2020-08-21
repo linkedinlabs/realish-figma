@@ -171,7 +171,7 @@ export default [
     hasImage: true,
   },
   {
-    name: 'Whistlety',
+    name: 'Whistlety & Co.',
     hasImage: true,
   },
   {
