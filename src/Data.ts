@@ -38,20 +38,20 @@ const getRandomInt = (min, max): number => {
  * @kind function
  * @name generateTimestamp
  *
- * @returns {string} The formatted timestamp (i.e. “6 mins” or ”18 hrs”).
+ * @returns {string} The formatted timestamp (i.e. “6 m” or ”18 h”).
  */
 const generateTimestamp = (): string => {
-  const timeDeclarations = ['mins', 'hrs', 'd', 'w', 'mo'];
+  const timeDeclarations = ['m', 'h', 'd', 'w', 'mo'];
 
   let randomTimeInteger = 0;
   const randomTimeDeclarationIndex = Math.floor(Math.random() * timeDeclarations.length);
   const randomTimeDeclaration = timeDeclarations[randomTimeDeclarationIndex];
 
   switch (randomTimeDeclaration) {
-    case 'mins':
+    case 'm':
       randomTimeInteger = getRandomInt(1, 59);
       break;
-    case 'hrs':
+    case 'h':
       randomTimeInteger = getRandomInt(1, 23);
       break;
     case 'd':
@@ -67,7 +67,7 @@ const generateTimestamp = (): string => {
       return null;
   }
 
-  const generatedStamp = `${randomTimeInteger} ${randomTimeDeclaration}`;
+  const generatedStamp = `${randomTimeInteger}${randomTimeDeclaration}`;
   return generatedStamp;
 };
 
