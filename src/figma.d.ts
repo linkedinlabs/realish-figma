@@ -9,6 +9,7 @@ type RealishAssignment =
   | 'company'
   | 'country'
   | 'date'
+  | 'dateShort'
   | 'degree-badge'
   | 'domain'
   | 'email'

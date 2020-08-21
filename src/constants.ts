@@ -54,6 +54,7 @@ const ASSIGNMENTS = {
   company: { id: 'company', text: 'Company', nodeType: 'text' },
   country: { id: 'country', text: 'Country', nodeType: 'text' },
   date: { id: 'date', text: 'Date', nodeType: 'text' },
+  dateShort: { id: 'date-short', text: 'Date (Short)', nodeType: 'text' },
   degreeBadge: { id: 'degree-badge', text: 'Degree Badge', nodeType: 'text' },
   domain: { id: 'domain', text: 'Domain Name', nodeType: 'text' },
   email: { id: 'email', text: 'Email', nodeType: 'text' },
@@ -67,6 +68,7 @@ const ASSIGNMENTS = {
 // company
 // country
 // date
+// dateShort
 // degree-badge
 // domain
 // email

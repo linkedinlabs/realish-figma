@@ -81,7 +81,7 @@ const generateTimestamp = (): string => {
  *
  * @returns {string} The formatted date as a string.
  */
-const generateDate = (): string => {
+const generateDate = (type: 'long' | 'short' = 'short'): string => {
   // set the upper bound for the random date
   const daysAhead = 120;
   const currentDate: Date = new Date();
@@ -104,11 +104,21 @@ const generateDate = (): string => {
     return selectedDate;
   };
 
-  // month abbreviations list
-  const formattedMonths = [
+  // month abbreviations lists
+  const formattedMonthsLong = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'Septemeber', 'October', 'Novemeber', 'December',
+  ];
+
+  const formattedMonthsShort = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
   ];
+
+  let formattedMonths = formattedMonthsLong;
+  if (type === 'short') {
+    formattedMonths = formattedMonthsShort;
+  }
 
   // pick a random date between now and the `daysAhead` upper bound
   const date: Date = randomDate(currentDate, daysAhead);
@@ -117,7 +127,11 @@ const generateDate = (): string => {
   const formattedMonth: string = formattedMonths[date.getMonth()];
   const formattedDate: number = date.getDate();
   const formattedYear: number = date.getFullYear();
-  const generatedDate: string = `${formattedMonth} ${formattedDate} ${formattedYear}`;
+
+  let generatedDate: string = `${formattedMonth} ${formattedDate}, ${formattedYear}`;
+  if (type === 'short') {
+    generatedDate = `${formattedMonth} ${formattedDate}`;
+  }
 
   return generatedDate;
 };
@@ -282,7 +296,12 @@ const generateRandom = (assignment): string => {
       dictionaries.push(countries);
       break;
     case ASSIGNMENTS.date.id: {
-      const date = [generateDate()];
+      const date = [generateDate('long')];
+      dictionaries.push(date);
+      break;
+    }
+    case ASSIGNMENTS.dateShort.id: {
+      const date = [generateDate('short')];
       dictionaries.push(date);
       break;
     }
