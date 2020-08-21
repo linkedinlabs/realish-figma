@@ -107,7 +107,7 @@ const generateDate = (type: 'long' | 'short' = 'short'): string => {
   // month abbreviations lists
   const formattedMonthsLong = [
     'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'Septemeber', 'October', 'Novemeber', 'December',
+    'July', 'August', 'September', 'October', 'November', 'December',
   ];
 
   const formattedMonthsShort = [
