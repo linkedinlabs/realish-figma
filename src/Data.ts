@@ -329,9 +329,12 @@ const generateRandom = (assignment): string => {
       style = 'lowerCase';
       break;
     }
-    case ASSIGNMENTS.group.id:
-      dictionaries.push(groups);
+    case ASSIGNMENTS.group.id: {
+      const groupNames = [];
+      groups.forEach(group => groupNames.push(group.name));
+      dictionaries.push(groupNames);
       break;
+    }
     case ASSIGNMENTS.industry.id:
       dictionaries.push(industries);
       break;
