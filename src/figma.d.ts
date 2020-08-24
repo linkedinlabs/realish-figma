@@ -4,6 +4,7 @@ declare global {
 // Internal Declarations
 type RealishAssignment =
   'unassigned'
+  | 'article-title'
   | 'avatar-company'
   | 'avatar-person'
   | 'company'
@@ -13,8 +14,13 @@ type RealishAssignment =
   | 'degree-badge'
   | 'domain'
   | 'email'
+  | 'group'
+  | 'industry'
   | 'job-title'
+  | 'location'
+  | 'media-source'
   | 'name'
+  | 'school'
   | 'timestamp';
 
 // Vendor Declarations

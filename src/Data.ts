@@ -1,9 +1,15 @@
+import articleTitles from './data/article-titles';
 import companies from './data/companies';
 import countries from './data/countries';
 import degreeBadges from './data/degree-badges';
 import domainTLDs from './data/domain-tlds';
+import groups from './data/groups';
+import industries from './data/industries';
 import jobTitles from './data/job-titles';
+import locations from './data/locations';
+import mediaSources from './data/media-sources';
 import names from './data/names';
+import schools from './data/schools';
 import { getNodeAssignmentData } from './Tools';
 import { ASSIGNMENTS } from './constants';
 
@@ -279,6 +285,9 @@ const generateRandom = (assignment): string => {
   let newRandomString = null;
 
   switch (assignment) {
+    case ASSIGNMENTS.articleTitle.id:
+      dictionaries.push(articleTitles);
+      break;
     case ASSIGNMENTS.avatarCompany.id:
     case ASSIGNMENTS.avatarPerson.id: {
       const filepath = [generateFilepath(assignment)];
@@ -320,8 +329,20 @@ const generateRandom = (assignment): string => {
       style = 'lowerCase';
       break;
     }
+    case ASSIGNMENTS.group.id:
+      dictionaries.push(groups);
+      break;
+    case ASSIGNMENTS.industry.id:
+      dictionaries.push(industries);
+      break;
     case ASSIGNMENTS.jobTitle.id:
       dictionaries.push(jobTitles);
+      break;
+    case ASSIGNMENTS.location.id:
+      dictionaries.push(locations);
+      break;
+    case ASSIGNMENTS.mediaSource.id:
+      dictionaries.push(mediaSources);
       break;
     case ASSIGNMENTS.name.id: {
       // names, twice for a first/last
@@ -329,6 +350,12 @@ const generateRandom = (assignment): string => {
       dictionaries.push(names);
       separator = ' ';
       length = 2;
+      break;
+    }
+    case ASSIGNMENTS.school.id: {
+      const schoolNames = [];
+      schools.forEach(school => schoolNames.push(school.name));
+      dictionaries.push(schoolNames);
       break;
     }
     case ASSIGNMENTS.timestamp.id: {

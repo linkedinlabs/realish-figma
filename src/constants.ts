@@ -49,6 +49,7 @@ const DATA_KEYS = {
  */
 const ASSIGNMENTS = {
   unassigned: { id: 'unassigned', text: 'Unassigned', nodeType: null },
+  articleTitle: { id: 'article-title', text: 'Article Title', nodeType: 'text' },
   avatarCompany: { id: 'avatar-company', text: 'Company', nodeType: 'shape' },
   avatarPerson: { id: 'avatar-person', text: 'Person', nodeType: 'shape' },
   company: { id: 'company', text: 'Company', nodeType: 'text' },
@@ -58,23 +59,15 @@ const ASSIGNMENTS = {
   degreeBadge: { id: 'degree-badge', text: 'Degree Badge', nodeType: 'text' },
   domain: { id: 'domain', text: 'Domain Name', nodeType: 'text' },
   email: { id: 'email', text: 'Email', nodeType: 'text' },
+  group: { id: 'group', text: 'Group', nodeType: 'text' },
+  industry: { id: 'industry', text: 'Industry', nodeType: 'text' },
   jobTitle: { id: 'job-title', text: 'Job Title', nodeType: 'text' },
+  location: { id: 'location', text: 'Location', nodeType: 'text' },
+  mediaSource: { id: 'media-source', text: 'Media Source', nodeType: 'text' },
   name: { id: 'name', text: 'Name', nodeType: 'text' },
+  school: { id: 'school', text: 'School', nodeType: 'text' },
   timestamp: { id: 'timestamp', text: 'Timestamp', nodeType: 'text' },
 };
-// unassigned
-// avatar-company
-// avatar-person
-// company
-// country
-// date
-// dateShort
-// degree-badge
-// domain
-// email
-// job-title
-// name
-// timestamp
 
 /**
  * @description An object containing the current string constants the Figma API returns for
