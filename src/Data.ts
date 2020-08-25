@@ -3,6 +3,7 @@ import companies from './data/companies';
 import countries from './data/countries';
 import degreeBadges from './data/degree-badges';
 import domainTLDs from './data/domain-tlds';
+import events from './data/events';
 import groups from './data/groups';
 import industries from './data/industries';
 import jobTitles from './data/job-titles';
@@ -327,6 +328,12 @@ const generateRandom = (assignment): string => {
       const email = [generateEmail()];
       dictionaries.push(email);
       style = 'lowerCase';
+      break;
+    }
+    case ASSIGNMENTS.event.id: {
+      const eventNames = [];
+      events.forEach(event => eventNames.push(event.name));
+      dictionaries.push(eventNames);
       break;
     }
     case ASSIGNMENTS.group.id: {

@@ -13,6 +13,7 @@ type RealishAssignment =
   | 'dateShort'
   | 'degree-badge'
   | 'domain'
+  | 'event'
   | 'email'
   | 'group'
   | 'industry'
