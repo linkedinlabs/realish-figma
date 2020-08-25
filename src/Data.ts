@@ -10,6 +10,7 @@ import jobTitles from './data/job-titles';
 import locations from './data/locations';
 import mediaSources from './data/media-sources';
 import names from './data/names';
+import publications from './data/publications';
 import schools from './data/schools';
 import { getNodeAssignmentData } from './Tools';
 import { ASSIGNMENTS } from './constants';
@@ -363,6 +364,12 @@ const generateRandom = (assignment): string => {
       dictionaries.push(names);
       separator = ' ';
       length = 2;
+      break;
+    }
+    case ASSIGNMENTS.publication.id: {
+      const publicationNames = [];
+      publications.forEach(publication => publicationNames.push(publication.name));
+      dictionaries.push(publicationNames);
       break;
     }
     case ASSIGNMENTS.school.id: {
