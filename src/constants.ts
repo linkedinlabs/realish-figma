@@ -52,6 +52,7 @@ const ASSIGNMENTS = {
   articleTitle: { id: 'article-title', text: 'Article Title', nodeType: 'text' },
   avatarCompany: { id: 'avatar-company', text: 'Company', nodeType: 'shape' },
   avatarPerson: { id: 'avatar-person', text: 'Person', nodeType: 'shape' },
+  avatarSchool: { id: 'avatar-school', text: 'School', nodeType: 'shape' },
   company: { id: 'company', text: 'Company', nodeType: 'text' },
   country: { id: 'country', text: 'Country', nodeType: 'text' },
   date: { id: 'date', text: 'Date', nodeType: 'text' },

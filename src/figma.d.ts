@@ -7,6 +7,7 @@ type RealishAssignment =
   | 'article-title'
   | 'avatar-company'
   | 'avatar-person'
+  | 'avatar-school'
   | 'company'
   | 'country'
   | 'date'

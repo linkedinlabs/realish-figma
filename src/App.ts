@@ -384,14 +384,16 @@ export default class App {
           // ensure shape/text have the correct assignment
           if (nodeType === 'shape') {
             if (
-              (assignment !== 'avatar-person')
-              && (assignment !== 'avatar-company')
+              (assignment !== ASSIGNMENTS.avatarPerson.id)
+              && (assignment !== ASSIGNMENTS.avatarCompany.id)
+              && (assignment !== ASSIGNMENTS.avatarSchool.id)
             ) {
               assignment = ASSIGNMENTS.unassigned.id as RealishAssignment;
             }
           } else if (
-            (assignment === 'avatar-person')
-            || (assignment === 'avatar-company')
+            (assignment === ASSIGNMENTS.avatarPerson.id)
+            || (assignment === ASSIGNMENTS.avatarCompany.id)
+            || (assignment === ASSIGNMENTS.avatarSchool.id)
           ) {
             assignment = ASSIGNMENTS.unassigned.id as RealishAssignment;
           }
@@ -863,9 +865,13 @@ export default class App {
             case ASSIGNMENTS.company.id:
               newAssignment = ASSIGNMENTS.avatarCompany.id as RealishAssignment;
               break;
+            case ASSIGNMENTS.school.id:
+              newAssignment = ASSIGNMENTS.avatarSchool.id as RealishAssignment;
+              break;
             case ASSIGNMENTS.unassigned.id:
             case ASSIGNMENTS.avatarPerson.id:
             case ASSIGNMENTS.avatarCompany.id:
+            case ASSIGNMENTS.avatarSchool.id:
               // do nothing; valid assignments
               break;
             default:
@@ -875,6 +881,7 @@ export default class App {
         } else if (
           (assignment === ASSIGNMENTS.avatarPerson.id)
           || (assignment === ASSIGNMENTS.avatarCompany.id)
+          || (assignment === ASSIGNMENTS.avatarSchool.id)
         ) {
           newAssignment = null;
         }

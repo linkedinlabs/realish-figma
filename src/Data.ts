@@ -228,26 +228,50 @@ const generateEmail = (): string => {
  *
  * @returns {string} The root filepath with filename.
  */
-const generateFilepath = (assignment: 'avatar-company' | 'avatar-person'): string => {
+const generateFilepath = (
+  assignment:
+    'avatar-company'
+    | 'avatar-person'
+    | 'avatar-school',
+): string => {
   const { uniqueNamesGenerator } = Generator;
   let filepath = null;
 
-  // company images are named the same as the company names, but
-  // set to lowercase – spaces are replaced with hyphens
-  if (assignment === ASSIGNMENTS.avatarCompany.id) {
-    const companiesWithImages = [];
-    companies.forEach((company) => {
-      if (company.hasImage) {
-        companiesWithImages.push(company.name);
-      }
-    });
-    const randomCompany = uniqueNamesGenerator({
-      dictionaries: [companiesWithImages],
-      length: 1,
-      style: 'lowerCase',
-    }).replace('&', 'and').replace(/[\s]/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
+  // non-person images are named the same as the data source names, but
+  // set to lowercase – spaces are replaced with hyphens, ampersands are
+  // replaced with the word “and”, other special characters are ignored
+  if (assignment !== ASSIGNMENTS.avatarPerson.id) {
+    let dataSet = null;
+    let fileDirectory = `${assignment.replace('avatar-', '')}s`;
 
-    filepath = `/companies/${randomCompany}.png`;
+    switch (assignment) {
+      case ASSIGNMENTS.avatarCompany.id:
+        dataSet = companies;
+        fileDirectory = 'companies';
+        break;
+      case ASSIGNMENTS.avatarSchool.id:
+        dataSet = schools;
+        break;
+      default:
+        dataSet = null;
+    }
+
+    if (dataSet) {
+      const entriesWithImages = [];
+
+      dataSet.forEach((entry) => {
+        if (entry.hasImage) {
+          entriesWithImages.push(entry.name);
+        }
+      });
+      const randomEntryName = uniqueNamesGenerator({
+        dictionaries: [entriesWithImages],
+        length: 1,
+        style: 'lowerCase',
+      }).replace('&', 'and').replace(/[\s]/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
+
+      filepath = `/${fileDirectory}/${randomEntryName}.png`;
+    }
   }
 
   // first flip a coin betweena “woman” and “man”,
@@ -291,7 +315,8 @@ const generateRandom = (assignment): string => {
       dictionaries.push(articleTitles);
       break;
     case ASSIGNMENTS.avatarCompany.id:
-    case ASSIGNMENTS.avatarPerson.id: {
+    case ASSIGNMENTS.avatarPerson.id:
+    case ASSIGNMENTS.avatarSchool.id: {
       const filepath = [generateFilepath(assignment)];
       dictionaries.push(filepath);
       style = 'lowerCase';
@@ -444,7 +469,6 @@ export default class Data {
     if (assignment) {
       randomContent = generateRandom(assignment);
     }
-
     return randomContent;
   }
 }
