@@ -8,11 +8,11 @@
 export default [
   {
     name: 'Agribusiness Today',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Article Accelerator',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Automaradar',
@@ -28,15 +28,15 @@ export default [
   },
   {
     name: 'Chronicle Daily',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Countryside Examiner',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Crow’s Nest',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Dice.com',
@@ -44,11 +44,11 @@ export default [
   },
   {
     name: 'Enneagram',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'EqualOpposite',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Fibonacci Effect',
@@ -60,15 +60,15 @@ export default [
   },
   {
     name: 'Gosssip',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Grandfina.le',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Hyperpolyglot',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Investor.ly',
@@ -84,11 +84,11 @@ export default [
   },
   {
     name: 'Nimbus Aviation News',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Online Observer',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Onyx',
@@ -96,11 +96,11 @@ export default [
   },
   {
     name: 'Post Reporter',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'PRQX News',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Rebel Web Services',
@@ -108,7 +108,7 @@ export default [
   },
   {
     name: 'Reportable',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Starlight Productions',
@@ -116,30 +116,30 @@ export default [
   },
   {
     name: 'Technica Fama',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Techyon',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'The 4ourfront',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'The Boxcutter',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'The Watts Weekly',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'TIL Insider',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Vantage',
-    hasImage: false,
+    hasImage: true,
   },
 ];

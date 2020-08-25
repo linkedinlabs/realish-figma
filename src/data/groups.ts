@@ -12,7 +12,7 @@ export default [
   },
   {
     name: 'Amateur Mead Brewing',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Angler Society',
@@ -20,11 +20,11 @@ export default [
   },
   {
     name: 'AR/VR/MR Marketing',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Association of Veterinary Dentists',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Bundson Unity',
@@ -32,11 +32,11 @@ export default [
   },
   {
     name: 'Creative Writing & Self Publishing',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Design for Social Impact',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Design Fundamentals',
@@ -56,27 +56,27 @@ export default [
   },
   {
     name: 'Navigation & Guidance Control Systems',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'North Coast Real Estate Investors',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Off Grid Survival Enthusiasts',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Pacific Sales Professionals',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Peninsula IT Professionals',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Renewable Energy Recruiting',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Restorative Justice',
@@ -88,7 +88,7 @@ export default [
   },
   {
     name: 'Saltwater Aquaculture',
-    hasImage: false,
+    hasImage: true,
   },
   {
     name: 'Tron Accelerator',
