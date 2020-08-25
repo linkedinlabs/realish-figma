@@ -351,9 +351,12 @@ const generateRandom = (assignment): string => {
     case ASSIGNMENTS.location.id:
       dictionaries.push(locations);
       break;
-    case ASSIGNMENTS.mediaSource.id:
-      dictionaries.push(mediaSources);
+    case ASSIGNMENTS.mediaSource.id: {
+      const mediaSourceNames = [];
+      mediaSources.forEach(mediaSource => mediaSourceNames.push(mediaSource.name));
+      dictionaries.push(mediaSourceNames);
       break;
+    }
     case ASSIGNMENTS.name.id: {
       // names, twice for a first/last
       dictionaries.push(names);
