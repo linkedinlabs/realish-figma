@@ -39,6 +39,10 @@ export default [
     hasImage: false,
   },
   {
+    name: 'Aladdin Furniture',
+    hasImage: true,
+  },
+  {
     name: 'Alpha Co.',
     hasImage: false,
   },
@@ -65,6 +69,10 @@ export default [
   {
     name: 'Cortez Travels',
     hasImage: false,
+  },
+  {
+    name: 'Dawson Chalet',
+    hasImage: true,
   },
   {
     name: 'Energence',
@@ -103,12 +111,24 @@ export default [
     hasImage: true,
   },
   {
+    name: 'Lizzy Kate’s',
+    hasImage: true,
+  },
+  {
+    name: 'London Hill Vineyard and Winery',
+    hasImage: true,
+  },
+  {
     name: 'Mintome',
     hasImage: true,
   },
   {
     name: 'My own business',
     hasImage: false,
+  },
+  {
+    name: 'Nueno Coffee',
+    hasImage: true,
   },
   {
     name: 'Omega Company',
@@ -147,8 +167,20 @@ export default [
     hasImage: false,
   },
   {
+    name: 'Seaport Farms',
+    hasImage: true,
+  },
+  {
     name: 'Self-employed',
     hasImage: false,
+  },
+  {
+    name: 'shredtop',
+    hasImage: true,
+  },
+  {
+    name: 'Sunrise Spa',
+    hasImage: true,
   },
   {
     name: 'Techcore',
@@ -156,6 +188,10 @@ export default [
   },
   {
     name: 'Telendo',
+    hasImage: true,
+  },
+  {
+    name: 'The Gentilhomme',
     hasImage: true,
   },
   {
@@ -168,6 +204,10 @@ export default [
   },
   {
     name: 'Viyo',
+    hasImage: true,
+  },
+  {
+    name: 'Wags to Riches',
     hasImage: true,
   },
   {
