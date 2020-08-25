@@ -245,7 +245,7 @@ const generateFilepath = (assignment: 'avatar-company' | 'avatar-person'): strin
       dictionaries: [companiesWithImages],
       length: 1,
       style: 'lowerCase',
-    }).replace(' ', '-').replace('.', '');
+    }).replace('&', 'and').replace(/[\s]/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
 
     filepath = `/companies/${randomCompany}.png`;
   }
