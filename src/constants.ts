@@ -69,6 +69,7 @@ const ASSIGNMENTS = {
   domain: { id: 'domain', text: 'Domain Name', nodeType: 'text' },
   email: { id: 'email', text: 'Email', nodeType: 'text' },
   event: { id: 'event', text: 'Event', nodeType: 'text' },
+  followers: { id: 'followers', text: 'Followers', nodeType: 'text' },
   group: { id: 'group', text: 'Group', nodeType: 'text' },
   industry: { id: 'industry', text: 'Industry', nodeType: 'text' },
   jobTitle: { id: 'job-title', text: 'Job Title', nodeType: 'text' },

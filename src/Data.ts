@@ -354,6 +354,46 @@ const generateFilepath = (
 };
 
 /** WIP
+ * @description Generates a random number formatted as an alumni string
+ * (i.e. “7 company alumni”) for either companies or schools. The number
+ * of alumni is weighted toward lower numbers (under 20) and limited to 120.
+ *
+ * @kind function
+ * @name generateFollowers
+ *
+ * @returns {string} The formatted number of alumni.
+ */
+const generateFollowers = (): string => {
+  let randomNumber: number = 1;
+  const weightedPick = getRandomInt(1, 10);
+  switch (weightedPick) {
+    case 3:
+    case 4:
+    case 5:
+      randomNumber = getRandomInt(2, 500);
+      break;
+    case 6:
+    case 7:
+      randomNumber = getRandomInt(501, 1500);
+      break;
+    case 8:
+    case 9:
+      randomNumber = getRandomInt(1501, 32000);
+      break;
+    case 10:
+      randomNumber = getRandomInt(32001, 2100000);
+      break;
+    default:
+      randomNumber = 1;
+  }
+
+  const followerText = randomNumber === 1 ? 'follower' : 'followers';
+  const formattedNumber: string = randomNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const generatedAlumni = `${formattedNumber} ${followerText}`;
+  return generatedAlumni;
+};
+
+/**
  * @description Generates a random profile headline from a few different variables.
  * Some headlines include a job title, a phrase, a company name, or a mixture of
  * all three. Some headlines are decorated with extra characters, others are not.
@@ -582,6 +622,12 @@ const generateRandom = (assignment): string => {
       const eventNames = [];
       events.forEach(event => eventNames.push(event.name));
       dictionaries.push(eventNames);
+      break;
+    }
+    case ASSIGNMENTS.followers.id: {
+      const followersText = [generateFollowers()];
+      dictionaries.push(followersText);
+      style = 'lowerCase';
       break;
     }
     case ASSIGNMENTS.group.id: {

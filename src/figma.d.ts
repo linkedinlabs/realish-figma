@@ -24,6 +24,7 @@ type RealishAssignment =
   | 'domain'
   | 'event'
   | 'email'
+  | 'followers'
   | 'group'
   | 'industry'
   | 'job-title'
