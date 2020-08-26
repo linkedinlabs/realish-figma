@@ -5,6 +5,7 @@ import degreeBadges from './data/degree-badges';
 import domainTLDs from './data/domain-tlds';
 import events from './data/events';
 import groups from './data/groups';
+import hashtags from './data/hashtags';
 import industries from './data/industries';
 import jobTitles from './data/job-titles';
 import locations from './data/locations';
@@ -394,6 +395,45 @@ const generateFollowers = (): string => {
 };
 
 /**
+ * @description Generates a random hashtag by picking a base phrase and then applying
+ * several weighted formatting options (uppercase, lowercase, or titlecase) and adding
+ * the hash mark (#).
+ *
+ * @kind function
+ * @name generateHashtag
+ *
+ * @returns {string} The formatted number of alumni.
+ */
+const generateHashtag = (): string => {
+  const { uniqueNamesGenerator } = Generator;
+
+  let hashtag: string = null;
+  const weightedPick = getRandomInt(1, 8);
+
+  const hashtagPhrase = uniqueNamesGenerator({
+    dictionaries: [hashtags],
+    length: 1,
+  });
+  hashtag = hashtagPhrase.replace(/\s+/g, '');
+
+  switch (weightedPick) {
+    case 1:
+      hashtag = hashtag.toUpperCase();
+      break;
+    case 2:
+    case 3:
+    case 4:
+      // title case; do nothing
+      break;
+    default:
+      hashtag = hashtag.toLowerCase();
+  }
+
+  const generatedHashtag = `#${hashtag}`;
+  return generatedHashtag;
+};
+
+/**
  * @description Generates a random profile headline from a few different variables.
  * Some headlines include a job title, a phrase, a company name, or a mixture of
  * all three. Some headlines are decorated with extra characters, others are not.
@@ -628,6 +668,11 @@ const generateRandom = (assignment): string => {
       const followersText = [generateFollowers()];
       dictionaries.push(followersText);
       style = 'lowerCase';
+      break;
+    }
+    case ASSIGNMENTS.hashtag.id: {
+      const hashtagText = [generateHashtag()];
+      dictionaries.push(hashtagText);
       break;
     }
     case ASSIGNMENTS.group.id: {

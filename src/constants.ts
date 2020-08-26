@@ -71,6 +71,7 @@ const ASSIGNMENTS = {
   event: { id: 'event', text: 'Event', nodeType: 'text' },
   followers: { id: 'followers', text: 'Followers', nodeType: 'text' },
   group: { id: 'group', text: 'Group', nodeType: 'text' },
+  hashtag: { id: 'hashtag', text: 'Hashtag', nodeType: 'text' },
   industry: { id: 'industry', text: 'Industry', nodeType: 'text' },
   jobTitle: { id: 'job-title', text: 'Job Title', nodeType: 'text' },
   location: { id: 'location', text: 'Location', nodeType: 'text' },
