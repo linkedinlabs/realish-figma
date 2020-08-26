@@ -75,6 +75,7 @@ const ASSIGNMENTS = {
   location: { id: 'location', text: 'Location', nodeType: 'text' },
   mediaSource: { id: 'media-source', text: 'Media Source', nodeType: 'text' },
   name: { id: 'name', text: 'Name', nodeType: 'text' },
+  profileHeadline: { id: 'profile-headline', text: 'Profile Headline', nodeType: 'text' },
   publication: { id: 'publication', text: 'Publication', nodeType: 'text' },
   school: { id: 'school', text: 'School', nodeType: 'text' },
   timestamp: { id: 'timestamp', text: 'Timestamp', nodeType: 'text' },

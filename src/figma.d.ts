@@ -30,6 +30,7 @@ type RealishAssignment =
   | 'location'
   | 'media-source'
   | 'name'
+  | 'profile-headline'
   | 'school'
   | 'timestamp';
 

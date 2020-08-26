@@ -49,7 +49,7 @@ const getRandomInt = (min, max): number => {
  * @kind function
  * @name generateAlumni
  *
- * @param {string} Alumni type (`school` or `company`)
+ * @param {string} type Alumni type (`school` or `company`)
  *
  * @returns {string} The formatted number of alumni.
  */
@@ -353,6 +353,98 @@ const generateFilepath = (
   return filepath;
 };
 
+/** WIP
+ * @description Generates a random profile headline from a few different variables.
+ * Some headlines include a job title, a phrase, a company name, or a mixture of
+ * all three. Some headlines are decorated with extra characters, others are not.
+ *
+ * @kind function
+ * @name generateProfileHeadline
+ *
+ * @returns {string} The formatted number of alumni.
+ */
+const generateProfileHeadline = (): string => {
+  const { uniqueNamesGenerator } = Generator;
+
+  let phraseTitle: string = null;
+  const weightedPick = getRandomInt(1, 5);
+  const nonTitlePhrases: Array<string> = [
+    'Author - Educator - Dreamer', 'Creating change through empathy', 'Creating Success Stories',
+    'Creative Problem Solver', 'Doing the thing', 'Trying to be useful',
+  ];
+
+  const companyNames: Array<string> = [];
+  companies.forEach(company => companyNames.push(company.name));
+  const company = uniqueNamesGenerator({
+    dictionaries: [companyNames],
+    length: 1,
+  });
+
+  switch (weightedPick) {
+    case 1:
+      phraseTitle = uniqueNamesGenerator({
+        dictionaries: [nonTitlePhrases],
+        length: 1,
+      });
+      break;
+    case 2: {
+      const phrase = uniqueNamesGenerator({
+        dictionaries: [nonTitlePhrases],
+        length: 1,
+      });
+      const title = uniqueNamesGenerator({
+        dictionaries: [jobTitles],
+        length: 1,
+      });
+
+      phraseTitle = `${phrase} | ${title}`;
+      break;
+    }
+    case 3:
+    case 4:
+    case 5:
+      phraseTitle = uniqueNamesGenerator({
+        dictionaries: [jobTitles],
+        length: 1,
+      });
+      break;
+    default:
+      // do nothing
+  }
+
+  const decorationWeightedPick = getRandomInt(1, 10);
+  const decorators: Array<string> = [
+    '~', '@', '—', '|', '**',
+  ];
+  const decorator = uniqueNamesGenerator({
+    dictionaries: [decorators],
+    length: 1,
+  });
+
+  switch (decorationWeightedPick) {
+    case 2:
+      phraseTitle = `${decorator} ${phraseTitle} ${decorator}`;
+      break;
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+      phraseTitle = `${phraseTitle} ${decorator} ${company}`;
+      break;
+    case 8:
+    case 9:
+    case 10:
+      phraseTitle = `${phraseTitle}, ${company}`;
+      break;
+    default:
+      // do nothing
+  }
+
+  const generatedProfileHeadline = phraseTitle;
+  return generatedProfileHeadline;
+};
+
 /**
  * @description Generate a random timestamp string from minutes to 6 months. The specific time
  * is formatted based on the length of time using the `timeDeclarations` abbreviation strings.
@@ -453,7 +545,7 @@ const generateRandom = (assignment): string => {
       break;
     }
     case ASSIGNMENTS.company.id: {
-      const companyNames = [];
+      const companyNames: Array<string> = [];
       companies.forEach(company => companyNames.push(company.name));
       dictionaries.push(companyNames);
       break;
@@ -519,6 +611,11 @@ const generateRandom = (assignment): string => {
       dictionaries.push(names);
       separator = ' ';
       length = 2;
+      break;
+    }
+    case ASSIGNMENTS.profileHeadline.id: {
+      const profileHeadlineText = [generateProfileHeadline()];
+      dictionaries.push(profileHeadlineText);
       break;
     }
     case ASSIGNMENTS.publication.id: {
