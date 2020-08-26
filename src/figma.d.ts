@@ -6,6 +6,7 @@ type RealishAssignment =
   'unassigned'
   | 'article-title'
   | 'avatar-company'
+  | 'avatar-group'
   | 'avatar-person'
   | 'avatar-school'
   | 'company'

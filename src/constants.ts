@@ -51,6 +51,7 @@ const ASSIGNMENTS = {
   unassigned: { id: 'unassigned', text: 'Unassigned', nodeType: null },
   articleTitle: { id: 'article-title', text: 'Article Title', nodeType: 'text' },
   avatarCompany: { id: 'avatar-company', text: 'Company', nodeType: 'shape' },
+  avatarGroup: { id: 'avatar-group', text: 'Group', nodeType: 'shape' },
   avatarPerson: { id: 'avatar-person', text: 'Person', nodeType: 'shape' },
   avatarSchool: { id: 'avatar-school', text: 'School', nodeType: 'shape' },
   company: { id: 'company', text: 'Company', nodeType: 'text' },
