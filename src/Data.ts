@@ -51,7 +51,7 @@ const getRandomInt = (min, max): number => {
  *
  * @param {string} Alumni type (`school` or `company`)
  *
- * @returns {string} The formatted date as a string.
+ * @returns {string} The formatted number of alumni.
  */
 const generateAlumni = (type: 'company' | 'school'): string => {
   let randomNumber: number = 1;
@@ -81,16 +81,21 @@ const generateAlumni = (type: 'company' | 'school'): string => {
 /**
  * @description Generates a random number formatted as a connections string
  * (i.e. “7 connections”). The number is weighted toward lower numbers (under 45)
- * and limited to 500.
+ * and limited to 500 (or 225 for mutual connections).
  *
  * @kind function
  * @name generateConnections
  *
- * @returns {string} The formatted date as a string.
+ * @param {string} Alumni type (`normal` or `mutual`)
+ *
+ * @returns {string} The formatted number of connections.
  */
-const generateConnections = (): string => {
+const generateConnections = (type: 'mutual' | 'normal' = 'normal'): string => {
   let randomNumber: number = 1;
-  const weightedPick = getRandomInt(1, 10);
+  let weightedPick = getRandomInt(1, 10);
+  if (type === 'mutual') {
+    weightedPick = getRandomInt(1, 8);
+  }
   switch (weightedPick) {
     case 2:
     case 3:
@@ -103,8 +108,10 @@ const generateConnections = (): string => {
       randomNumber = getRandomInt(21, 45);
       break;
     case 8:
+      randomNumber = getRandomInt(46, 225);
+      break;
     case 9:
-      randomNumber = getRandomInt(46, 499);
+      randomNumber = getRandomInt(226, 499);
       break;
     case 10:
       randomNumber = 500;
@@ -114,8 +121,9 @@ const generateConnections = (): string => {
   }
 
   const labelText = randomNumber === 1 ? 'connection' : 'connections';
-  const suffixText = randomNumber === 500 ? '+' : '';
-  const generatedConnections = `${randomNumber}${suffixText} ${labelText}`;
+  const labelPrefixText = type === 'mutual' ? ' mutual' : '';
+  const numberSuffix = randomNumber === 500 ? '+' : '';
+  const generatedConnections = `${randomNumber}${numberSuffix}${labelPrefixText} ${labelText}`;
   return generatedConnections;
 };
 
@@ -434,6 +442,12 @@ const generateRandom = (assignment): string => {
     }
     case ASSIGNMENTS.connections.id: {
       const connectionsText = [generateConnections()];
+      dictionaries.push(connectionsText);
+      style = 'lowerCase';
+      break;
+    }
+    case ASSIGNMENTS.connectionsMutual.id: {
+      const connectionsText = [generateConnections('mutual')];
       dictionaries.push(connectionsText);
       style = 'lowerCase';
       break;

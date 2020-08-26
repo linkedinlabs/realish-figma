@@ -61,6 +61,7 @@ const ASSIGNMENTS = {
   avatarSchool: { id: 'avatar-school', text: 'School', nodeType: 'shape' },
   company: { id: 'company', text: 'Company', nodeType: 'text' },
   connections: { id: 'connections', text: 'Connections', nodeType: 'text' },
+  connectionsMutual: { id: 'connections-mutual', text: 'Connections (Mutual)', nodeType: 'text' },
   country: { id: 'country', text: 'Country', nodeType: 'text' },
   date: { id: 'date', text: 'Date', nodeType: 'text' },
   dateShort: { id: 'date-short', text: 'Date (Short)', nodeType: 'text' },
