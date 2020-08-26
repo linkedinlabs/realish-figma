@@ -9,6 +9,7 @@ type RealishAssignment =
   | 'avatar-event'
   | 'avatar-group'
   | 'avatar-media-source'
+  | 'avatar-publication'
   | 'avatar-person'
   | 'avatar-school'
   | 'company'

@@ -54,6 +54,7 @@ const ASSIGNMENTS = {
   avatarEvent: { id: 'avatar-event', text: 'Event', nodeType: 'shape' },
   avatarGroup: { id: 'avatar-group', text: 'Group', nodeType: 'shape' },
   avatarMediaSource: { id: 'avatar-media-source', text: 'Media Source', nodeType: 'shape' },
+  avatarPublication: { id: 'avatar-publication', text: 'Publication', nodeType: 'shape' },
   avatarPerson: { id: 'avatar-person', text: 'Person', nodeType: 'shape' },
   avatarSchool: { id: 'avatar-school', text: 'School', nodeType: 'shape' },
   company: { id: 'company', text: 'Company', nodeType: 'text' },

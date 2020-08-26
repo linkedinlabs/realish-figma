@@ -389,6 +389,7 @@ export default class App {
               && (assignment !== ASSIGNMENTS.avatarEvent.id)
               && (assignment !== ASSIGNMENTS.avatarGroup.id)
               && (assignment !== ASSIGNMENTS.avatarMediaSource.id)
+              && (assignment !== ASSIGNMENTS.avatarPublication.id)
               && (assignment !== ASSIGNMENTS.avatarSchool.id)
             ) {
               assignment = ASSIGNMENTS.unassigned.id as RealishAssignment;
@@ -399,6 +400,7 @@ export default class App {
             || (assignment === ASSIGNMENTS.avatarEvent.id)
             || (assignment === ASSIGNMENTS.avatarGroup.id)
             || (assignment === ASSIGNMENTS.avatarMediaSource.id)
+            || (assignment === ASSIGNMENTS.avatarPublication.id)
             || (assignment === ASSIGNMENTS.avatarSchool.id)
           ) {
             assignment = ASSIGNMENTS.unassigned.id as RealishAssignment;
@@ -880,6 +882,9 @@ export default class App {
             case ASSIGNMENTS.mediaSource.id:
               newAssignment = ASSIGNMENTS.avatarMediaSource.id as RealishAssignment;
               break;
+            case ASSIGNMENTS.publication.id:
+              newAssignment = ASSIGNMENTS.avatarPublication.id as RealishAssignment;
+              break;
             case ASSIGNMENTS.school.id:
               newAssignment = ASSIGNMENTS.avatarSchool.id as RealishAssignment;
               break;
@@ -889,6 +894,7 @@ export default class App {
             case ASSIGNMENTS.avatarEvent.id:
             case ASSIGNMENTS.avatarGroup.id:
             case ASSIGNMENTS.avatarMediaSource.id:
+            case ASSIGNMENTS.avatarPublication.id:
             case ASSIGNMENTS.avatarSchool.id:
               // do nothing; valid assignments
               break;
@@ -902,6 +908,7 @@ export default class App {
           || (assignment === ASSIGNMENTS.avatarEvent.id)
           || (assignment === ASSIGNMENTS.avatarGroup.id)
           || (assignment === ASSIGNMENTS.avatarMediaSource.id)
+          || (assignment === ASSIGNMENTS.avatarPublication.id)
           || (assignment === ASSIGNMENTS.avatarSchool.id)
         ) {
           newAssignment = null;

@@ -234,6 +234,7 @@ const generateFilepath = (
     | 'avatar-event'
     | 'avatar-group'
     | 'avatar-media-source'
+    | 'avatar-publication'
     | 'avatar-person'
     | 'avatar-school',
 ): string => {
@@ -260,6 +261,9 @@ const generateFilepath = (
         break;
       case ASSIGNMENTS.avatarMediaSource.id:
         dataSet = mediaSources;
+        break;
+      case ASSIGNMENTS.avatarPublication.id:
+        dataSet = publications;
         break;
       case ASSIGNMENTS.avatarSchool.id:
         dataSet = schools;
@@ -330,6 +334,7 @@ const generateRandom = (assignment): string => {
     case ASSIGNMENTS.avatarEvent.id:
     case ASSIGNMENTS.avatarGroup.id:
     case ASSIGNMENTS.avatarMediaSource.id:
+    case ASSIGNMENTS.avatarPublication.id:
     case ASSIGNMENTS.avatarPerson.id:
     case ASSIGNMENTS.avatarSchool.id: {
       const filepath = [generateFilepath(assignment)];
