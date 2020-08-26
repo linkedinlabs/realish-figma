@@ -353,10 +353,10 @@ const generateFilepath = (
   return filepath;
 };
 
-/** WIP
- * @description Generates a random number formatted as an alumni string
- * (i.e. “7 company alumni”) for either companies or schools. The number
- * of alumni is weighted toward lower numbers (under 20) and limited to 120.
+/**
+ * @description Generates a random number formatted as a followers count
+ * (i.e. “543 followers”). The number of followers is weighted toward lower numbers
+ * (under 1500) and limited to 2.1 million. The formatted numbers are comma-spliced.
  *
  * @kind function
  * @name generateFollowers
