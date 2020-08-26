@@ -40,46 +40,6 @@ const getRandomInt = (min, max): number => {
 };
 
 /**
- * @description Generate a random timestamp string from minutes to 6 months. The specific time
- * is formatted based on the length of time using the `timeDeclarations` abbreviation strings.
- *
- * @kind function
- * @name generateTimestamp
- *
- * @returns {string} The formatted timestamp (i.e. “6 m” or ”18 h”).
- */
-const generateTimestamp = (): string => {
-  const timeDeclarations = ['m', 'h', 'd', 'w', 'mo'];
-
-  let randomTimeInteger = 0;
-  const randomTimeDeclarationIndex = Math.floor(Math.random() * timeDeclarations.length);
-  const randomTimeDeclaration = timeDeclarations[randomTimeDeclarationIndex];
-
-  switch (randomTimeDeclaration) {
-    case 'm':
-      randomTimeInteger = getRandomInt(1, 59);
-      break;
-    case 'h':
-      randomTimeInteger = getRandomInt(1, 23);
-      break;
-    case 'd':
-      randomTimeInteger = getRandomInt(1, 6);
-      break;
-    case 'w':
-      randomTimeInteger = getRandomInt(1, 4);
-      break;
-    case 'mo':
-      randomTimeInteger = getRandomInt(1, 6);
-      break;
-    default:
-      return null;
-  }
-
-  const generatedStamp = `${randomTimeInteger}${randomTimeDeclaration}`;
-  return generatedStamp;
-};
-
-/**
  * @description Generates a formatted, random date between now and `120` days in the future (set
  * as a constant in the function. Dates are formatted using the abbreviations in the
  * `formattedMonths` constant (i.e. “Jan 30, 2022”).
@@ -304,6 +264,48 @@ const generateFilepath = (
 
   return filepath;
 };
+
+/**
+ * @description Generate a random timestamp string from minutes to 6 months. The specific time
+ * is formatted based on the length of time using the `timeDeclarations` abbreviation strings.
+ *
+ * @kind function
+ * @name generateTimestamp
+ *
+ * @returns {string} The formatted timestamp (i.e. “6 m” or ”18 h”).
+ */
+const generateTimestamp = (): string => {
+  const timeDeclarations = ['m', 'h', 'd', 'w', 'mo'];
+
+  let randomTimeInteger = 0;
+  const randomTimeDeclarationIndex = Math.floor(Math.random() * timeDeclarations.length);
+  const randomTimeDeclaration = timeDeclarations[randomTimeDeclarationIndex];
+
+  switch (randomTimeDeclaration) {
+    case 'm':
+      randomTimeInteger = getRandomInt(1, 59);
+      break;
+    case 'h':
+      randomTimeInteger = getRandomInt(1, 23);
+      break;
+    case 'd':
+      randomTimeInteger = getRandomInt(1, 6);
+      break;
+    case 'w':
+      randomTimeInteger = getRandomInt(1, 4);
+      break;
+    case 'mo':
+      randomTimeInteger = getRandomInt(1, 6);
+      break;
+    default:
+      return null;
+  }
+
+  const generatedStamp = `${randomTimeInteger}${randomTimeDeclaration}`;
+  return generatedStamp;
+};
+
+// ------------------------------------------
 
 /**
  * @description Generates a random string based on the supplied `assignment`. In most cases
