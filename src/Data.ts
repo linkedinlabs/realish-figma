@@ -231,7 +231,9 @@ const generateEmail = (): string => {
 const generateFilepath = (
   assignment:
     'avatar-company'
+    | 'avatar-event'
     | 'avatar-group'
+    | 'avatar-media-source'
     | 'avatar-person'
     | 'avatar-school',
 ): string => {
@@ -250,8 +252,14 @@ const generateFilepath = (
         dataSet = companies;
         fileDirectory = 'companies';
         break;
+      case ASSIGNMENTS.avatarEvent.id:
+        dataSet = events;
+        break;
       case ASSIGNMENTS.avatarGroup.id:
         dataSet = groups;
+        break;
+      case ASSIGNMENTS.avatarMediaSource.id:
+        dataSet = mediaSources;
         break;
       case ASSIGNMENTS.avatarSchool.id:
         dataSet = schools;
@@ -319,7 +327,9 @@ const generateRandom = (assignment): string => {
       dictionaries.push(articleTitles);
       break;
     case ASSIGNMENTS.avatarCompany.id:
+    case ASSIGNMENTS.avatarEvent.id:
     case ASSIGNMENTS.avatarGroup.id:
+    case ASSIGNMENTS.avatarMediaSource.id:
     case ASSIGNMENTS.avatarPerson.id:
     case ASSIGNMENTS.avatarSchool.id: {
       const filepath = [generateFilepath(assignment)];
