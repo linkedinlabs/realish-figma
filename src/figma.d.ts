@@ -4,6 +4,8 @@ declare global {
 // Internal Declarations
 type RealishAssignment =
   'unassigned'
+  | 'alumni-company'
+  | 'alumni-school'
   | 'article-title'
   | 'avatar-company'
   | 'avatar-event'

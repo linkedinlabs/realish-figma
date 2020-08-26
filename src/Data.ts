@@ -39,6 +39,45 @@ const getRandomInt = (min, max): number => {
   return randomInt;
 };
 
+// ------------------------------------------
+
+/**
+ * @description Generates a random number formatted as an alumni string
+ * (i.e. “7 company alumni”) for either companies or schools. The number
+ * of alumni is weighted toward lower numbers (under 20) and limited to 120.
+ *
+ * @kind function
+ * @name generateAlumni
+ *
+ * @param {string} Alumni type (`school` or `company`)
+ *
+ * @returns {string} The formatted date as a string.
+ */
+const generateAlumni = (type: 'company' | 'school'): string => {
+  let randomNumber: number = 1;
+  const weightedPick = getRandomInt(1, 8);
+  switch (weightedPick) {
+    case 3:
+    case 4:
+    case 5:
+      randomNumber = getRandomInt(2, 20);
+      break;
+    case 6:
+    case 7:
+      randomNumber = getRandomInt(21, 50);
+      break;
+    case 8:
+      randomNumber = getRandomInt(51, 120);
+      break;
+    default:
+      randomNumber = 1;
+  }
+
+  const alumText = randomNumber === 1 ? 'alum' : 'alumni';
+  const generatedAlumni = `${randomNumber} ${type} ${alumText}`;
+  return generatedAlumni;
+};
+
 /**
  * @description Generates a formatted, random date between now and `120` days in the future (set
  * as a constant in the function. Dates are formatted using the abbreviations in the
@@ -329,6 +368,14 @@ const generateRandom = (assignment): string => {
   let newRandomString = null;
 
   switch (assignment) {
+    case ASSIGNMENTS.alumniCompany.id:
+    case ASSIGNMENTS.alumniSchool.id: {
+      const type = assignment.replace('alumni-', '');
+      const alumniText = [generateAlumni(type)];
+      dictionaries.push(alumniText);
+      style = 'lowerCase';
+      break;
+    }
     case ASSIGNMENTS.articleTitle.id:
       dictionaries.push(articleTitles);
       break;

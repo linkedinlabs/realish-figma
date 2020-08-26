@@ -49,6 +49,8 @@ const DATA_KEYS = {
  */
 const ASSIGNMENTS = {
   unassigned: { id: 'unassigned', text: 'Unassigned', nodeType: null },
+  alumniCompany: { id: 'alumni-company', text: 'Alumni (Company)', nodeType: 'text' },
+  alumniSchool: { id: 'alumni-school', text: 'Alumni (School)', nodeType: 'text' },
   articleTitle: { id: 'article-title', text: 'Article Title', nodeType: 'text' },
   avatarCompany: { id: 'avatar-company', text: 'Company', nodeType: 'shape' },
   avatarEvent: { id: 'avatar-event', text: 'Event', nodeType: 'shape' },
