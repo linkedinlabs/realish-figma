@@ -79,6 +79,47 @@ const generateAlumni = (type: 'company' | 'school'): string => {
 };
 
 /**
+ * @description Generates a random number formatted as a connections string
+ * (i.e. “7 connections”). The number is weighted toward lower numbers (under 45)
+ * and limited to 500.
+ *
+ * @kind function
+ * @name generateConnections
+ *
+ * @returns {string} The formatted date as a string.
+ */
+const generateConnections = (): string => {
+  let randomNumber: number = 1;
+  const weightedPick = getRandomInt(1, 10);
+  switch (weightedPick) {
+    case 2:
+    case 3:
+      randomNumber = getRandomInt(2, 20);
+      break;
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+      randomNumber = getRandomInt(21, 45);
+      break;
+    case 8:
+    case 9:
+      randomNumber = getRandomInt(46, 499);
+      break;
+    case 10:
+      randomNumber = 500;
+      break;
+    default:
+      randomNumber = 1;
+  }
+
+  const labelText = randomNumber === 1 ? 'connection' : 'connections';
+  const suffixText = randomNumber === 500 ? '+' : '';
+  const generatedConnections = `${randomNumber}${suffixText} ${labelText}`;
+  return generatedConnections;
+};
+
+/**
  * @description Generates a formatted, random date between now and `120` days in the future (set
  * as a constant in the function. Dates are formatted using the abbreviations in the
  * `formattedMonths` constant (i.e. “Jan 30, 2022”).
@@ -388,6 +429,12 @@ const generateRandom = (assignment): string => {
     case ASSIGNMENTS.avatarSchool.id: {
       const filepath = [generateFilepath(assignment)];
       dictionaries.push(filepath);
+      style = 'lowerCase';
+      break;
+    }
+    case ASSIGNMENTS.connections.id: {
+      const connectionsText = [generateConnections()];
+      dictionaries.push(connectionsText);
       style = 'lowerCase';
       break;
     }

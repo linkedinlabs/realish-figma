@@ -15,6 +15,7 @@ type RealishAssignment =
   | 'avatar-person'
   | 'avatar-school'
   | 'company'
+  | 'connections'
   | 'country'
   | 'date'
   | 'dateShort'
