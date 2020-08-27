@@ -16,8 +16,28 @@
       "name": "Quick Randomization",
       "menu": [
         {
+          "name": "Text to Alumni (Company)",
+          "command": "quick-randomize-alumni-company"
+        },
+        {
+          "name": "Text to Alumni (School)",
+          "command": "quick-randomize-alumni-school"
+        },
+        {
+          "name": "Text to Article Title",
+          "command": "quick-randomize-article-title"
+        },
+        {
           "name": "Text to Company",
           "command": "quick-randomize-company"
+        },
+        {
+          "name": "Text to Connections",
+          "command": "quick-randomize-connections"
+        },
+        {
+          "name": "Text to Connections (Mutual)",
+          "command": "quick-randomize-connections-mutual"
         },
         {
           "name": "Text to Country",
@@ -26,6 +46,10 @@
         {
           "name": "Text to Date",
           "command": "quick-randomize-date"
+        },
+        {
+          "name": "Text to Date (Short)",
+          "command": "quick-randomize-date-short"
         },
         {
           "name": "Text to Degree Badge",
@@ -40,12 +64,52 @@
           "command": "quick-randomize-email"
         },
         {
+          "name": "Text to Event",
+          "command": "quick-randomize-event"
+        },
+        {
+          "name": "Text to Followers",
+          "command": "quick-randomize-followers"
+        },
+        {
+          "name": "Text to Group",
+          "command": "quick-randomize-group"
+        },
+        {
+          "name": "Text to Hashtag",
+          "command": "quick-randomize-hashtag"
+        },
+        {
+          "name": "Text to Industry",
+          "command": "quick-randomize-industry"
+        },
+        {
           "name": "Text to Job Title",
           "command": "quick-randomize-job-title"
         },
         {
+          "name": "Text to Location",
+          "command": "quick-randomize-location"
+        },
+        {
+          "name": "Text to Media Source",
+          "command": "quick-randomize-media-source"
+        },
+        {
           "name": "Text to Name",
           "command": "quick-randomize-name"
+        },
+        {
+          "name": "Text to Profile Headline",
+          "command": "quick-randomize-profile-headline"
+        },
+        {
+          "name": "Text to Publication",
+          "command": "quick-randomize-publication"
+        },
+        {
+          "name": "Text to School",
+          "command": "quick-randomize-school"
         },
         {
           "name": "Text to Timestamp",
@@ -88,8 +152,28 @@
       "name": "Quick Assignment",
       "menu": [
         {
+          "name": "Set text as Alumni (Company)",
+          "command": "quick-assign-alumni-company"
+        },
+        {
+          "name": "Set text as Alumni (School)",
+          "command": "quick-assign-alumni-school"
+        },
+        {
+          "name": "Set text as Article Title",
+          "command": "quick-assign-article-title"
+        },
+        {
           "name": "Set text as Company",
           "command": "quick-assign-company"
+        },
+        {
+          "name": "Set text as Connections",
+          "command": "quick-assign-connections"
+        },
+        {
+          "name": "Set text as Connections (Mutual)",
+          "command": "quick-assign-connections-mutual"
         },
         {
           "name": "Set text as Country",
@@ -98,6 +182,10 @@
         {
           "name": "Set text as Date",
           "command": "quick-assign-date"
+        },
+        {
+          "name": "Set text as Date (Short)",
+          "command": "quick-assign-date-short"
         },
         {
           "name": "Set text as Degree Badge",
@@ -112,12 +200,52 @@
           "command": "quick-assign-email"
         },
         {
+          "name": "Set text as Event",
+          "command": "quick-assign-event"
+        },
+        {
+          "name": "Set text as Followers",
+          "command": "quick-assign-followers"
+        },
+        {
+          "name": "Set text as Group",
+          "command": "quick-assign-group"
+        },
+        {
+          "name": "Set text as Hashtag",
+          "command": "quick-assign-hashtag"
+        },
+        {
+          "name": "Set text as Industry",
+          "command": "quick-assign-industry"
+        },
+        {
           "name": "Set text as Job Title",
           "command": "quick-assign-job-title"
         },
         {
+          "name": "Set text as Location",
+          "command": "quick-assign-location"
+        },
+        {
+          "name": "Set text as Media Source",
+          "command": "quick-assign-media-source"
+        },
+        {
           "name": "Set text as Name",
           "command": "quick-assign-name"
+        },
+        {
+          "name": "Set text as Profile Headline",
+          "command": "quick-assign-profile-headline"
+        },
+        {
+          "name": "Set text as Publication",
+          "command": "quick-assign-publication"
+        },
+        {
+          "name": "Set text as School",
+          "command": "quick-assign-school"
         },
         {
           "name": "Set text as Timestamp",
