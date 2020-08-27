@@ -199,11 +199,11 @@ export default class Painter {
       // set the image as the new fill
       shapeNode.fills = newFills;
 
-      // update the proposed content to match the new fill
+      // update the proposed content to “original” to remove update trigger
       shapeNode.setSharedPluginData(
         dataNamespace(),
         textProposedKey,
-        JSON.stringify(newImage.hash),
+        JSON.stringify('original'),
       );
 
       // return a successful result
