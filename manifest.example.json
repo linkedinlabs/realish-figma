@@ -88,46 +88,46 @@
       "name": "Quick Assignment",
       "menu": [
         {
-          "name": "Set text as “Company”",
+          "name": "Set text as Company",
           "command": "quick-assign-company"
         },
         {
-          "name": "Set text as “Country”",
+          "name": "Set text as Country",
           "command": "quick-assign-country"
         },
         {
-          "name": "Set text as “Date”",
+          "name": "Set text as Date",
           "command": "quick-assign-date"
         },
         {
-          "name": "Set text as “Degree Badge”",
+          "name": "Set text as Degree Badge",
           "command": "quick-assign-degree-badge"
         },
         {
-          "name": "Set text as “Domain Name”",
+          "name": "Set text as Domain Name",
           "command": "quick-assign-domain"
         },
         {
-          "name": "Set text as “Email”",
+          "name": "Set text as Email",
           "command": "quick-assign-email"
         },
         {
-          "name": "Set text as “Job Title”",
+          "name": "Set text as Job Title",
           "command": "quick-assign-job-title"
         },
         {
-          "name": "Set text as “Name”",
+          "name": "Set text as Name",
           "command": "quick-assign-name"
         },
         {
-          "name": "Set text as “Timestamp”",
+          "name": "Set text as Timestamp",
           "command": "quick-assign-timestamp"
         },
         {
           "separator": true
         },
         {
-          "name": "Set shape as “Company”",
+          "name": "Set shape as Company",
           "command": "quick-assign-avatar-company"
         },
         {
@@ -143,7 +143,7 @@
           "command": "quick-assign-avatar-media-source"
         },
         {
-          "name": "Set shape as “Person”",
+          "name": "Set shape as Person",
           "command": "quick-assign-avatar-person"
         },
         {
