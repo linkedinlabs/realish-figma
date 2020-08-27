@@ -59,8 +59,28 @@
           "command": "quick-randomize-avatar-company"
         },
         {
+          "name": "Shape to Event",
+          "command": "quick-randomize-avatar-event"
+        },
+        {
+          "name": "Shape to Group",
+          "command": "quick-randomize-avatar-group"
+        },
+        {
+          "name": "Shape to Media Source",
+          "command": "quick-randomize-avatar-media-source"
+        },
+        {
           "name": "Shape to Person",
           "command": "quick-randomize-avatar-person"
+        },
+        {
+          "name": "Shape to Publication",
+          "command": "quick-randomize-avatar-publication"
+        },
+        {
+          "name": "Shape to School",
+          "command": "quick-randomize-avatar-school"
         }
       ]
     },
@@ -111,8 +131,28 @@
           "command": "quick-assign-avatar-company"
         },
         {
+          "name": "Set shape as Event",
+          "command": "quick-assign-avatar-event"
+        },
+        {
+          "name": "Set shape as Group",
+          "command": "quick-assign-avatar-group"
+        },
+        {
+          "name": "Set shape as Media Source",
+          "command": "quick-assign-avatar-media-source"
+        },
+        {
           "name": "Set shape as “Person”",
           "command": "quick-assign-avatar-person"
+        },
+        {
+          "name": "Set shape as Publication",
+          "command": "quick-assign-avatar-publication"
+        },
+        {
+          "name": "Set shape as School",
+          "command": "quick-assign-avatar-school"
         },
         {
           "separator": true
