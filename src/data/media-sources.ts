@@ -67,10 +67,6 @@ export default [
     hasImage: true,
   },
   {
-    name: 'Nimbus Aviation News',
-    hasImage: true,
-  },
-  {
     name: 'Online Observer',
     hasImage: true,
   },

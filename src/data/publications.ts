@@ -27,6 +27,10 @@ export default [
     hasImage: true,
   },
   {
+    name: 'Equal Opposite',
+    hasImage: true,
+  },
+  {
     name: 'Cycler’s Digest',
     hasImage: true,
   },
@@ -35,11 +39,23 @@ export default [
     hasImage: true,
   },
   {
+    name: 'Gossip',
+    hasImage: true,
+  },
+  {
+    name: 'Grand Finale',
+    hasImage: true,
+  },
+  {
     name: 'Hyperpolyglot',
     hasImage: true,
   },
   {
     name: 'Intonations',
+    hasImage: true,
+  },
+  {
+    name: 'Nimbus Aviation News',
     hasImage: true,
   },
   {
@@ -52,6 +68,10 @@ export default [
   },
   {
     name: 'Taking the A-Line',
+    hasImage: true,
+  },
+  {
+    name: 'Technyon',
     hasImage: true,
   },
   {
