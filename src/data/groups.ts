@@ -7,19 +7,7 @@
  */
 export default [
   {
-    name: 'Air Traffic Control Technology',
-    hasImage: false,
-  },
-  {
-    name: 'Amateur Mead Brewing',
-    hasImage: true,
-  },
-  {
-    name: 'Angler Society',
-    hasImage: true,
-  },
-  {
-    name: 'AR/VR/MR Marketing',
+    name: 'AR VR MR Marketing',
     hasImage: true,
   },
   {
@@ -44,14 +32,6 @@ export default [
   },
   {
     name: 'FilipinX for Change',
-    hasImage: true,
-  },
-  {
-    name: 'Ivory Yoga Team',
-    hasImage: true,
-  },
-  {
-    name: 'Lego Prosthetics',
     hasImage: true,
   },
   {
@@ -80,10 +60,6 @@ export default [
   },
   {
     name: 'Restorative Justice',
-    hasImage: true,
-  },
-  {
-    name: 'Retro Jammers',
     hasImage: true,
   },
   {
