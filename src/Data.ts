@@ -1,5 +1,6 @@
 import articleTitles from './data/article-titles';
 import companies from './data/companies';
+import companiesMedia from './data/companies-media';
 import countries from './data/countries';
 import degreeBadges from './data/degree-badges';
 import domainTLDs from './data/domain-tlds';
@@ -9,7 +10,6 @@ import hashtags from './data/hashtags';
 import industries from './data/industries';
 import jobTitles from './data/job-titles';
 import locations from './data/locations';
-import mediaSources from './data/media-sources';
 import names from './data/names';
 import newsletters from './data/newsletters';
 import schools from './data/schools';
@@ -280,9 +280,9 @@ const generateEmail = (): string => {
 const generateFilepath = (
   assignment:
     'avatar-company'
+    | 'avatar-company-media'
     | 'avatar-event'
     | 'avatar-group'
-    | 'avatar-media-source'
     | 'avatar-newsletter'
     | 'avatar-person'
     | 'avatar-school',
@@ -302,14 +302,15 @@ const generateFilepath = (
         dataSet = companies;
         fileDirectory = 'companies';
         break;
+      case ASSIGNMENTS.avatarCompanyMedia.id:
+        dataSet = companiesMedia;
+        fileDirectory = 'companies-media';
+        break;
       case ASSIGNMENTS.avatarEvent.id:
         dataSet = events;
         break;
       case ASSIGNMENTS.avatarGroup.id:
         dataSet = groups;
-        break;
-      case ASSIGNMENTS.avatarMediaSource.id:
-        dataSet = mediaSources;
         break;
       case ASSIGNMENTS.avatarNewsletter.id:
         dataSet = newsletters;
@@ -601,9 +602,9 @@ const generateRandom = (assignment): string => {
       dictionaries.push(articleTitles);
       break;
     case ASSIGNMENTS.avatarCompany.id:
+    case ASSIGNMENTS.avatarCompanyMedia.id:
     case ASSIGNMENTS.avatarEvent.id:
     case ASSIGNMENTS.avatarGroup.id:
-    case ASSIGNMENTS.avatarMediaSource.id:
     case ASSIGNMENTS.avatarNewsletter.id:
     case ASSIGNMENTS.avatarPerson.id:
     case ASSIGNMENTS.avatarSchool.id: {
@@ -690,10 +691,10 @@ const generateRandom = (assignment): string => {
     case ASSIGNMENTS.location.id:
       dictionaries.push(locations);
       break;
-    case ASSIGNMENTS.mediaSource.id: {
-      const mediaSourceNames = [];
-      mediaSources.forEach(mediaSource => mediaSourceNames.push(mediaSource.name));
-      dictionaries.push(mediaSourceNames);
+    case ASSIGNMENTS.companyMedia.id: {
+      const companyMediaNames = [];
+      companiesMedia.forEach(companyMedia => companyMediaNames.push(companyMedia.name));
+      dictionaries.push(companyMediaNames);
       break;
     }
     case ASSIGNMENTS.name.id: {

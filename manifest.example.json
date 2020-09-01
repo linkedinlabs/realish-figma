@@ -32,6 +32,10 @@
           "command": "quick-randomize-company"
         },
         {
+          "name": "Text to Company (Media)",
+          "command": "quick-randomize-company-media"
+        },
+        {
           "name": "Text to Connections",
           "command": "quick-randomize-connections"
         },
@@ -92,10 +96,6 @@
           "command": "quick-randomize-location"
         },
         {
-          "name": "Text to Media Source",
-          "command": "quick-randomize-media-source"
-        },
-        {
           "name": "Text to Name",
           "command": "quick-randomize-name"
         },
@@ -123,16 +123,16 @@
           "command": "quick-randomize-avatar-company"
         },
         {
+          "name": "Shape to Company (Media)",
+          "command": "quick-randomize-avatar-company-media"
+        },
+        {
           "name": "Shape to Event",
           "command": "quick-randomize-avatar-event"
         },
         {
           "name": "Shape to Group",
           "command": "quick-randomize-avatar-group"
-        },
-        {
-          "name": "Shape to Media Source",
-          "command": "quick-randomize-avatar-media-source"
         },
         {
           "name": "Shape to Person",
@@ -166,6 +166,10 @@
         {
           "name": "Set text as Company",
           "command": "quick-assign-company"
+        },
+        {
+          "name": "Set text as Company (Media)",
+          "command": "quick-assign-company-media"
         },
         {
           "name": "Set text as Connections",
@@ -228,10 +232,6 @@
           "command": "quick-assign-location"
         },
         {
-          "name": "Set text as Media Source",
-          "command": "quick-assign-media-source"
-        },
-        {
           "name": "Set text as Name",
           "command": "quick-assign-name"
         },
@@ -259,16 +259,16 @@
           "command": "quick-assign-avatar-company"
         },
         {
+          "name": "Set shape as Company (Media)",
+          "command": "quick-assign-avatar-company-media"
+        },
+        {
           "name": "Set shape as Event",
           "command": "quick-assign-avatar-event"
         },
         {
           "name": "Set shape as Group",
           "command": "quick-assign-avatar-group"
-        },
-        {
-          "name": "Set shape as Media Source",
-          "command": "quick-assign-avatar-media-source"
         },
         {
           "name": "Set shape as Person",

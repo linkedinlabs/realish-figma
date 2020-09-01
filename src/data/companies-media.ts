@@ -1,8 +1,8 @@
 /**
- * @description Media sources.
+ * @description Companies (Media).
  *
  * @kind constant
- * @name mediaSources
+ * @name companiesMedia
  * @type {Array}
  */
 export default [
