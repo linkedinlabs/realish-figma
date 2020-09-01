@@ -15,10 +15,6 @@ export default [
     hasImage: true,
   },
   {
-    name: 'Automaradar',
-    hasImage: false,
-  },
-  {
     name: 'Brighton Studios',
     hasImage: true,
   },
@@ -31,14 +27,6 @@ export default [
     hasImage: true,
   },
   {
-    name: 'Dice.com',
-    hasImage: true,
-  },
-  {
-    name: 'EqualOpposite',
-    hasImage: true,
-  },
-  {
     name: 'Fibonacci Effect',
     hasImage: true,
   },
@@ -47,23 +35,7 @@ export default [
     hasImage: true,
   },
   {
-    name: 'Gosssip',
-    hasImage: true,
-  },
-  {
-    name: 'Grandfina.le',
-    hasImage: true,
-  },
-  {
-    name: 'Investor.ly',
-    hasImage: false,
-  },
-  {
     name: 'Mercury Media',
-    hasImage: true,
-  },
-  {
-    name: 'Mootube',
     hasImage: true,
   },
   {
@@ -79,10 +51,6 @@ export default [
     hasImage: true,
   },
   {
-    name: 'Rebel Web Services',
-    hasImage: true,
-  },
-  {
     name: 'Reportable',
     hasImage: true,
   },
@@ -92,10 +60,6 @@ export default [
   },
   {
     name: 'Technica Fama',
-    hasImage: true,
-  },
-  {
-    name: 'Techyon',
     hasImage: true,
   },
   {

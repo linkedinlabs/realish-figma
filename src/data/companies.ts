@@ -159,6 +159,10 @@ export default [
     hasImage: false,
   },
   {
+    name: 'Rebel Web Services',
+    hasImage: true,
+  },
+  {
     name: 'Runity',
     hasImage: true,
   },
