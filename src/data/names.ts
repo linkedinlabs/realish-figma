@@ -1,170 +1,265 @@
 /**
- * @description Takes the existing `names` dictionary from the `unique-names-generator` package
- * and expands it with a deconstructed version of the package’s `starWars` dictionary, and
- * adds additional custom names.
- * [names Source]{@link https://raw.githubusercontent.com/andreasonny83/unique-names-generator/master/src/dictionaries/names.ts}
- * [starWars Source]{@link https://raw.githubusercontent.com/andreasonny83/unique-names-generator/master/src/dictionaries/star-wars.ts}
+ * @description People names.
  *
  * @kind constant
  * @name names
  * @type {Array}
  */
-const Generator = require('unique-names-generator');
-
-const { names, starWars } = Generator;
-
-const starWarsSplit = [];
-starWars.forEach((characterName) => {
-  const splitNames = characterName.split(/(?=\s[A-Z])/);
-  splitNames.forEach(splitName => starWarsSplit.push(splitName.trim()));
-});
-
 export default [
-  ...names,
-  ...starWarsSplit,
-  'Aarti',
-  'Abbasi',
-  'Afolayan',
-  'Ahmad',
-  'Ai',
-  'Albrecht',
-  'Amala',
-  'An',
-  'Antoine',
-  'Araujo',
-  'Arianne',
-  'Arnold',
-  'Astride',
-  'Berger',
-  'Bi',
-  'Böcker',
-  'Boyce',
-  'Butler',
-  'Caldwell',
-  'Chaudhari',
-  'Chaudhary',
-  'Cheri',
-  'Chin',
-  'Chou',
-  'Claudio',
-  'Conor',
-  'Daisy',
-  'David',
-  'Derby',
-  'Durga',
-  'Dwayne',
-  'Emilia',
-  'Enrique',
-  'Ernesto',
-  'Estela',
-  'Fatimah',
-  'Félix',
-  'Filip',
-  'Gabriel',
-  'Gosselin',
-  'Grant',
-  'Greg',
-  'Gregory',
-  'Gupta',
-  'Hadya',
-  'Haocheng',
-  'Hasan',
-  'Henry',
-  'Hierro',
-  'Hu',
-  'Huang',
-  'Huerta',
-  'Hunter',
-  'Idowu',
-  'Jain',
-  'Jakob',
-  'Jeff',
-  'Johanna',
-  'Joshi',
-  'Jun',
-  'Jung-Hoon',
-  'Jyoti',
-  'Kamau',
-  'Kealoha',
-  'Khoroushi',
-  'Kingsley',
-  'Kira',
-  'Kirchner',
-  'Kloet',
-  'Korrapati',
-  'Kristoffersen',
-  'Kwok',
-  'Lee',
-  'Leticia',
-  'Lieberenz',
-  'Lundquist',
-  'Malini',
-  'Maly',
-  'Marcel',
-  'Margarita',
-  'Marina',
-  'Martel',
-  'Mata',
-  'Matthias',
-  'Melo',
-  'Misra',
-  'Myriam',
-  'Nate',
-  'Nathan',
-  'Ng',
-  'Nguyen',
-  'Nibhanupudi',
-  'Ning',
-  'Nnenne',
-  'Nosizwe',
-  'Nur',
-  'Olabode',
-  'Olguin',
-  'Oliver',
-  'Page',
-  'Patil',
-  'Pedro',
-  'Phoebe',
-  'Portia',
-  'Puja',
-  'Qiang',
-  'Quintin',
-  'Renata',
-  'Reynolds',
-  'Rishi',
-  'Robert',
-  'Rose',
-  'Rosemarie',
-  'Sarkisian',
-  'Serkan',
-  'Seward',
-  'Seymour',
-  'Sharma',
-  'Shweta',
-  'Simon',
-  'Sparks',
-  'Stewart',
-  'Suárez',
-  'Sujay',
-  'Suman',
-  'Swanson',
-  'Swarna',
-  'Tamàro',
-  'Tanaka',
-  'Terence',
-  'Thu',
-  'Tia',
-  'Timothy',
-  'Travieso',
-  'Velázquez',
-  'Viktoria',
-  'Virgie',
-  'Vishal',
-  'Warren',
-  'Weber',
-  'Welch',
-  'Wen',
-  'Wright',
-  'Yu',
-  'Zuberi',
+  {
+    name: 'Aarti Korrapati',
+    hasImage: true,
+  },
+  {
+    name: 'Ai Huang',
+    hasImage: true,
+  },
+  {
+    name: 'Amala Jain',
+    hasImage: true,
+  },
+  {
+    name: 'An Wen',
+    hasImage: true,
+  },
+  {
+    name: 'Antoine Martel',
+    hasImage: true,
+  },
+  {
+    name: 'Arianne Berger',
+    hasImage: true,
+  },
+  {
+    name: 'Arnold Kingsley',
+    hasImage: true,
+  },
+  {
+    name: 'Astride Page',
+    hasImage: true,
+  },
+  {
+    name: 'Cheri Sparks',
+    hasImage: true,
+  },
+  {
+    name: 'Chin Chou',
+    hasImage: true,
+  },
+  {
+    name: 'Claudio Hierro',
+    hasImage: true,
+  },
+  {
+    name: 'Conor Weber',
+    hasImage: true,
+  },
+  {
+    name: 'Daisy Hunter',
+    hasImage: true,
+  },
+  {
+    name: 'David Kealoha',
+    hasImage: true,
+  },
+  {
+    name: 'Durga Sharma',
+    hasImage: true,
+  },
+  {
+    name: 'Emilia Kristoffersen',
+    hasImage: true,
+  },
+  {
+    name: 'Ernesto Tamàro',
+    hasImage: true,
+  },
+  {
+    name: 'Enrique Olguin',
+    hasImage: true,
+  },
+  {
+    name: 'Estela Araujo',
+    hasImage: true,
+  },
+  {
+    name: 'Fatimah Sarkisian',
+    hasImage: true,
+  },
+  {
+    name: 'Filip Maly',
+    hasImage: true,
+  },
+  {
+    name: 'Gabriel Gosselin',
+    hasImage: true,
+  },
+  {
+    name: 'Hadya Khoroushi',
+    hasImage: true,
+  },
+  {
+    name: 'Hasan Abassi',
+    hasImage: true,
+  },
+  {
+    name: 'Henry Butler',
+    hasImage: true,
+  },
+  {
+    name: 'Jakob Kirchner',
+    hasImage: true,
+  },
+  {
+    name: 'Jeff Tanaka',
+    hasImage: true,
+  },
+  {
+    name: 'Johanna Waren',
+    hasImage: true,
+  },
+  {
+    name: 'Jun Yu',
+    hasImage: true,
+  },
+  {
+    name: 'Jung-Hoon Lee',
+    hasImage: true,
+  },
+  {
+    name: 'Jyoti Joshi',
+    hasImage: true,
+  },
+  {
+    name: 'Kira Oliver',
+    hasImage: true,
+  },
+  {
+    name: 'Leticia Travieso',
+    hasImage: true,
+  },
+  {
+    name: 'Matthias Lieberenz',
+    hasImage: true,
+  },
+  {
+    name: 'Myriam Félix',
+    hasImage: true,
+  },
+  {
+    name: 'Ning Hu',
+    hasImage: true,
+  },
+  {
+    name: 'Nnenne Afolayan',
+    hasImage: true,
+  },
+  {
+    name: 'Nosizwe Stewart',
+    hasImage: true,
+  },
+  {
+    name: 'Nur Ahmad',
+    hasImage: true,
+  },
+  {
+    name: 'Olabode Kamau',
+    hasImage: true,
+  },
+  {
+    name: 'Pedro Melo',
+    hasImage: true,
+  },
+  {
+    name: 'Phoebe Kwok',
+    hasImage: true,
+  },
+  {
+    name: 'Portia Wright',
+    hasImage: true,
+  },
+  {
+    name: 'Puja Chaudhary',
+    hasImage: true,
+  },
+  {
+    name: 'Qiang Ng',
+    hasImage: true,
+  },
+  {
+    name: 'Quintin Velázquez',
+    hasImage: true,
+  },
+  {
+    name: 'Renata Suárez',
+    hasImage: true,
+  },
+  {
+    name: 'Rishi Chaudhari',
+    hasImage: true,
+  },
+  {
+    name: 'Robert Huerta',
+    hasImage: true,
+  },
+  {
+    name: 'Rose Reynolds',
+    hasImage: true,
+  },
+  {
+    name: 'Rosemarie Albrecht',
+    hasImage: true,
+  },
+  {
+    name: 'Serkan Boyce',
+    hasImage: true,
+  },
+  {
+    name: 'Shweta Nibhanupudi',
+    hasImage: true,
+  },
+  {
+    name: 'Sujay Patil',
+    hasImage: true,
+  },
+  {
+    name: 'Suman Gupta',
+    hasImage: true,
+  },
+  {
+    name: 'Swarna Seymour',
+    hasImage: true,
+  },
+  {
+    name: 'Terrence Welch',
+    hasImage: true,
+  },
+  {
+    name: 'Thu Nguyen',
+    hasImage: true,
+  },
+  {
+    name: 'Tia Derby',
+    hasImage: true,
+  },
+  {
+    name: 'Timothy Simon',
+    hasImage: true,
+  },
+  {
+    name: 'Viktoria Böcker',
+    hasImage: true,
+  },
+  {
+    name: 'Virgie Caldwell',
+    hasImage: true,
+  },
+  {
+    name: 'Vishal Jain',
+    hasImage: true,
+  },
+  {
+    name: 'Zuberi Idowu',
+    hasImage: true,
+  },
 ];

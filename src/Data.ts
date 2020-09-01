@@ -289,67 +289,56 @@ const generateFilepath = (
 ): string => {
   const { uniqueNamesGenerator } = Generator;
   let filepath = null;
+  let dataSet = null;
+  let fileDirectory = `${assignment.replace('avatar-', '')}s`;
 
-  // non-person images are named the same as the data source names, but
-  // set to lowercase – spaces are replaced with hyphens, ampersands are
-  // replaced with the word “and”, other special characters are ignored
-  if (assignment !== ASSIGNMENTS.avatarPerson.id) {
-    let dataSet = null;
-    let fileDirectory = `${assignment.replace('avatar-', '')}s`;
-
-    switch (assignment) {
-      case ASSIGNMENTS.avatarCompany.id:
-        dataSet = companies;
-        fileDirectory = 'companies';
-        break;
-      case ASSIGNMENTS.avatarCompanyMedia.id:
-        dataSet = companiesMedia;
-        fileDirectory = 'companies-media';
-        break;
-      case ASSIGNMENTS.avatarEvent.id:
-        dataSet = events;
-        break;
-      case ASSIGNMENTS.avatarGroup.id:
-        dataSet = groups;
-        break;
-      case ASSIGNMENTS.avatarNewsletter.id:
-        dataSet = newsletters;
-        break;
-      case ASSIGNMENTS.avatarSchool.id:
-        dataSet = schools;
-        break;
-      default:
-        dataSet = null;
-    }
-
-    if (dataSet) {
-      const entriesWithImages = [];
-
-      dataSet.forEach((entry) => {
-        if (entry.hasImage) {
-          entriesWithImages.push(entry.name);
-        }
-      });
-      const randomEntryName = uniqueNamesGenerator({
-        dictionaries: [entriesWithImages],
-        length: 1,
-        style: 'lowerCase',
-      }).replace('&', 'and').replace(/[\s]/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
-
-      filepath = `/${fileDirectory}/${randomEntryName}.png`;
-    }
+  switch (assignment) {
+    case ASSIGNMENTS.avatarCompany.id:
+      dataSet = companies;
+      fileDirectory = 'companies';
+      break;
+    case ASSIGNMENTS.avatarCompanyMedia.id:
+      dataSet = companiesMedia;
+      fileDirectory = 'companies-media';
+      break;
+    case ASSIGNMENTS.avatarEvent.id:
+      dataSet = events;
+      break;
+    case ASSIGNMENTS.avatarGroup.id:
+      dataSet = groups;
+      break;
+    case ASSIGNMENTS.avatarNewsletter.id:
+      dataSet = newsletters;
+      break;
+    case ASSIGNMENTS.avatarPerson.id:
+      dataSet = names;
+      fileDirectory = 'people';
+      break;
+    case ASSIGNMENTS.avatarSchool.id:
+      dataSet = schools;
+      break;
+    default:
+      dataSet = null;
   }
 
-  // first flip a coin betweena “woman” and “man”,
-  // then pick a random image for the chosen grouping.
-  // image sets for each group currently stop at 35.
-  if (assignment === ASSIGNMENTS.avatarPerson.id) {
-    const num = getRandomInt(0, 1);
-    const randomSex: string = num === 0 ? 'woman' : 'man';
-    const randomNumber: number = getRandomInt(1, 35);
-    const formattedNumber: string = randomNumber < 10 ? `0${randomNumber}` : `${randomNumber}`;
+  if (dataSet) {
+    const entriesWithImages = [];
 
-    filepath = `/people/${randomSex}-${formattedNumber}.png`;
+    dataSet.forEach((entry) => {
+      if (entry.hasImage) {
+        entriesWithImages.push(entry.name);
+      }
+    });
+    const randomEntryName = uniqueNamesGenerator({
+      dictionaries: [entriesWithImages],
+      length: 1,
+      style: 'lowerCase',
+    }).normalize('NFD')
+      .replace('&', 'and')
+      .replace(/[\s]/g, '-')
+      .replace(/[^a-zA-Z0-9-]/g, '');
+
+    filepath = `/${fileDirectory}/${randomEntryName}.png`;
   }
 
   return filepath;
@@ -584,9 +573,9 @@ const generateTimestamp = (): string => {
 const generateRandom = (assignment): string => {
   const { uniqueNamesGenerator } = Generator;
   const dictionaries = [];
+  const separator: string = null;
+  const length: number = 1;
   let style: 'lowerCase' | 'upperCase' | 'capital' = 'capital';
-  let separator: string = null;
-  let length: number = 1;
   let newRandomString = null;
 
   switch (assignment) {
@@ -698,11 +687,9 @@ const generateRandom = (assignment): string => {
       break;
     }
     case ASSIGNMENTS.name.id: {
-      // names, twice for a first/last
-      dictionaries.push(names);
-      dictionaries.push(names);
-      separator = ' ';
-      length = 2;
+      const nameNames = [];
+      names.forEach(name => nameNames.push(name.name));
+      dictionaries.push(nameNames);
       break;
     }
     case ASSIGNMENTS.profileHeadline.id: {

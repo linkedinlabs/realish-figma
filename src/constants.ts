@@ -13,7 +13,7 @@
 const PLUGIN_IDENTIFIER = 'com.linkedin.figma.realish-plugin';
 
 /**
- * @description The public-facing name for the plugin. This should match the
+ * @description The public-facing name for the plugin.sThis should match the
  * `name` stated in manifset.json.
  *
  * @kind constant
