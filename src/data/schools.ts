@@ -67,7 +67,7 @@ export default [
     hasImage: true,
   },
   {
-    name: 'Saint Richard’s College of Massachusetts',
+    name: 'St. Richard’s College of Massachusetts',
     hasImage: true,
   },
   {
