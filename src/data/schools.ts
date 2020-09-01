@@ -35,7 +35,7 @@ export default [
     hasImage: true,
   },
   {
-    name: 'Golden Bay State',
+    name: 'Golden Bay State University',
     hasImage: true,
   },
   {
