@@ -57,7 +57,7 @@ const ASSIGNMENTS = {
   avatarGroup: { id: 'avatar-group', text: 'Group', nodeType: 'shape' },
   avatarMediaSource: { id: 'avatar-media-source', text: 'Media Source', nodeType: 'shape' },
   avatarPerson: { id: 'avatar-person', text: 'Person', nodeType: 'shape' },
-  avatarPublication: { id: 'avatar-publication', text: 'Publication', nodeType: 'shape' },
+  avatarNewsletter: { id: 'avatar-newsletter', text: 'Newsletter', nodeType: 'shape' },
   avatarSchool: { id: 'avatar-school', text: 'School', nodeType: 'shape' },
   company: { id: 'company', text: 'Company', nodeType: 'text' },
   connections: { id: 'connections', text: 'Connections', nodeType: 'text' },
@@ -78,7 +78,7 @@ const ASSIGNMENTS = {
   mediaSource: { id: 'media-source', text: 'Media Source', nodeType: 'text' },
   name: { id: 'name', text: 'Name', nodeType: 'text' },
   profileHeadline: { id: 'profile-headline', text: 'Profile Headline', nodeType: 'text' },
-  publication: { id: 'publication', text: 'Publication', nodeType: 'text' },
+  newsletter: { id: 'newsletter', text: 'Newsletter', nodeType: 'text' },
   school: { id: 'school', text: 'School', nodeType: 'text' },
   timestamp: { id: 'timestamp', text: 'Timestamp', nodeType: 'text' },
 };

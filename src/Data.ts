@@ -11,7 +11,7 @@ import jobTitles from './data/job-titles';
 import locations from './data/locations';
 import mediaSources from './data/media-sources';
 import names from './data/names';
-import publications from './data/publications';
+import newsletters from './data/newsletters';
 import schools from './data/schools';
 import { getNodeAssignmentData } from './Tools';
 import { ASSIGNMENTS } from './constants';
@@ -283,7 +283,7 @@ const generateFilepath = (
     | 'avatar-event'
     | 'avatar-group'
     | 'avatar-media-source'
-    | 'avatar-publication'
+    | 'avatar-newsletter'
     | 'avatar-person'
     | 'avatar-school',
 ): string => {
@@ -311,8 +311,8 @@ const generateFilepath = (
       case ASSIGNMENTS.avatarMediaSource.id:
         dataSet = mediaSources;
         break;
-      case ASSIGNMENTS.avatarPublication.id:
-        dataSet = publications;
+      case ASSIGNMENTS.avatarNewsletter.id:
+        dataSet = newsletters;
         break;
       case ASSIGNMENTS.avatarSchool.id:
         dataSet = schools;
@@ -604,7 +604,7 @@ const generateRandom = (assignment): string => {
     case ASSIGNMENTS.avatarEvent.id:
     case ASSIGNMENTS.avatarGroup.id:
     case ASSIGNMENTS.avatarMediaSource.id:
-    case ASSIGNMENTS.avatarPublication.id:
+    case ASSIGNMENTS.avatarNewsletter.id:
     case ASSIGNMENTS.avatarPerson.id:
     case ASSIGNMENTS.avatarSchool.id: {
       const filepath = [generateFilepath(assignment)];
@@ -709,10 +709,10 @@ const generateRandom = (assignment): string => {
       dictionaries.push(profileHeadlineText);
       break;
     }
-    case ASSIGNMENTS.publication.id: {
-      const publicationNames = [];
-      publications.forEach(publication => publicationNames.push(publication.name));
-      dictionaries.push(publicationNames);
+    case ASSIGNMENTS.newsletter.id: {
+      const newsletterNames = [];
+      newsletters.forEach(newsletter => newsletterNames.push(newsletter.name));
+      dictionaries.push(newsletterNames);
       break;
     }
     case ASSIGNMENTS.school.id: {

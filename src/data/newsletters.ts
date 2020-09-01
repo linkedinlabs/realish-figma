@@ -1,8 +1,8 @@
 /**
- * @description Company names.
+ * @description Newsletter names.
  *
  * @kind constant
- * @name companies
+ * @name newsletters
  * @type {Array}
  */
 export default [

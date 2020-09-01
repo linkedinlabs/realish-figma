@@ -104,8 +104,8 @@
           "command": "quick-randomize-profile-headline"
         },
         {
-          "name": "Text to Publication",
-          "command": "quick-randomize-publication"
+          "name": "Text to Newsletter",
+          "command": "quick-randomize-newsletter"
         },
         {
           "name": "Text to School",
@@ -139,8 +139,8 @@
           "command": "quick-randomize-avatar-person"
         },
         {
-          "name": "Shape to Publication",
-          "command": "quick-randomize-avatar-publication"
+          "name": "Shape to Newsletter",
+          "command": "quick-randomize-avatar-newsletter"
         },
         {
           "name": "Shape to School",
@@ -240,8 +240,8 @@
           "command": "quick-assign-profile-headline"
         },
         {
-          "name": "Set text as Publication",
-          "command": "quick-assign-publication"
+          "name": "Set text as Newsletter",
+          "command": "quick-assign-newsletter"
         },
         {
           "name": "Set text as School",
@@ -275,8 +275,8 @@
           "command": "quick-assign-avatar-person"
         },
         {
-          "name": "Set shape as Publication",
-          "command": "quick-assign-avatar-publication"
+          "name": "Set shape as Newsletter",
+          "command": "quick-assign-avatar-newsletter"
         },
         {
           "name": "Set shape as School",
