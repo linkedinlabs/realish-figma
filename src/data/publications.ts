@@ -11,11 +11,19 @@ export default [
     hasImage: true,
   },
   {
-    name: 'Butterflies and Bees',
+    name: 'Color Theory',
     hasImage: true,
   },
   {
-    name: 'Color Theory',
+    name: 'Countryside Examiner',
+    hasImage: true,
+  },
+  {
+    name: 'Crow’s Nest',
+    hasImage: true,
+  },
+  {
+    name: 'Enneagram',
     hasImage: true,
   },
   {
@@ -27,6 +35,10 @@ export default [
     hasImage: true,
   },
   {
+    name: 'Hyperpolyglot',
+    hasImage: true,
+  },
+  {
     name: 'Intonations',
     hasImage: true,
   },
@@ -35,11 +47,31 @@ export default [
     hasImage: true,
   },
   {
+    name: 'PRQX News',
+    hasImage: true,
+  },
+  {
     name: 'Taking the A-Line',
     hasImage: true,
   },
   {
+    name: 'The 4ourfront',
+    hasImage: true,
+  },
+  {
+    name: 'The Boxcutter',
+    hasImage: true,
+  },
+  {
     name: 'The Day 1 Vegan',
+    hasImage: true,
+  },
+  {
+    name: 'The Watts Weekly',
+    hasImage: true,
+  },
+  {
+    name: 'TIL Insider',
     hasImage: true,
   },
   {

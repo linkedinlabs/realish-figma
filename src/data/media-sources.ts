@@ -31,19 +31,7 @@ export default [
     hasImage: true,
   },
   {
-    name: 'Countryside Examiner',
-    hasImage: true,
-  },
-  {
-    name: 'Crow’s Nest',
-    hasImage: true,
-  },
-  {
     name: 'Dice.com',
-    hasImage: true,
-  },
-  {
-    name: 'Enneagram',
     hasImage: true,
   },
   {
@@ -64,10 +52,6 @@ export default [
   },
   {
     name: 'Grandfina.le',
-    hasImage: true,
-  },
-  {
-    name: 'Hyperpolyglot',
     hasImage: true,
   },
   {
@@ -99,10 +83,6 @@ export default [
     hasImage: true,
   },
   {
-    name: 'PRQX News',
-    hasImage: true,
-  },
-  {
     name: 'Rebel Web Services',
     hasImage: true,
   },
@@ -120,22 +100,6 @@ export default [
   },
   {
     name: 'Techyon',
-    hasImage: true,
-  },
-  {
-    name: 'The 4ourfront',
-    hasImage: true,
-  },
-  {
-    name: 'The Boxcutter',
-    hasImage: true,
-  },
-  {
-    name: 'The Watts Weekly',
-    hasImage: true,
-  },
-  {
-    name: 'TIL Insider',
     hasImage: true,
   },
   {
