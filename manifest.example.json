@@ -68,10 +68,6 @@
           "command": "quick-randomize-email"
         },
         {
-          "name": "Text to Event",
-          "command": "quick-randomize-event"
-        },
-        {
           "name": "Text to Followers",
           "command": "quick-randomize-followers"
         },
@@ -125,10 +121,6 @@
         {
           "name": "Shape to Company (Media)",
           "command": "quick-randomize-avatar-company-media"
-        },
-        {
-          "name": "Shape to Event",
-          "command": "quick-randomize-avatar-event"
         },
         {
           "name": "Shape to Group",
@@ -204,10 +196,6 @@
           "command": "quick-assign-email"
         },
         {
-          "name": "Set text as Event",
-          "command": "quick-assign-event"
-        },
-        {
           "name": "Set text as Followers",
           "command": "quick-assign-followers"
         },
@@ -261,10 +249,6 @@
         {
           "name": "Set shape as Company (Media)",
           "command": "quick-assign-avatar-company-media"
-        },
-        {
-          "name": "Set shape as Event",
-          "command": "quick-assign-avatar-event"
         },
         {
           "name": "Set shape as Group",
