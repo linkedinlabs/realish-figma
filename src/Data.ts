@@ -249,19 +249,33 @@ const generateDomain = (): string => {
  */
 const generateEmail = (): string => {
   const { uniqueNamesGenerator } = Generator;
-  const emailSeparators = ['.', '_'];
-  const emailSeparatorIndex = getRandomInt(0, 1);
 
-  const randomSeparator = emailSeparators[emailSeparatorIndex];
-
-  const randomNameLength = getRandomInt(1, 2);
-  const randomName = uniqueNamesGenerator({
-    dictionaries: [names, names],
-    length: randomNameLength,
-    separator: randomSeparator,
+  // pick a name to work with and make it lowercase
+  const nameTextArray: Array<string> = [];
+  names.forEach(name => nameTextArray.push(name.name));
+  let randomName: string = uniqueNamesGenerator({
+    dictionaries: [nameTextArray],
     style: 'lowerCase',
-  }).replace(' ', randomSeparator);
+    length: 1,
+  }).normalize('NFD');
 
+  // set some params to format the email with
+  const emailSeparators = ['.', '_', ''];
+  const emailSeparatorIndex = getRandomInt(0, 2);
+  const randomSeparator = emailSeparators[emailSeparatorIndex];
+  const randomNameLength = getRandomInt(1, 2);
+
+  // format the email
+  if (randomNameLength === 1) {
+    randomName = randomName.replace(' ', randomSeparator);
+  } else {
+    const nameArray = randomName.split(' ');
+    const firstChar = nameArray[0].charAt(0);
+    const lastName = nameArray[nameArray.length - 1];
+    randomName = `${firstChar}${randomSeparator}${lastName}`;
+  }
+
+  // put the pieces together
   const generatedEmail = `${randomName}@${generateDomain()}`;
   return generatedEmail;
 };
