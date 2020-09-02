@@ -59,10 +59,6 @@ export default [
     hasImage: true,
   },
   {
-    name: 'Pillow Talk',
-    hasImage: true,
-  },
-  {
     name: 'PRQX News',
     hasImage: true,
   },

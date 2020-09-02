@@ -95,7 +95,7 @@ export default [
     hasImage: true,
   },
   {
-    name: 'Valleymouth Polytechnic',
+    name: 'Valleymouth',
     hasImage: true,
   },
   {
