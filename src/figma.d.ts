@@ -13,7 +13,9 @@ type RealishAssignment =
   | 'avatar-group'
   | 'avatar-newsletter'
   | 'avatar-person'
+  | 'avatar-product'
   | 'avatar-school'
+  | 'avatar-service'
   | 'company'
   | 'company-media'
   | 'connections'
@@ -31,8 +33,10 @@ type RealishAssignment =
   | 'job-title'
   | 'location'
   | 'name'
+  | 'product'
   | 'profile-headline'
   | 'school'
+  | 'service'
   | 'timestamp';
 
 // Vendor Declarations

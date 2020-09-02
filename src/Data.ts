@@ -12,7 +12,9 @@ import jobTitles from './data/job-titles';
 import locations from './data/locations';
 import names from './data/names';
 import newsletters from './data/newsletters';
+import products from './data/products';
 import schools from './data/schools';
+import services from './data/services';
 import { getNodeAssignmentData } from './Tools';
 import { ASSIGNMENTS } from './constants';
 
@@ -299,7 +301,9 @@ const generateFilepath = (
     | 'avatar-group'
     | 'avatar-newsletter'
     | 'avatar-person'
-    | 'avatar-school',
+    | 'avatar-product'
+    | 'avatar-school'
+    | 'avatar-service',
 ): string => {
   const { uniqueNamesGenerator } = Generator;
   let filepath = null;
@@ -328,8 +332,14 @@ const generateFilepath = (
       dataSet = names;
       fileDirectory = 'people';
       break;
+    case ASSIGNMENTS.avatarProduct.id:
+      dataSet = products;
+      break;
     case ASSIGNMENTS.avatarSchool.id:
       dataSet = schools;
+      break;
+    case ASSIGNMENTS.avatarService.id:
+      dataSet = services;
       break;
     default:
       dataSet = null;
@@ -610,7 +620,9 @@ const generateRandom = (assignment): string => {
     case ASSIGNMENTS.avatarGroup.id:
     case ASSIGNMENTS.avatarNewsletter.id:
     case ASSIGNMENTS.avatarPerson.id:
-    case ASSIGNMENTS.avatarSchool.id: {
+    case ASSIGNMENTS.avatarProduct.id:
+    case ASSIGNMENTS.avatarSchool.id:
+    case ASSIGNMENTS.avatarService.id: {
       const filepath = [generateFilepath(assignment)];
       dictionaries.push(filepath);
       style = 'lowerCase';
@@ -706,6 +718,12 @@ const generateRandom = (assignment): string => {
       dictionaries.push(nameNames);
       break;
     }
+    case ASSIGNMENTS.product.id: {
+      const productNames = [];
+      products.forEach(product => productNames.push(product.name));
+      dictionaries.push(productNames);
+      break;
+    }
     case ASSIGNMENTS.profileHeadline.id: {
       const profileHeadlineText = [generateProfileHeadline()];
       dictionaries.push(profileHeadlineText);
@@ -721,6 +739,12 @@ const generateRandom = (assignment): string => {
       const schoolNames = [];
       schools.forEach(school => schoolNames.push(school.name));
       dictionaries.push(schoolNames);
+      break;
+    }
+    case ASSIGNMENTS.service.id: {
+      const serviceNames = [];
+      services.forEach(service => serviceNames.push(service.name));
+      dictionaries.push(serviceNames);
       break;
     }
     case ASSIGNMENTS.timestamp.id: {
