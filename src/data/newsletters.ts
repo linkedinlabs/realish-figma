@@ -67,7 +67,7 @@ export default [
     hasImage: true,
   },
   {
-    name: 'Technyon',
+    name: 'Techyon',
     hasImage: true,
   },
   {
