@@ -13,7 +13,7 @@
 const PLUGIN_IDENTIFIER = 'com.linkedin.figma.realish-plugin';
 
 /**
- * @description The public-facing name for the plugin. This should match the
+ * @description The public-facing name for the plugin.sThis should match the
  * `name` stated in manifset.json.
  *
  * @kind constant
@@ -49,30 +49,43 @@ const DATA_KEYS = {
  */
 const ASSIGNMENTS = {
   unassigned: { id: 'unassigned', text: 'Unassigned', nodeType: null },
+  alumniCompany: { id: 'alumni-company', text: 'Alumni (Company)', nodeType: 'text' },
+  alumniSchool: { id: 'alumni-school', text: 'Alumni (School)', nodeType: 'text' },
+  articleTitle: { id: 'article-title', text: 'Article Title', nodeType: 'text' },
   avatarCompany: { id: 'avatar-company', text: 'Company', nodeType: 'shape' },
+  avatarCompanyMedia: { id: 'avatar-company-media', text: 'Company (Media)', nodeType: 'shape' },
+  avatarEvent: { id: 'avatar-event', text: 'Event', nodeType: 'shape' },
+  avatarGroup: { id: 'avatar-group', text: 'Group', nodeType: 'shape' },
+  avatarNewsletter: { id: 'avatar-newsletter', text: 'Newsletter', nodeType: 'shape' },
   avatarPerson: { id: 'avatar-person', text: 'Person', nodeType: 'shape' },
+  avatarProduct: { id: 'avatar-product', text: 'Product', nodeType: 'shape' },
+  avatarSchool: { id: 'avatar-school', text: 'School', nodeType: 'shape' },
+  avatarService: { id: 'avatar-service', text: 'Service', nodeType: 'shape' },
   company: { id: 'company', text: 'Company', nodeType: 'text' },
+  companyMedia: { id: 'company-media', text: 'Company (Media)', nodeType: 'text' },
+  connections: { id: 'connections', text: 'Connections', nodeType: 'text' },
+  connectionsMutual: { id: 'connections-mutual', text: 'Connections (Mutual)', nodeType: 'text' },
   country: { id: 'country', text: 'Country', nodeType: 'text' },
   date: { id: 'date', text: 'Date', nodeType: 'text' },
+  dateShort: { id: 'date-short', text: 'Date (Short)', nodeType: 'text' },
   degreeBadge: { id: 'degree-badge', text: 'Degree Badge', nodeType: 'text' },
   domain: { id: 'domain', text: 'Domain Name', nodeType: 'text' },
   email: { id: 'email', text: 'Email', nodeType: 'text' },
+  event: { id: 'event', text: 'Event', nodeType: 'text' },
+  followers: { id: 'followers', text: 'Followers', nodeType: 'text' },
+  group: { id: 'group', text: 'Group', nodeType: 'text' },
+  hashtag: { id: 'hashtag', text: 'Hashtag', nodeType: 'text' },
+  industry: { id: 'industry', text: 'Industry', nodeType: 'text' },
   jobTitle: { id: 'job-title', text: 'Job Title', nodeType: 'text' },
+  location: { id: 'location', text: 'Location', nodeType: 'text' },
   name: { id: 'name', text: 'Name', nodeType: 'text' },
+  product: { id: 'product', text: 'Product', nodeType: 'text' },
+  profileHeadline: { id: 'profile-headline', text: 'Profile Headline', nodeType: 'text' },
+  newsletter: { id: 'newsletter', text: 'Newsletter', nodeType: 'text' },
+  school: { id: 'school', text: 'School', nodeType: 'text' },
+  service: { id: 'service', text: 'Service', nodeType: 'text' },
   timestamp: { id: 'timestamp', text: 'Timestamp', nodeType: 'text' },
 };
-// unassigned
-// avatar-company
-// avatar-person
-// company
-// country
-// date
-// degree-badge
-// domain
-// email
-// job-title
-// name
-// timestamp
 
 /**
  * @description An object containing the current string constants the Figma API returns for

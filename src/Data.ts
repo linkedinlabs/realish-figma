@@ -1,9 +1,20 @@
+import articleTitles from './data/article-titles';
 import companies from './data/companies';
+import companiesMedia from './data/companies-media';
 import countries from './data/countries';
 import degreeBadges from './data/degree-badges';
 import domainTLDs from './data/domain-tlds';
+import events from './data/events';
+import groups from './data/groups';
+import hashtags from './data/hashtags';
+import industries from './data/industries';
 import jobTitles from './data/job-titles';
+import locations from './data/locations';
 import names from './data/names';
+import newsletters from './data/newsletters';
+import products from './data/products';
+import schools from './data/schools';
+import services from './data/services';
 import { getNodeAssignmentData } from './Tools';
 import { ASSIGNMENTS } from './constants';
 
@@ -31,44 +42,92 @@ const getRandomInt = (min, max): number => {
   return randomInt;
 };
 
+// ------------------------------------------
+
 /**
- * @description Generate a random timestamp string from minutes to 6 months. The specific time
- * is formatted based on the length of time using the `timeDeclarations` abbreviation strings.
+ * @description Generates a random number formatted as an alumni string
+ * (i.e. “7 company alumni”) for either companies or schools. The number
+ * of alumni is weighted toward lower numbers (under 20) and limited to 120.
  *
  * @kind function
- * @name generateTimestamp
+ * @name generateAlumni
  *
- * @returns {string} The formatted timestamp (i.e. “6 mins” or ”18 hrs”).
+ * @param {string} type Alumni type (`school` or `company`)
+ *
+ * @returns {string} The formatted number of alumni.
  */
-const generateTimestamp = (): string => {
-  const timeDeclarations = ['mins', 'hrs', 'd', 'w', 'mo'];
-
-  let randomTimeInteger = 0;
-  const randomTimeDeclarationIndex = Math.floor(Math.random() * timeDeclarations.length);
-  const randomTimeDeclaration = timeDeclarations[randomTimeDeclarationIndex];
-
-  switch (randomTimeDeclaration) {
-    case 'mins':
-      randomTimeInteger = getRandomInt(1, 59);
+const generateAlumni = (type: 'company' | 'school'): string => {
+  let randomNumber: number = 1;
+  const weightedPick = getRandomInt(1, 8);
+  switch (weightedPick) {
+    case 3:
+    case 4:
+    case 5:
+      randomNumber = getRandomInt(2, 20);
       break;
-    case 'hrs':
-      randomTimeInteger = getRandomInt(1, 23);
+    case 6:
+    case 7:
+      randomNumber = getRandomInt(21, 50);
       break;
-    case 'd':
-      randomTimeInteger = getRandomInt(1, 6);
-      break;
-    case 'w':
-      randomTimeInteger = getRandomInt(1, 4);
-      break;
-    case 'mo':
-      randomTimeInteger = getRandomInt(1, 6);
+    case 8:
+      randomNumber = getRandomInt(51, 120);
       break;
     default:
-      return null;
+      randomNumber = 1;
   }
 
-  const generatedStamp = `${randomTimeInteger} ${randomTimeDeclaration}`;
-  return generatedStamp;
+  const alumText = randomNumber === 1 ? 'alum' : 'alumni';
+  const generatedAlumni = `${randomNumber} ${type} ${alumText}`;
+  return generatedAlumni;
+};
+
+/**
+ * @description Generates a random number formatted as a connections string
+ * (i.e. “7 connections”). The number is weighted toward lower numbers (under 45)
+ * and limited to 500 (or 225 for mutual connections).
+ *
+ * @kind function
+ * @name generateConnections
+ *
+ * @param {string} Alumni type (`normal` or `mutual`)
+ *
+ * @returns {string} The formatted number of connections.
+ */
+const generateConnections = (type: 'mutual' | 'normal' = 'normal'): string => {
+  let randomNumber: number = 1;
+  let weightedPick = getRandomInt(1, 10);
+  if (type === 'mutual') {
+    weightedPick = getRandomInt(1, 8);
+  }
+  switch (weightedPick) {
+    case 2:
+    case 3:
+      randomNumber = getRandomInt(2, 20);
+      break;
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+      randomNumber = getRandomInt(21, 45);
+      break;
+    case 8:
+      randomNumber = getRandomInt(46, 225);
+      break;
+    case 9:
+      randomNumber = getRandomInt(226, 499);
+      break;
+    case 10:
+      randomNumber = 500;
+      break;
+    default:
+      randomNumber = 1;
+  }
+
+  const labelText = randomNumber === 1 ? 'connection' : 'connections';
+  const labelPrefixText = type === 'mutual' ? ' mutual' : '';
+  const numberSuffix = randomNumber === 500 ? '+' : '';
+  const generatedConnections = `${randomNumber}${numberSuffix}${labelPrefixText} ${labelText}`;
+  return generatedConnections;
 };
 
 /**
@@ -81,7 +140,7 @@ const generateTimestamp = (): string => {
  *
  * @returns {string} The formatted date as a string.
  */
-const generateDate = (): string => {
+const generateDate = (type: 'long' | 'short' = 'short'): string => {
   // set the upper bound for the random date
   const daysAhead = 120;
   const currentDate: Date = new Date();
@@ -104,11 +163,21 @@ const generateDate = (): string => {
     return selectedDate;
   };
 
-  // month abbreviations list
-  const formattedMonths = [
+  // month abbreviations lists
+  const formattedMonthsLong = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
+  ];
+
+  const formattedMonthsShort = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
   ];
+
+  let formattedMonths = formattedMonthsLong;
+  if (type === 'short') {
+    formattedMonths = formattedMonthsShort;
+  }
 
   // pick a random date between now and the `daysAhead` upper bound
   const date: Date = randomDate(currentDate, daysAhead);
@@ -117,7 +186,11 @@ const generateDate = (): string => {
   const formattedMonth: string = formattedMonths[date.getMonth()];
   const formattedDate: number = date.getDate();
   const formattedYear: number = date.getFullYear();
-  const generatedDate: string = `${formattedMonth} ${formattedDate} ${formattedYear}`;
+
+  let generatedDate: string = `${formattedMonth} ${formattedDate}, ${formattedYear}`;
+  if (type === 'short') {
+    generatedDate = `${formattedMonth} ${formattedDate}`;
+  }
 
   return generatedDate;
 };
@@ -178,19 +251,33 @@ const generateDomain = (): string => {
  */
 const generateEmail = (): string => {
   const { uniqueNamesGenerator } = Generator;
-  const emailSeparators = ['.', '_'];
-  const emailSeparatorIndex = getRandomInt(0, 1);
 
-  const randomSeparator = emailSeparators[emailSeparatorIndex];
-
-  const randomNameLength = getRandomInt(1, 2);
-  const randomName = uniqueNamesGenerator({
-    dictionaries: [names, names],
-    length: randomNameLength,
-    separator: randomSeparator,
+  // pick a name to work with and make it lowercase
+  const nameTextArray: Array<string> = [];
+  names.forEach(name => nameTextArray.push(name.name));
+  let randomName: string = uniqueNamesGenerator({
+    dictionaries: [nameTextArray],
     style: 'lowerCase',
-  }).replace(' ', randomSeparator);
+    length: 1,
+  }).normalize('NFD');
 
+  // set some params to format the email with
+  const emailSeparators = ['.', '_', ''];
+  const emailSeparatorIndex = getRandomInt(0, 2);
+  const randomSeparator = emailSeparators[emailSeparatorIndex];
+  const randomNameLength = getRandomInt(1, 2);
+
+  // format the email
+  if (randomNameLength === 1) {
+    randomName = randomName.replace(' ', randomSeparator);
+  } else {
+    const nameArray = randomName.split(' ');
+    const firstChar = nameArray[0].charAt(0);
+    const lastName = nameArray[nameArray.length - 1];
+    randomName = `${firstChar}${randomSeparator}${lastName}`;
+  }
+
+  // put the pieces together
   const generatedEmail = `${randomName}@${generateDomain()}`;
   return generatedEmail;
 };
@@ -206,42 +293,293 @@ const generateEmail = (): string => {
  *
  * @returns {string} The root filepath with filename.
  */
-const generateFilepath = (assignment: 'avatar-company' | 'avatar-person'): string => {
+const generateFilepath = (
+  assignment:
+    'avatar-company'
+    | 'avatar-company-media'
+    | 'avatar-event'
+    | 'avatar-group'
+    | 'avatar-newsletter'
+    | 'avatar-person'
+    | 'avatar-product'
+    | 'avatar-school'
+    | 'avatar-service',
+): string => {
   const { uniqueNamesGenerator } = Generator;
   let filepath = null;
+  let dataSet = null;
+  let fileDirectory = `${assignment.replace('avatar-', '')}s`;
 
-  // company images are named the same as the company names, but
-  // set to lowercase – spaces are replaced with hyphens
-  if (assignment === ASSIGNMENTS.avatarCompany.id) {
-    const companiesWithImages = [];
-    companies.forEach((company) => {
-      if (company.hasImage) {
-        companiesWithImages.push(company.name);
-      }
-    });
-    const randomCompany = uniqueNamesGenerator({
-      dictionaries: [companiesWithImages],
-      length: 1,
-      style: 'lowerCase',
-    }).replace(' ', '-').replace('.', '');
-
-    filepath = `/companies/${randomCompany}.png`;
+  switch (assignment) {
+    case ASSIGNMENTS.avatarCompany.id:
+      dataSet = companies;
+      fileDirectory = 'companies';
+      break;
+    case ASSIGNMENTS.avatarCompanyMedia.id:
+      dataSet = companiesMedia;
+      fileDirectory = 'companies-media';
+      break;
+    case ASSIGNMENTS.avatarEvent.id:
+      dataSet = events;
+      break;
+    case ASSIGNMENTS.avatarGroup.id:
+      dataSet = groups;
+      break;
+    case ASSIGNMENTS.avatarNewsletter.id:
+      dataSet = newsletters;
+      break;
+    case ASSIGNMENTS.avatarPerson.id:
+      dataSet = names;
+      fileDirectory = 'people';
+      break;
+    case ASSIGNMENTS.avatarProduct.id:
+      dataSet = products;
+      break;
+    case ASSIGNMENTS.avatarSchool.id:
+      dataSet = schools;
+      break;
+    case ASSIGNMENTS.avatarService.id:
+      dataSet = services;
+      break;
+    default:
+      dataSet = null;
   }
 
-  // first flip a coin betweena “woman” and “man”,
-  // then pick a random image for the chosen grouping.
-  // image sets for each group currently stop at 35.
-  if (assignment === ASSIGNMENTS.avatarPerson.id) {
-    const num = getRandomInt(0, 1);
-    const randomSex: string = num === 0 ? 'woman' : 'man';
-    const randomNumber: number = getRandomInt(1, 35);
-    const formattedNumber: string = randomNumber < 10 ? `0${randomNumber}` : `${randomNumber}`;
+  if (dataSet) {
+    const entriesWithImages = [];
 
-    filepath = `/people/${randomSex}-${formattedNumber}.png`;
+    dataSet.forEach((entry) => {
+      if (entry.hasImage) {
+        entriesWithImages.push(entry.name);
+      }
+    });
+    const randomEntryName = uniqueNamesGenerator({
+      dictionaries: [entriesWithImages],
+      length: 1,
+      style: 'lowerCase',
+    }).normalize('NFD')
+      .replace('&', 'and')
+      .replace(/[\s]/g, '-')
+      .replace(/[^a-zA-Z0-9-]/g, '');
+
+    filepath = `/${fileDirectory}/${randomEntryName}.png`;
   }
 
   return filepath;
 };
+
+/**
+ * @description Generates a random number formatted as a followers count
+ * (i.e. “543 followers”). The number of followers is weighted toward lower numbers
+ * (under 1500) and limited to 2.1 million. The formatted numbers are comma-spliced.
+ *
+ * @kind function
+ * @name generateFollowers
+ *
+ * @returns {string} The formatted number of alumni.
+ */
+const generateFollowers = (): string => {
+  let randomNumber: number = 1;
+  const weightedPick = getRandomInt(1, 10);
+  switch (weightedPick) {
+    case 3:
+    case 4:
+    case 5:
+      randomNumber = getRandomInt(2, 500);
+      break;
+    case 6:
+    case 7:
+      randomNumber = getRandomInt(501, 1500);
+      break;
+    case 8:
+    case 9:
+      randomNumber = getRandomInt(1501, 32000);
+      break;
+    case 10:
+      randomNumber = getRandomInt(32001, 2100000);
+      break;
+    default:
+      randomNumber = 1;
+  }
+
+  const followerText = randomNumber === 1 ? 'follower' : 'followers';
+  const formattedNumber: string = randomNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const generatedAlumni = `${formattedNumber} ${followerText}`;
+  return generatedAlumni;
+};
+
+/**
+ * @description Generates a random hashtag by picking a base phrase and then applying
+ * several weighted formatting options (uppercase, lowercase, or titlecase) and adding
+ * the hash mark (#).
+ *
+ * @kind function
+ * @name generateHashtag
+ *
+ * @returns {string} The formatted number of alumni.
+ */
+const generateHashtag = (): string => {
+  const { uniqueNamesGenerator } = Generator;
+
+  let hashtag: string = null;
+  const weightedPick = getRandomInt(1, 8);
+
+  const hashtagPhrase = uniqueNamesGenerator({
+    dictionaries: [hashtags],
+    length: 1,
+  });
+  hashtag = hashtagPhrase.replace(/\s+/g, '');
+
+  switch (weightedPick) {
+    case 1:
+      hashtag = hashtag.toUpperCase();
+      break;
+    case 2:
+    case 3:
+    case 4:
+      // title case; do nothing
+      break;
+    default:
+      hashtag = hashtag.toLowerCase();
+  }
+
+  const generatedHashtag = `#${hashtag}`;
+  return generatedHashtag;
+};
+
+/**
+ * @description Generates a random profile headline from a few different variables.
+ * Some headlines include a job title, a phrase, a company name, or a mixture of
+ * all three. Some headlines are decorated with extra characters, others are not.
+ *
+ * @kind function
+ * @name generateProfileHeadline
+ *
+ * @returns {string} The formatted number of alumni.
+ */
+const generateProfileHeadline = (): string => {
+  const { uniqueNamesGenerator } = Generator;
+
+  let phraseTitle: string = null;
+  const weightedPick = getRandomInt(1, 5);
+  const nonTitlePhrases: Array<string> = [
+    'Author - Educator - Dreamer', 'Creating change through empathy', 'Creating Success Stories',
+    'Creative Problem Solver', 'Doing the thing', 'Trying to be useful',
+  ];
+
+  const companyNames: Array<string> = [];
+  companies.forEach(company => companyNames.push(company.name));
+  const company = uniqueNamesGenerator({
+    dictionaries: [companyNames],
+    length: 1,
+  });
+
+  switch (weightedPick) {
+    case 1:
+      phraseTitle = uniqueNamesGenerator({
+        dictionaries: [nonTitlePhrases],
+        length: 1,
+      });
+      break;
+    case 2: {
+      const phrase = uniqueNamesGenerator({
+        dictionaries: [nonTitlePhrases],
+        length: 1,
+      });
+      const title = uniqueNamesGenerator({
+        dictionaries: [jobTitles],
+        length: 1,
+      });
+
+      phraseTitle = `${phrase} | ${title}`;
+      break;
+    }
+    case 3:
+    case 4:
+    case 5:
+      phraseTitle = uniqueNamesGenerator({
+        dictionaries: [jobTitles],
+        length: 1,
+      });
+      break;
+    default:
+      // do nothing
+  }
+
+  const decorationWeightedPick = getRandomInt(1, 10);
+  const decorators: Array<string> = [
+    '~', '@', '—', '|', '**',
+  ];
+  const decorator = uniqueNamesGenerator({
+    dictionaries: [decorators],
+    length: 1,
+  });
+
+  switch (decorationWeightedPick) {
+    case 2:
+      phraseTitle = `${decorator} ${phraseTitle} ${decorator}`;
+      break;
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+      phraseTitle = `${phraseTitle} ${decorator} ${company}`;
+      break;
+    case 8:
+    case 9:
+    case 10:
+      phraseTitle = `${phraseTitle}, ${company}`;
+      break;
+    default:
+      // do nothing
+  }
+
+  const generatedProfileHeadline = phraseTitle;
+  return generatedProfileHeadline;
+};
+
+/**
+ * @description Generate a random timestamp string from minutes to 6 months. The specific time
+ * is formatted based on the length of time using the `timeDeclarations` abbreviation strings.
+ *
+ * @kind function
+ * @name generateTimestamp
+ *
+ * @returns {string} The formatted timestamp (i.e. “6 m” or ”18 h”).
+ */
+const generateTimestamp = (): string => {
+  const timeDeclarations = ['m', 'h', 'd', 'w', 'mo'];
+
+  let randomTimeInteger = 0;
+  const randomTimeDeclarationIndex = Math.floor(Math.random() * timeDeclarations.length);
+  const randomTimeDeclaration = timeDeclarations[randomTimeDeclarationIndex];
+
+  switch (randomTimeDeclaration) {
+    case 'm':
+      randomTimeInteger = getRandomInt(1, 59);
+      break;
+    case 'h':
+      randomTimeInteger = getRandomInt(1, 23);
+      break;
+    case 'd':
+      randomTimeInteger = getRandomInt(1, 6);
+      break;
+    case 'w':
+      randomTimeInteger = getRandomInt(1, 4);
+      break;
+    case 'mo':
+      randomTimeInteger = getRandomInt(1, 6);
+      break;
+    default:
+      return null;
+  }
+
+  const generatedStamp = `${randomTimeInteger}${randomTimeDeclaration}`;
+  return generatedStamp;
+};
+
+// ------------------------------------------
 
 /**
  * @description Generates a random string based on the supplied `assignment`. In most cases
@@ -259,21 +597,51 @@ const generateFilepath = (assignment: 'avatar-company' | 'avatar-person'): strin
 const generateRandom = (assignment): string => {
   const { uniqueNamesGenerator } = Generator;
   const dictionaries = [];
+  const separator: string = null;
+  const length: number = 1;
   let style: 'lowerCase' | 'upperCase' | 'capital' = 'capital';
-  let separator: string = null;
-  let length: number = 1;
   let newRandomString = null;
 
   switch (assignment) {
+    case ASSIGNMENTS.alumniCompany.id:
+    case ASSIGNMENTS.alumniSchool.id: {
+      const type = assignment.replace('alumni-', '');
+      const alumniText = [generateAlumni(type)];
+      dictionaries.push(alumniText);
+      style = 'lowerCase';
+      break;
+    }
+    case ASSIGNMENTS.articleTitle.id:
+      dictionaries.push(articleTitles);
+      break;
     case ASSIGNMENTS.avatarCompany.id:
-    case ASSIGNMENTS.avatarPerson.id: {
+    case ASSIGNMENTS.avatarCompanyMedia.id:
+    case ASSIGNMENTS.avatarEvent.id:
+    case ASSIGNMENTS.avatarGroup.id:
+    case ASSIGNMENTS.avatarNewsletter.id:
+    case ASSIGNMENTS.avatarPerson.id:
+    case ASSIGNMENTS.avatarProduct.id:
+    case ASSIGNMENTS.avatarSchool.id:
+    case ASSIGNMENTS.avatarService.id: {
       const filepath = [generateFilepath(assignment)];
       dictionaries.push(filepath);
       style = 'lowerCase';
       break;
     }
+    case ASSIGNMENTS.connections.id: {
+      const connectionsText = [generateConnections()];
+      dictionaries.push(connectionsText);
+      style = 'lowerCase';
+      break;
+    }
+    case ASSIGNMENTS.connectionsMutual.id: {
+      const connectionsText = [generateConnections('mutual')];
+      dictionaries.push(connectionsText);
+      style = 'lowerCase';
+      break;
+    }
     case ASSIGNMENTS.company.id: {
-      const companyNames = [];
+      const companyNames: Array<string> = [];
       companies.forEach(company => companyNames.push(company.name));
       dictionaries.push(companyNames);
       break;
@@ -282,7 +650,12 @@ const generateRandom = (assignment): string => {
       dictionaries.push(countries);
       break;
     case ASSIGNMENTS.date.id: {
-      const date = [generateDate()];
+      const date = [generateDate('long')];
+      dictionaries.push(date);
+      break;
+    }
+    case ASSIGNMENTS.dateShort.id: {
+      const date = [generateDate('short')];
       dictionaries.push(date);
       break;
     }
@@ -301,15 +674,77 @@ const generateRandom = (assignment): string => {
       style = 'lowerCase';
       break;
     }
+    case ASSIGNMENTS.event.id: {
+      const eventNames = [];
+      events.forEach(event => eventNames.push(event.name));
+      dictionaries.push(eventNames);
+      break;
+    }
+    case ASSIGNMENTS.followers.id: {
+      const followersText = [generateFollowers()];
+      dictionaries.push(followersText);
+      style = 'lowerCase';
+      break;
+    }
+    case ASSIGNMENTS.hashtag.id: {
+      const hashtagText = [generateHashtag()];
+      dictionaries.push(hashtagText);
+      break;
+    }
+    case ASSIGNMENTS.group.id: {
+      const groupNames = [];
+      groups.forEach(group => groupNames.push(group.name));
+      dictionaries.push(groupNames);
+      break;
+    }
+    case ASSIGNMENTS.industry.id:
+      dictionaries.push(industries);
+      break;
     case ASSIGNMENTS.jobTitle.id:
       dictionaries.push(jobTitles);
       break;
+    case ASSIGNMENTS.location.id:
+      dictionaries.push(locations);
+      break;
+    case ASSIGNMENTS.companyMedia.id: {
+      const companyMediaNames = [];
+      companiesMedia.forEach(companyMedia => companyMediaNames.push(companyMedia.name));
+      dictionaries.push(companyMediaNames);
+      break;
+    }
     case ASSIGNMENTS.name.id: {
-      // names, twice for a first/last
-      dictionaries.push(names);
-      dictionaries.push(names);
-      separator = ' ';
-      length = 2;
+      const nameNames = [];
+      names.forEach(name => nameNames.push(name.name));
+      dictionaries.push(nameNames);
+      break;
+    }
+    case ASSIGNMENTS.product.id: {
+      const productNames = [];
+      products.forEach(product => productNames.push(product.name));
+      dictionaries.push(productNames);
+      break;
+    }
+    case ASSIGNMENTS.profileHeadline.id: {
+      const profileHeadlineText = [generateProfileHeadline()];
+      dictionaries.push(profileHeadlineText);
+      break;
+    }
+    case ASSIGNMENTS.newsletter.id: {
+      const newsletterNames = [];
+      newsletters.forEach(newsletter => newsletterNames.push(newsletter.name));
+      dictionaries.push(newsletterNames);
+      break;
+    }
+    case ASSIGNMENTS.school.id: {
+      const schoolNames = [];
+      schools.forEach(school => schoolNames.push(school.name));
+      dictionaries.push(schoolNames);
+      break;
+    }
+    case ASSIGNMENTS.service.id: {
+      const serviceNames = [];
+      services.forEach(service => serviceNames.push(service.name));
+      dictionaries.push(serviceNames);
       break;
     }
     case ASSIGNMENTS.timestamp.id: {
@@ -378,7 +813,6 @@ export default class Data {
     if (assignment) {
       randomContent = generateRandom(assignment);
     }
-
     return randomContent;
   }
 }

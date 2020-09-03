@@ -7,64 +7,20 @@
  */
 export default [
   {
-    name: 'ABC Advertising',
-    hasImage: false,
-  },
-  {
-    name: 'ABC Products',
-    hasImage: false,
-  },
-  {
-    name: 'ABC Stores',
-    hasImage: false,
-  },
-  {
-    name: 'Acme Construction',
-    hasImage: false,
-  },
-  {
-    name: 'Acme Hotels',
-    hasImage: false,
-  },
-  {
-    name: 'Acme Printing',
-    hasImage: false,
-  },
-  {
-    name: 'Acme Productions',
-    hasImage: false,
-  },
-  {
-    name: 'Acme Properties',
-    hasImage: false,
-  },
-  {
-    name: 'Alpha Co.',
-    hasImage: false,
-  },
-  {
-    name: 'Alpha Flight School',
-    hasImage: false,
-  },
-  {
-    name: 'Alpha Maintenance Co.',
-    hasImage: false,
+    name: 'Aladdin Furniture',
+    hasImage: true,
   },
   {
     name: 'Antelith',
     hasImage: true,
   },
   {
-    name: 'Central Hospital',
-    hasImage: false,
-  },
-  {
     name: 'Codelane',
     hasImage: true,
   },
   {
-    name: 'Cortez Travels',
-    hasImage: false,
+    name: 'Dawson Chalet',
+    hasImage: true,
   },
   {
     name: 'Energence',
@@ -83,14 +39,6 @@ export default [
     hasImage: true,
   },
   {
-    name: 'Funorama Co.',
-    hasImage: false,
-  },
-  {
-    name: 'Gamma Incorporated',
-    hasImage: false,
-  },
-  {
     name: 'GoldenPhase',
     hasImage: true,
   },
@@ -103,59 +51,57 @@ export default [
     hasImage: true,
   },
   {
-    name: 'Mintome',
+    name: 'Lizzy Kate’s Homemade Baked Goods',
     hasImage: true,
   },
   {
-    name: 'My own business',
-    hasImage: false,
+    name: 'London Hill Vineyard and Winery',
+    hasImage: true,
   },
   {
-    name: 'Omega Company',
-    hasImage: false,
+    name: 'Mintome',
+    hasImage: true,
   },
+
   {
-    name: 'Omega Signs',
-    hasImage: false,
-  },
-  {
-    name: 'Omega Travel',
-    hasImage: false,
+    name: 'Nueno Coffee',
+    hasImage: true,
   },
   {
     name: 'Oustia',
     hasImage: true,
   },
   {
-    name: 'Paradise Landscaping',
-    hasImage: false,
-  },
-  {
-    name: 'Prime Co.',
-    hasImage: false,
-  },
-  {
-    name: 'Prime Veterinary',
-    hasImage: false,
+    name: 'Rebel Web Services',
+    hasImage: true,
   },
   {
     name: 'Runity',
     hasImage: true,
   },
   {
-    name: 'Sage & Spice Restaurant',
-    hasImage: false,
+    name: 'Seaport Farms',
+    hasImage: true,
   },
   {
     name: 'Self-employed',
     hasImage: false,
   },
   {
-    name: 'Techcore',
-    hasImage: false,
+    name: 'shredtop',
+    hasImage: true,
   },
   {
+    name: 'Sunrise Spa',
+    hasImage: true,
+  },
+
+  {
     name: 'Telendo',
+    hasImage: true,
+  },
+  {
+    name: 'The Gentilhomme',
     hasImage: true,
   },
   {
@@ -171,7 +117,11 @@ export default [
     hasImage: true,
   },
   {
-    name: 'Whistlety',
+    name: 'Wags to Riches',
+    hasImage: true,
+  },
+  {
+    name: 'Whistlety & Co.',
     hasImage: true,
   },
   {

@@ -384,14 +384,28 @@ export default class App {
           // ensure shape/text have the correct assignment
           if (nodeType === 'shape') {
             if (
-              (assignment !== 'avatar-person')
-              && (assignment !== 'avatar-company')
+              (assignment !== ASSIGNMENTS.avatarCompany.id)
+              && (assignment !== ASSIGNMENTS.avatarCompanyMedia.id)
+              && (assignment !== ASSIGNMENTS.avatarEvent.id)
+              && (assignment !== ASSIGNMENTS.avatarGroup.id)
+              && (assignment !== ASSIGNMENTS.avatarNewsletter.id)
+              && (assignment !== ASSIGNMENTS.avatarPerson.id)
+              && (assignment !== ASSIGNMENTS.avatarProduct.id)
+              && (assignment !== ASSIGNMENTS.avatarSchool.id)
+              && (assignment !== ASSIGNMENTS.avatarService.id)
             ) {
               assignment = ASSIGNMENTS.unassigned.id as RealishAssignment;
             }
           } else if (
-            (assignment === 'avatar-person')
-            || (assignment === 'avatar-company')
+            (assignment === ASSIGNMENTS.avatarCompany.id)
+            || (assignment === ASSIGNMENTS.avatarCompanyMedia.id)
+            || (assignment === ASSIGNMENTS.avatarEvent.id)
+            || (assignment === ASSIGNMENTS.avatarGroup.id)
+            || (assignment === ASSIGNMENTS.avatarNewsletter.id)
+            || (assignment === ASSIGNMENTS.avatarPerson.id)
+            || (assignment === ASSIGNMENTS.avatarProduct.id)
+            || (assignment === ASSIGNMENTS.avatarSchool.id)
+            || (assignment === ASSIGNMENTS.avatarService.id)
           ) {
             assignment = ASSIGNMENTS.unassigned.id as RealishAssignment;
           }
@@ -863,9 +877,37 @@ export default class App {
             case ASSIGNMENTS.company.id:
               newAssignment = ASSIGNMENTS.avatarCompany.id as RealishAssignment;
               break;
+            case ASSIGNMENTS.companyMedia.id:
+              newAssignment = ASSIGNMENTS.avatarCompanyMedia.id as RealishAssignment;
+              break;
+            case ASSIGNMENTS.event.id:
+              newAssignment = ASSIGNMENTS.avatarEvent.id as RealishAssignment;
+              break;
+            case ASSIGNMENTS.group.id:
+              newAssignment = ASSIGNMENTS.avatarGroup.id as RealishAssignment;
+              break;
+            case ASSIGNMENTS.newsletter.id:
+              newAssignment = ASSIGNMENTS.avatarNewsletter.id as RealishAssignment;
+              break;
+            case ASSIGNMENTS.product.id:
+              newAssignment = ASSIGNMENTS.avatarProduct.id as RealishAssignment;
+              break;
+            case ASSIGNMENTS.school.id:
+              newAssignment = ASSIGNMENTS.avatarSchool.id as RealishAssignment;
+              break;
+            case ASSIGNMENTS.service.id:
+              newAssignment = ASSIGNMENTS.avatarService.id as RealishAssignment;
+              break;
             case ASSIGNMENTS.unassigned.id:
-            case ASSIGNMENTS.avatarPerson.id:
             case ASSIGNMENTS.avatarCompany.id:
+            case ASSIGNMENTS.avatarCompanyMedia.id:
+            case ASSIGNMENTS.avatarEvent.id:
+            case ASSIGNMENTS.avatarGroup.id:
+            case ASSIGNMENTS.avatarNewsletter.id:
+            case ASSIGNMENTS.avatarPerson.id:
+            case ASSIGNMENTS.avatarProduct.id:
+            case ASSIGNMENTS.avatarSchool.id:
+            case ASSIGNMENTS.avatarService.id:
               // do nothing; valid assignments
               break;
             default:
@@ -873,8 +915,15 @@ export default class App {
               break;
           }
         } else if (
-          (assignment === ASSIGNMENTS.avatarPerson.id)
-          || (assignment === ASSIGNMENTS.avatarCompany.id)
+          (assignment === ASSIGNMENTS.avatarCompany.id)
+          || (assignment === ASSIGNMENTS.avatarCompanyMedia.id)
+          || (assignment === ASSIGNMENTS.avatarEvent.id)
+          || (assignment === ASSIGNMENTS.avatarGroup.id)
+          || (assignment === ASSIGNMENTS.avatarNewsletter.id)
+          || (assignment === ASSIGNMENTS.avatarPerson.id)
+          || (assignment === ASSIGNMENTS.avatarProduct.id)
+          || (assignment === ASSIGNMENTS.avatarSchool.id)
+          || (assignment === ASSIGNMENTS.avatarService.id)
         ) {
           newAssignment = null;
         }
