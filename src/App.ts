@@ -77,7 +77,7 @@ const getFilteredNodes = (
 
 /**
  * @description Triggers Figma’s change watcher by randomly re-naming a node and then returning
- * it to it’s original name. This is used in the context of applying new data to a master
+ * it to it’s original name. This is used in the context of applying new data to a main
  * component that needs to be re-published in a library. Data updates do not currently
  * trigger Figma’s awareness of changes within the component.
  *
@@ -97,7 +97,7 @@ const triggerFigmaChangeWatcher = (
     | StarNode,
 ): void => {
   // rename the layer, and then rename it back, to trigger Figma's changes watcher
-  // this is used to allow master components to be republished with changes
+  // this is used to allow main components to be republished with changes
   const randomName: string = `${Date.now()}`;
   const originalName: string = node.name;
   let originalAutoRename: boolean = false;
@@ -144,20 +144,6 @@ const setRelaunchCommands = (node: SceneNode): void => {
       'quick-randomize-assigned': GUI_CONTENT.relaunch.component,
     });
   }
-
-  // apply to the instance node
-  // (currently not possible - but coming soon)
-  // if (topInstanceNode) {
-  //   topInstanceNode.setRelaunchData({
-  //     'quick-randomize-assigned': GUI_CONTENT.relaunch.component,
-  //   });
-
-  //   if (topInstanceNode.masterComponent && !topInstanceNode.masterComponent.remote) {
-  //     topInstanceNode.masterComponent.setRelaunchData({
-  //       'quick-randomize-assigned': GUI_CONTENT.relaunch.component,
-  //     });
-  //   }
-  // }
 
   return null;
 };
