@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es6"
+    "target": "es6",
+    "types": [
+      "node",
+      "@figma/plugin-typings"
+    ]
   }
 }
