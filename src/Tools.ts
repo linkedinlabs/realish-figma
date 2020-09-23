@@ -481,11 +481,15 @@ const getNodeAssignmentData = (node: SceneNode) => {
   let assignmentData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
 
   if (!assignmentData) {
-    const topInstanceNode = findTopInstance(node);
-    if (topInstanceNode) {
-      const peerNode = matchMasterPeerNode(node, topInstanceNode);
-      if (peerNode) {
-        assignmentData = peerNode.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
+    const topComponentNode: ComponentNode = findTopComponent(node);
+
+    if (!topComponentNode) {
+      const topInstanceNode = findTopInstance(node);
+      if (topInstanceNode) {
+        const peerNode = matchMasterPeerNode(node, topInstanceNode);
+        if (peerNode) {
+          assignmentData = peerNode.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
+        }
       }
     }
   }
