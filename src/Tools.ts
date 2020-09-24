@@ -260,7 +260,7 @@ const makeNetworkRequest = (options: {
  * @returns {Object} The modified array.
  */
 const updateArray = (
-  array: Array<any>,
+  array,
   item,
   itemKey: string = 'id',
   action: 'add' | 'update' | 'remove' = 'add',
@@ -309,7 +309,7 @@ const findTopFrame = (node: any) => {
 
   // loop through each parent until we find the outermost FRAME
   if (parent) {
-    while (parent && parent.parent.type !== 'PAGE') {
+    while (parent && parent.type !== CONTAINER_NODE_TYPES.frame) {
       parent = parent.parent;
     }
   }
@@ -481,15 +481,11 @@ const getNodeAssignmentData = (node: SceneNode) => {
   let assignmentData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
 
   if (!assignmentData) {
-    const topComponentNode: ComponentNode = findTopComponent(node);
-
-    if (!topComponentNode) {
-      const topInstanceNode = findTopInstance(node);
-      if (topInstanceNode) {
-        const peerNode = matchMasterPeerNode(node, topInstanceNode);
-        if (peerNode) {
-          assignmentData = peerNode.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
-        }
+    const topInstanceNode = findTopInstance(node);
+    if (topInstanceNode) {
+      const peerNode = matchMasterPeerNode(node, topInstanceNode);
+      if (peerNode) {
+        assignmentData = peerNode.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
       }
     }
   }
