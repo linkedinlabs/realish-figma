@@ -312,18 +312,13 @@ const findNextInstance = (node: any): InstanceNode => {
     }
 
     if (!currentNextInstance) {
-      // iterate until the parent is an instance
-      // console.log(parent.name)
       while (parent && parent.type !== 'PAGE') {
-        // console.log('here?')
         currentNode = parent;
         if (currentNode.type === CONTAINER_NODE_TYPES.instance) {
           // update the top-most main component with the current one
           currentNextInstance = currentNode;
         }
         parent = parent.parent;
-        // console.log('hollay')
-        // console.log(parent.name)
       }
     }
   }
@@ -457,7 +452,7 @@ const matchMasterPeerNode = (node: any, topNode: InstanceNode) => {
   // set some defaults
   let { parent } = node;
   const childIndices = [];
-  const mainComponentNode = topNode.mainComponent;
+  const mainComponentNode: ComponentNode = topNode.mainComponent;
   let mainPeerNode = null;
   let currentNode = node;
 
@@ -474,7 +469,6 @@ const matchMasterPeerNode = (node: any, topNode: InstanceNode) => {
   // navigate down the chain of the corresponding main component using the
   // collected child indices to locate the peer node
   if (childIndices.length > 0 && mainComponentNode) {
-    // console.log(`main comp: ${mainComponentNode.name}`)
     const childIndicesReversed = childIndices.reverse();
     let { children } = mainComponentNode;
     let selectedChild = null;
@@ -482,7 +476,9 @@ const matchMasterPeerNode = (node: any, topNode: InstanceNode) => {
     childIndicesReversed.forEach((childIndex, index) => {
       selectedChild = children[childIndex];
       if ((childIndicesReversed.length - 1) > index) {
-        children = selectedChild.children;
+        if (selectedChild.children) {
+          children = selectedChild.children;
+        }
       }
     });
 
