@@ -290,6 +290,46 @@ const updateArray = (
 };
 
 /**
+ * @description Reverse iterates the node tree to determine the next-level component instance
+ * (if one exists) for the node. This allows you to easily find a Main Component when dealing
+ * with an instance that may be nested within several component instances.
+ *
+ * @kind function
+ * @name findNextInstance
+ *
+ * @param {Object} node A Figma node object (`SceneNode`).
+ *
+ * @returns {Object} Returns the top component instance (`InstanceNode`) or `null`.
+ */
+const findNextInstance = (node: any): InstanceNode => {
+  let { parent } = node;
+  let currentNode = node;
+  let currentNextInstance: InstanceNode = null;
+
+  if (parent) {
+    if (parent.type === CONTAINER_NODE_TYPES.instance) {
+      currentNextInstance = parent;
+    }
+
+    if (!currentNextInstance) {
+      while (parent && parent.type !== 'PAGE') {
+        currentNode = parent;
+        if (currentNode.type === CONTAINER_NODE_TYPES.instance) {
+          // update the top-most main component with the current one
+          currentNextInstance = currentNode;
+        }
+        parent = parent.parent;
+      }
+    }
+  }
+
+  if (currentNextInstance) {
+    return currentNextInstance;
+  }
+  return null;
+};
+
+/**
  * @description Takes a node object and traverses parent relationships until the top-level
  * `CONTAINER_NODE_TYPES.frame` node is found. Returns the frame node.
  *
@@ -328,7 +368,7 @@ const findTopFrame = (node: any) => {
  *
  * @returns {Object} Returns the top component instance (`InstanceNode`) or `null`.
  */
-const findTopInstance = (node: any) => {
+const findTopInstance = (node: any): InstanceNode => {
   let { parent } = node;
   let currentNode = node;
   let currentTopInstance: InstanceNode = null;
@@ -412,7 +452,7 @@ const matchMasterPeerNode = (node: any, topNode: InstanceNode) => {
   // set some defaults
   let { parent } = node;
   const childIndices = [];
-  const mainComponentNode = topNode.mainComponent;
+  const mainComponentNode: ComponentNode = topNode.mainComponent;
   let mainPeerNode = null;
   let currentNode = node;
 
@@ -436,7 +476,9 @@ const matchMasterPeerNode = (node: any, topNode: InstanceNode) => {
     childIndicesReversed.forEach((childIndex, index) => {
       selectedChild = children[childIndex];
       if ((childIndicesReversed.length - 1) > index) {
-        children = selectedChild.children;
+        if (selectedChild.children) {
+          children = selectedChild.children;
+        }
       }
     });
 
@@ -477,19 +519,39 @@ const dataNamespace = (): string => {
  *
  * @returns {string} The assignment is returned as an unparsed JSON string.
  */
-const getNodeAssignmentData = (node: SceneNode) => {
+const getNodeAssignmentData = (node: SceneNode): string => {
+  // check first for a direct assignment
   let assignmentData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
 
   if (!assignmentData) {
-    const topComponentNode: ComponentNode = findTopComponent(node);
+    const getPeerNodeAssignmentData = (instanceNodeToQuery: InstanceNode) => {
+      let peerAssignmentData: string = null;
+      const peerNode = matchMasterPeerNode(node, instanceNodeToQuery);
+      if (peerNode) {
+        peerAssignmentData = getNodeAssignmentData(peerNode);
+      }
 
-    if (!topComponentNode) {
-      const topInstanceNode = findTopInstance(node);
-      if (topInstanceNode) {
-        const peerNode = matchMasterPeerNode(node, topInstanceNode);
-        if (peerNode) {
-          assignmentData = peerNode.getSharedPluginData(dataNamespace(), DATA_KEYS.assignment);
+      return peerAssignmentData;
+    };
+
+    // iterate up the chain and check of assignment on any upper-level (parent)
+    // component nodes. higher-level nodes with assignment data should override
+    // lower-level nodes. but higher-level nodes without assignment should not.
+    let nextInstanceNode: InstanceNode = findNextInstance(node);
+
+    if (nextInstanceNode) {
+      while (nextInstanceNode) {
+        const currentNode = nextInstanceNode;
+
+        // check component peer for assignment data
+        const newAssignmentData = getPeerNodeAssignmentData(currentNode);
+        if (newAssignmentData) {
+          // update the assignment data with the current level of assignment
+          assignmentData = newAssignmentData;
         }
+
+        // find the next instance (if it exists)
+        nextInstanceNode = findNextInstance(currentNode);
       }
     }
   }
