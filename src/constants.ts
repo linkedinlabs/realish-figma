@@ -83,6 +83,7 @@ const ASSIGNMENTS = {
   name: { id: 'name', text: 'Name', nodeType: 'text' },
   product: { id: 'product', text: 'Product', nodeType: 'text' },
   profileHeadline: { id: 'profile-headline', text: 'Profile Headline', nodeType: 'text' },
+  publishedFrequency: { id: 'published-frequency', text: 'Published Frequency', nodeType: 'text' },
   newsletter: { id: 'newsletter', text: 'Newsletter', nodeType: 'text' },
   school: { id: 'school', text: 'School', nodeType: 'text' },
   service: { id: 'service', text: 'Service', nodeType: 'text' },

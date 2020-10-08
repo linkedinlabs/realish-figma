@@ -35,6 +35,7 @@ declare global {
     | 'name'
     | 'product'
     | 'profile-headline'
+    | 'published-frequency'
     | 'school'
     | 'service'
     | 'timestamp';

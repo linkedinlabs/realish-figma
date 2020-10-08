@@ -624,6 +624,44 @@ const generateProfileHeadline = (): string => {
 };
 
 /**
+ * @description Picks a publishing frequency weighted toward daily and monthly.
+ *
+ * @kind function
+ * @name generatePublishedFrequency
+ *
+ * @returns {string} The formatted date as a string.
+ */
+const generatePublishedFrequency = (): string => {
+  const { uniqueNamesGenerator } = Generator;
+  const frequencies: Array<string> = [
+    'weekly', 'biweekly', 'bimonthly', 'quarterly', 'yearly',
+  ];
+
+  let randomFrequency = 'daily';
+  const weightedPick = getRandomInt(1, 8);
+  switch (weightedPick) {
+    case 3:
+    case 4:
+      randomFrequency = 'monthly';
+      break;
+    case 6:
+    case 7:
+    case 8:
+      randomFrequency = uniqueNamesGenerator({
+        dictionaries: [frequencies],
+        length: 1,
+        style: 'lowerCase',
+      });
+      break;
+    default:
+      randomFrequency = 'daily';
+  }
+
+  const generatedFrequency = `Published ${randomFrequency}`;
+  return generatedFrequency;
+};
+
+/**
  * @description Generate a random timestamp string from minutes to 6 months. The specific time
  * is formatted based on the length of time using the `timeDeclarations` abbreviation strings.
  *
@@ -814,6 +852,12 @@ const generateRandom = (assignment): string => {
       dictionaries.push(nameNames);
       break;
     }
+    case ASSIGNMENTS.newsletter.id: {
+      const newsletterNames = [];
+      newsletters.forEach(newsletter => newsletterNames.push(newsletter.name));
+      dictionaries.push(newsletterNames);
+      break;
+    }
     case ASSIGNMENTS.product.id: {
       const productNames = [];
       products.forEach(product => productNames.push(product.name));
@@ -825,10 +869,9 @@ const generateRandom = (assignment): string => {
       dictionaries.push(profileHeadlineText);
       break;
     }
-    case ASSIGNMENTS.newsletter.id: {
-      const newsletterNames = [];
-      newsletters.forEach(newsletter => newsletterNames.push(newsletter.name));
-      dictionaries.push(newsletterNames);
+    case ASSIGNMENTS.publishedFrequency.id: {
+      const publishedFrequencyText = [generatePublishedFrequency()];
+      dictionaries.push(publishedFrequencyText);
       break;
     }
     case ASSIGNMENTS.school.id: {
