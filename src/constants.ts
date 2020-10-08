@@ -52,6 +52,7 @@ const ASSIGNMENTS = {
   alumniCompany: { id: 'alumni-company', text: 'Alumni (Company)', nodeType: 'text' },
   alumniSchool: { id: 'alumni-school', text: 'Alumni (School)', nodeType: 'text' },
   articleTitle: { id: 'article-title', text: 'Article Title', nodeType: 'text' },
+  attendees: { id: 'attendees', text: 'Attendees', nodeType: 'text' },
   avatarCompany: { id: 'avatar-company', text: 'Company', nodeType: 'shape' },
   avatarCompanyMedia: { id: 'avatar-company-media', text: 'Company (Media)', nodeType: 'shape' },
   avatarEvent: { id: 'avatar-event', text: 'Event', nodeType: 'shape' },

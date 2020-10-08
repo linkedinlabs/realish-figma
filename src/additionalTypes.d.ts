@@ -5,6 +5,7 @@ declare global {
     | 'alumni-company'
     | 'alumni-school'
     | 'article-title'
+    | 'attendees'
     | 'avatar-company'
     | 'avatar-company-media'
     | 'avatar-event'

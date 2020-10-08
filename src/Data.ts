@@ -82,6 +82,48 @@ const generateAlumni = (type: 'company' | 'school'): string => {
 };
 
 /**
+ * @description Generates a random number formatted as a attendees count
+ * (i.e. “543 attendees”). The number of attendees is weighted toward lower numbers
+ * (under 500) and limited to 5,000. The formatted numbers are comma-spliced.
+ *
+ * @kind function
+ * @name generateAttendees
+ *
+ * @returns {string} The formatted number of attendees.
+ */
+const generateAttendees = (): string => {
+  let randomNumber: number = 1;
+  const weightedPick = getRandomInt(1, 10);
+  switch (weightedPick) {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+      randomNumber = getRandomInt(1, 500);
+      break;
+    case 6:
+    case 7:
+    case 8:
+      randomNumber = getRandomInt(501, 1500);
+      break;
+    case 9:
+      randomNumber = getRandomInt(1501, 2500);
+      break;
+    case 10:
+      randomNumber = getRandomInt(2501, 5000);
+      break;
+    default:
+      randomNumber = 1;
+  }
+
+  const attendeeText = randomNumber === 1 ? 'attendee' : 'attendees';
+  const formattedNumber: string = randomNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const generatedAlumni = `${formattedNumber} ${attendeeText}`;
+  return generatedAlumni;
+};
+
+/**
  * @description Generates a random number formatted as a connections string
  * (i.e. “7 connections”). The number is weighted toward lower numbers (under 45)
  * and limited to 500 (or 225 for mutual connections).
@@ -376,7 +418,7 @@ const generateFilepath = (
  * @kind function
  * @name generateFollowers
  *
- * @returns {string} The formatted number of alumni.
+ * @returns {string} The formatted number of attendees.
  */
 const generateFollowers = (): string => {
   let randomNumber: number = 1;
@@ -614,6 +656,12 @@ const generateRandom = (assignment): string => {
     case ASSIGNMENTS.articleTitle.id:
       dictionaries.push(articleTitles);
       break;
+    case ASSIGNMENTS.attendees.id: {
+      const attendeesText = [generateAttendees()];
+      dictionaries.push(attendeesText);
+      style = 'lowerCase';
+      break;
+    }
     case ASSIGNMENTS.avatarCompany.id:
     case ASSIGNMENTS.avatarCompanyMedia.id:
     case ASSIGNMENTS.avatarEvent.id:
