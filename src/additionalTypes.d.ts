@@ -22,6 +22,7 @@ declare global {
     | 'country'
     | 'date'
     | 'dateShort'
+    | 'dateTime'
     | 'degree-badge'
     | 'domain'
     | 'event'

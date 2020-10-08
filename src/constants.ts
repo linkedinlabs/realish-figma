@@ -69,6 +69,7 @@ const ASSIGNMENTS = {
   country: { id: 'country', text: 'Country', nodeType: 'text' },
   date: { id: 'date', text: 'Date', nodeType: 'text' },
   dateShort: { id: 'date-short', text: 'Date (Short)', nodeType: 'text' },
+  dateTime: { id: 'date-time', text: 'Date & Time', nodeType: 'text' },
   degreeBadge: { id: 'degree-badge', text: 'Degree Badge', nodeType: 'text' },
   domain: { id: 'domain', text: 'Domain Name', nodeType: 'text' },
   email: { id: 'email', text: 'Email', nodeType: 'text' },

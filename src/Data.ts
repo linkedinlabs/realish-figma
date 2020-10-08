@@ -182,7 +182,10 @@ const generateConnections = (type: 'mutual' | 'normal' = 'normal'): string => {
  *
  * @returns {string} The formatted date as a string.
  */
-const generateDate = (type: 'long' | 'short' = 'short'): string => {
+const generateDate = (
+  type: 'long' | 'short' = 'short',
+  withDay: boolean = false,
+): string => {
   // set the upper bound for the random date
   const daysAhead = 120;
   const currentDate: Date = new Date();
@@ -221,20 +224,68 @@ const generateDate = (type: 'long' | 'short' = 'short'): string => {
     formattedMonths = formattedMonthsShort;
   }
 
+  // day abbreviations lists
+  const formattedDaysLong = [
+    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
+  ];
+
+  const formattedDaysShort = [
+    'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun',
+  ];
+
+  let formattedDays = formattedDaysLong;
+  if (type === 'short') {
+    formattedDays = formattedDaysShort;
+  }
+
   // pick a random date between now and the `daysAhead` upper bound
   const date: Date = randomDate(currentDate, daysAhead);
 
   // format the date for presentation
+  const formattedDay: string = formattedDays[date.getDay()];
   const formattedMonth: string = formattedMonths[date.getMonth()];
   const formattedDate: number = date.getDate();
   const formattedYear: number = date.getFullYear();
 
   let generatedDate: string = `${formattedMonth} ${formattedDate}, ${formattedYear}`;
+  if (withDay) {
+    generatedDate = `${formattedDay}, ${formattedMonth} ${formattedDate}, ${formattedYear}`;
+  }
   if (type === 'short') {
     generatedDate = `${formattedMonth} ${formattedDate}`;
+    if (withDay) {
+      generatedDate = `${formattedDay}, ${formattedMonth} ${formattedDate}`;
+    }
   }
 
   return generatedDate;
+};
+
+/**
+ * @description Generates a formatted, random date between now and `120` days in the future (set
+ * as a constant in the function. Dates are formatted using the abbreviations in the
+ * `formattedMonths` constant (i.e. “Jan 30, 2022”).
+ *
+ * @kind function
+ * @name generateDateTime
+ *
+ * @returns {string} The formatted date as a string.
+ */
+const generateDateTime = (): string => {
+  const dateShortDay = generateDate('short', true);
+
+  // calculate a random time between 7am and 9pm (inclusive)
+  const random30Interval = getRandomInt(0, 28);
+  const initDate = new Date('01/30/20 7:00 AM');
+  const initTimestamp = initDate.getTime();
+  const newTimestamp = initTimestamp + (random30Interval * 30 * 60000);
+  const newDate = new Date(newTimestamp);
+  const timeString = newDate.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+
+  // combine/format the date with the time
+  const generatedDateTime: string = `${dateShortDay}, ${timeString}`;
+
+  return generatedDateTime;
 };
 
 /**
@@ -785,6 +836,11 @@ const generateRandom = (assignment): string => {
     case ASSIGNMENTS.dateShort.id: {
       const date = [generateDate('short')];
       dictionaries.push(date);
+      break;
+    }
+    case ASSIGNMENTS.dateTime.id: {
+      const dateTime = [generateDateTime()];
+      dictionaries.push(dateTime);
       break;
     }
     case ASSIGNMENTS.degreeBadge.id:
