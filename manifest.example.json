@@ -28,6 +28,10 @@
           "command": "quick-randomize-article-title"
         },
         {
+          "name": "Text to Attendees",
+          "command": "quick-randomize-attendees"
+        },
+        {
           "name": "Text to Company",
           "command": "quick-randomize-company"
         },
@@ -54,6 +58,10 @@
         {
           "name": "Text to Date (Short)",
           "command": "quick-randomize-date-short"
+        },
+        {
+          "name": "Text to Date & Time",
+          "command": "quick-randomize-date-time"
         },
         {
           "name": "Text to Degree Badge",
@@ -96,12 +104,20 @@
           "command": "quick-randomize-location"
         },
         {
+          "name": "Text to Members",
+          "command": "quick-randomize-members"
+        },
+        {
           "name": "Text to Name",
           "command": "quick-randomize-name"
         },
         {
           "name": "Text to Profile Headline",
           "command": "quick-randomize-profile-headline"
+        },
+        {
+          "name": "Text to Published Frequency",
+          "command": "quick-randomize-published-frequency"
         },
         {
           "name": "Text to Newsletter",
@@ -164,6 +180,10 @@
           "command": "quick-assign-article-title"
         },
         {
+          "name": "Set text as Attendees",
+          "command": "quick-assign-attendees"
+        },
+        {
           "name": "Set text as Company",
           "command": "quick-assign-company"
         },
@@ -190,6 +210,10 @@
         {
           "name": "Set text as Date (Short)",
           "command": "quick-assign-date-short"
+        },
+        {
+          "name": "Set text as Date & Time",
+          "command": "quick-assign-date-time"
         },
         {
           "name": "Set text as Degree Badge",
@@ -232,12 +256,20 @@
           "command": "quick-assign-location"
         },
         {
+          "name": "Set text as Members",
+          "command": "quick-assign-members"
+        },
+        {
           "name": "Set text as Name",
           "command": "quick-assign-name"
         },
         {
           "name": "Set text as Profile Headline",
           "command": "quick-assign-profile-headline"
+        },
+        {
+          "name": "Set text as Published Frequency",
+          "command": "quick-assign-published-frequency"
         },
         {
           "name": "Set text as Newsletter",
