@@ -79,6 +79,7 @@ const ASSIGNMENTS = {
   industry: { id: 'industry', text: 'Industry', nodeType: 'text' },
   jobTitle: { id: 'job-title', text: 'Job Title', nodeType: 'text' },
   location: { id: 'location', text: 'Location', nodeType: 'text' },
+  members: { id: 'members', text: 'Members', nodeType: 'text' },
   name: { id: 'name', text: 'Name', nodeType: 'text' },
   product: { id: 'product', text: 'Product', nodeType: 'text' },
   profileHeadline: { id: 'profile-headline', text: 'Profile Headline', nodeType: 'text' },

@@ -446,8 +446,8 @@ const generateFollowers = (): string => {
 
   const followerText = randomNumber === 1 ? 'follower' : 'followers';
   const formattedNumber: string = randomNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  const generatedAlumni = `${formattedNumber} ${followerText}`;
-  return generatedAlumni;
+  const generatedFollowers = `${formattedNumber} ${followerText}`;
+  return generatedFollowers;
 };
 
 /**
@@ -487,6 +487,48 @@ const generateHashtag = (): string => {
 
   const generatedHashtag = `#${hashtag}`;
   return generatedHashtag;
+};
+
+/**
+ * @description Generates a random number formatted as a members count
+ * (i.e. “543 members”). The number of members is weighted toward lower numbers
+ * (500-20,000) and limited to 250,000. The formatted numbers are comma-spliced.
+ *
+ * @kind function
+ * @name generateMembers
+ *
+ * @returns {string} The formatted number of members.
+ */
+const generateMembers = (): string => {
+  let randomNumber: number = 1;
+  const weightedPick = getRandomInt(1, 10);
+  switch (weightedPick) {
+    case 1:
+    case 2:
+      randomNumber = getRandomInt(1, 500);
+      break;
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+      randomNumber = getRandomInt(501, 20000);
+      break;
+    case 9:
+      randomNumber = getRandomInt(20001, 175000);
+      break;
+    case 10:
+      randomNumber = getRandomInt(175001, 250000);
+      break;
+    default:
+      randomNumber = 1;
+  }
+
+  const memberText = randomNumber === 1 ? 'member' : 'members';
+  const formattedNumber: string = randomNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const generatedMembers = `${formattedNumber} ${memberText}`;
+  return generatedMembers;
 };
 
 /**
@@ -758,6 +800,12 @@ const generateRandom = (assignment): string => {
       const companyMediaNames = [];
       companiesMedia.forEach(companyMedia => companyMediaNames.push(companyMedia.name));
       dictionaries.push(companyMediaNames);
+      break;
+    }
+    case ASSIGNMENTS.members.id: {
+      const membersText = [generateMembers()];
+      dictionaries.push(membersText);
+      style = 'lowerCase';
       break;
     }
     case ASSIGNMENTS.name.id: {

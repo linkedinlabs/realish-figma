@@ -31,6 +31,7 @@ declare global {
     | 'industry'
     | 'job-title'
     | 'location'
+    | 'members'
     | 'name'
     | 'product'
     | 'profile-headline'
