@@ -42,6 +42,76 @@ const getRandomInt = (min, max): number => {
   return randomInt;
 };
 
+/**
+ * @description Generate a formatted number, random, but within a weighted range.
+ * Options include a starting point (`startingInt`), text (plural and singular),
+ * and an array of break points and corresponding weights. A random integer is initially
+ * picked within the weight range and then compared against the array of weights to
+ * determine the range of numbers to randomly pick within.
+ *
+ * @kind function
+ * @name generateWeightedNumber
+ *
+ * @param {Object} options The array (`breakCeilings`) requires at least one `weight`/`int` set;
+ * Other options include `textPluralized` and `textSingular`, and a `startingInt` (optional).
+ *
+ * @returns {string} The generated, formatted number string.
+ */
+const generateWeightedNumber = (options: {
+  breakCeilings: Array<{
+    weight: number,
+    int: number,
+  }>,
+  startingInt?: number,
+  textPluralized: string,
+  textSingular: string,
+}): string => {
+  const {
+    breakCeilings,
+    startingInt,
+    textPluralized,
+    textSingular,
+  } = options;
+
+  // set the weight ceiling
+  let weightCeiling: number = 1;
+  breakCeilings.forEach((breakItem) => {
+    if (breakItem.weight > weightCeiling) {
+      weightCeiling = breakItem.weight;
+    }
+  });
+
+  // set the floor
+  let randomNumber: number = 1;
+  if (startingInt) {
+    randomNumber = startingInt;
+  }
+
+  const weightedPick = getRandomInt(1, weightCeiling);
+
+  // set the random integer
+  let lastWeightUsed = 0;
+  let lastCeilingUsed = randomNumber - 1;
+  breakCeilings.forEach((breakItem) => {
+    if (
+      (weightedPick > lastWeightUsed)
+      && (weightedPick <= breakItem.weight)
+      && (breakItem.weight > lastWeightUsed)
+    ) {
+      const min = lastCeilingUsed + 1;
+      const max = breakItem.int;
+      randomNumber = getRandomInt(min, max);
+    }
+    lastWeightUsed = breakItem.weight;
+    lastCeilingUsed = breakItem.int;
+  });
+
+  const stringText = randomNumber === 1 ? textSingular : textPluralized;
+  const formattedNumber: string = randomNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const generatedString = `${formattedNumber} ${stringText}`;
+  return generatedString;
+};
+
 // ------------------------------------------
 
 /**
@@ -57,27 +127,20 @@ const getRandomInt = (min, max): number => {
  * @returns {string} The formatted number of alumni.
  */
 const generateAlumni = (type: 'company' | 'school'): string => {
-  let randomNumber: number = 1;
-  const weightedPick = getRandomInt(1, 8);
-  switch (weightedPick) {
-    case 3:
-    case 4:
-    case 5:
-      randomNumber = getRandomInt(2, 20);
-      break;
-    case 6:
-    case 7:
-      randomNumber = getRandomInt(21, 50);
-      break;
-    case 8:
-      randomNumber = getRandomInt(51, 120);
-      break;
-    default:
-      randomNumber = 1;
-  }
+  const breakCeilingsArray = [
+    { weight: 2, int: 1 },
+    { weight: 5, int: 20 },
+    { weight: 7, int: 50 },
+    { weight: 8, int: 120 },
+  ];
 
-  const alumText = randomNumber === 1 ? 'alum' : 'alumni';
-  const generatedAlumni = `${randomNumber} ${type} ${alumText}`;
+  const generatorOptions = {
+    breakCeilings: breakCeilingsArray,
+    textPluralized: `${type} alumni`,
+    textSingular: `${type} alum`,
+  };
+
+  const generatedAlumni: string = generateWeightedNumber(generatorOptions);
   return generatedAlumni;
 };
 
@@ -92,35 +155,21 @@ const generateAlumni = (type: 'company' | 'school'): string => {
  * @returns {string} The formatted number of attendees.
  */
 const generateAttendees = (): string => {
-  let randomNumber: number = 1;
-  const weightedPick = getRandomInt(1, 10);
-  switch (weightedPick) {
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-      randomNumber = getRandomInt(1, 500);
-      break;
-    case 6:
-    case 7:
-    case 8:
-      randomNumber = getRandomInt(501, 1500);
-      break;
-    case 9:
-      randomNumber = getRandomInt(1501, 2500);
-      break;
-    case 10:
-      randomNumber = getRandomInt(2501, 5000);
-      break;
-    default:
-      randomNumber = 1;
-  }
+  const breakCeilingsArray = [
+    { weight: 5, int: 500 },
+    { weight: 8, int: 1500 },
+    { weight: 9, int: 2500 },
+    { weight: 10, int: 5000 },
+  ];
 
-  const attendeeText = randomNumber === 1 ? 'attendee' : 'attendees';
-  const formattedNumber: string = randomNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  const generatedAlumni = `${formattedNumber} ${attendeeText}`;
-  return generatedAlumni;
+  const generatorOptions = {
+    breakCeilings: breakCeilingsArray,
+    textPluralized: 'attendees',
+    textSingular: 'attendee',
+  };
+
+  const generatedAttendees: string = generateWeightedNumber(generatorOptions);
+  return generatedAttendees;
 };
 
 /**
@@ -131,45 +180,40 @@ const generateAttendees = (): string => {
  * @kind function
  * @name generateConnections
  *
- * @param {string} Alumni type (`normal` or `mutual`)
+ * @param {string} type Alumni type (`normal` or `mutual`).
  *
  * @returns {string} The formatted number of connections.
  */
 const generateConnections = (type: 'mutual' | 'normal' = 'normal'): string => {
-  let randomNumber: number = 1;
-  let weightedPick = getRandomInt(1, 10);
+  let breakCeilingsArray = [
+    { weight: 1, int: 1 },
+    { weight: 3, int: 20 },
+    { weight: 7, int: 45 },
+    { weight: 8, int: 225 },
+    { weight: 9, int: 499 },
+    { weight: 10, int: 500 },
+  ];
+
   if (type === 'mutual') {
-    weightedPick = getRandomInt(1, 8);
-  }
-  switch (weightedPick) {
-    case 2:
-    case 3:
-      randomNumber = getRandomInt(2, 20);
-      break;
-    case 4:
-    case 5:
-    case 6:
-    case 7:
-      randomNumber = getRandomInt(21, 45);
-      break;
-    case 8:
-      randomNumber = getRandomInt(46, 225);
-      break;
-    case 9:
-      randomNumber = getRandomInt(226, 499);
-      break;
-    case 10:
-      randomNumber = 500;
-      break;
-    default:
-      randomNumber = 1;
+    breakCeilingsArray = [
+      { weight: 1, int: 1 },
+      { weight: 3, int: 20 },
+      { weight: 7, int: 45 },
+      { weight: 8, int: 225 },
+    ];
   }
 
-  const labelText = randomNumber === 1 ? 'connection' : 'connections';
-  const labelPrefixText = type === 'mutual' ? ' mutual' : '';
-  const numberSuffix = randomNumber === 500 ? '+' : '';
-  const generatedConnections = `${randomNumber}${numberSuffix}${labelPrefixText} ${labelText}`;
-  return generatedConnections;
+  const labelPrefixText = type === 'mutual' ? 'mutual ' : '';
+  const generatorOptions = {
+    breakCeilings: breakCeilingsArray,
+    textPluralized: `${labelPrefixText}connections`,
+    textSingular: `${labelPrefixText}connection`,
+  };
+
+  let generatedAttendees: string = generateWeightedNumber(generatorOptions);
+  // add the “+” to 500
+  generatedAttendees = generatedAttendees.replace('500', '500+');
+  return generatedAttendees;
 };
 
 /**
@@ -179,6 +223,9 @@ const generateConnections = (type: 'mutual' | 'normal' = 'normal'): string => {
  *
  * @kind function
  * @name generateDate
+ *
+ * @param {string} type The requested date format (`long` or `short`).
+ * @param {boolean} withDay Set to `true` to include the day. Default is `false`.
  *
  * @returns {string} The formatted date as a string.
  */
@@ -472,32 +519,21 @@ const generateFilepath = (
  * @returns {string} The formatted number of attendees.
  */
 const generateFollowers = (): string => {
-  let randomNumber: number = 1;
-  const weightedPick = getRandomInt(1, 10);
-  switch (weightedPick) {
-    case 3:
-    case 4:
-    case 5:
-      randomNumber = getRandomInt(2, 500);
-      break;
-    case 6:
-    case 7:
-      randomNumber = getRandomInt(501, 1500);
-      break;
-    case 8:
-    case 9:
-      randomNumber = getRandomInt(1501, 32000);
-      break;
-    case 10:
-      randomNumber = getRandomInt(32001, 2100000);
-      break;
-    default:
-      randomNumber = 1;
-  }
+  const breakCeilingsArray = [
+    { weight: 2, int: 1 },
+    { weight: 5, int: 500 },
+    { weight: 7, int: 1500 },
+    { weight: 9, int: 32000 },
+    { weight: 10, int: 2100000 },
+  ];
 
-  const followerText = randomNumber === 1 ? 'follower' : 'followers';
-  const formattedNumber: string = randomNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  const generatedFollowers = `${formattedNumber} ${followerText}`;
+  const generatorOptions = {
+    breakCeilings: breakCeilingsArray,
+    textPluralized: 'followers',
+    textSingular: 'follower',
+  };
+
+  const generatedFollowers: string = generateWeightedNumber(generatorOptions);
   return generatedFollowers;
 };
 
@@ -551,34 +587,20 @@ const generateHashtag = (): string => {
  * @returns {string} The formatted number of members.
  */
 const generateMembers = (): string => {
-  let randomNumber: number = 1;
-  const weightedPick = getRandomInt(1, 10);
-  switch (weightedPick) {
-    case 1:
-    case 2:
-      randomNumber = getRandomInt(1, 500);
-      break;
-    case 3:
-    case 4:
-    case 5:
-    case 6:
-    case 7:
-    case 8:
-      randomNumber = getRandomInt(501, 20000);
-      break;
-    case 9:
-      randomNumber = getRandomInt(20001, 175000);
-      break;
-    case 10:
-      randomNumber = getRandomInt(175001, 250000);
-      break;
-    default:
-      randomNumber = 1;
-  }
+  const breakCeilingsArray = [
+    { weight: 2, int: 500 },
+    { weight: 8, int: 20000 },
+    { weight: 9, int: 175000 },
+    { weight: 10, int: 250000 },
+  ];
 
-  const memberText = randomNumber === 1 ? 'member' : 'members';
-  const formattedNumber: string = randomNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  const generatedMembers = `${formattedNumber} ${memberText}`;
+  const generatorOptions = {
+    breakCeilings: breakCeilingsArray,
+    textPluralized: 'members',
+    textSingular: 'member',
+  };
+
+  const generatedMembers: string = generateWeightedNumber(generatorOptions);
   return generatedMembers;
 };
 
