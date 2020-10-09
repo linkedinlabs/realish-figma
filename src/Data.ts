@@ -323,15 +323,22 @@ const generateDateTime = (): string => {
 
   // calculate a random time between 7am and 9pm (inclusive)
   const random30Interval = getRandomInt(0, 28);
-  const initDate = new Date('01/30/20 7:00 AM');
+  const initDate = new Date('2020/01/30 7:00 AM');
   const initTimestamp = initDate.getTime();
   const newTimestamp = initTimestamp + (random30Interval * 30 * 60000);
   const newDate = new Date(newTimestamp);
-  const timeString = newDate.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+
+  // format time string
+  let hours: number = newDate.getHours();
+  const minutes: number = newDate.getMinutes();
+  const amPm: string = hours >= 12 ? 'PM' : 'AM';
+  const minutesString = minutes < 10 ? `0${minutes}` : minutes;
+  hours %= 12;
+  hours = hours > 0 ? hours : 12;
+  const timeString = `${hours}:${minutesString} ${amPm}`;
 
   // combine/format the date with the time
   const generatedDateTime: string = `${dateShortDay}, ${timeString}`;
-
   return generatedDateTime;
 };
 
