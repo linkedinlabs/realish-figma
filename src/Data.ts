@@ -42,6 +42,76 @@ const getRandomInt = (min, max): number => {
   return randomInt;
 };
 
+/**
+ * @description Generate a formatted number, random, but within a weighted range.
+ * Options include a starting point (`startingInt`), text (plural and singular),
+ * and an array of break points and corresponding weights. A random integer is initially
+ * picked within the weight range and then compared against the array of weights to
+ * determine the range of numbers to randomly pick within.
+ *
+ * @kind function
+ * @name generateWeightedNumber
+ *
+ * @param {Object} options The array (`breakCeilings`) requires at least one `weight`/`int` set;
+ * Other options include `textPluralized` and `textSingular`, and a `startingInt` (optional).
+ *
+ * @returns {string} The generated, formatted number string.
+ */
+const generateWeightedNumber = (options: {
+  breakCeilings: Array<{
+    weight: number,
+    int: number,
+  }>,
+  startingInt?: number,
+  textPluralized: string,
+  textSingular: string,
+}): string => {
+  const {
+    breakCeilings,
+    startingInt,
+    textPluralized,
+    textSingular,
+  } = options;
+
+  // set the weight ceiling
+  let weightCeiling: number = 1;
+  breakCeilings.forEach((breakItem) => {
+    if (breakItem.weight > weightCeiling) {
+      weightCeiling = breakItem.weight;
+    }
+  });
+
+  // set the floor
+  let randomNumber: number = 1;
+  if (startingInt) {
+    randomNumber = startingInt;
+  }
+
+  const weightedPick = getRandomInt(1, weightCeiling);
+
+  // set the random integer
+  let lastWeightUsed = 0;
+  let lastCeilingUsed = randomNumber - 1;
+  breakCeilings.forEach((breakItem) => {
+    if (
+      (weightedPick > lastWeightUsed)
+      && (weightedPick <= breakItem.weight)
+      && (breakItem.weight > lastWeightUsed)
+    ) {
+      const min = lastCeilingUsed + 1;
+      const max = breakItem.int;
+      randomNumber = getRandomInt(min, max);
+    }
+    lastWeightUsed = breakItem.weight;
+    lastCeilingUsed = breakItem.int;
+  });
+
+  const stringText = randomNumber === 1 ? textSingular : textPluralized;
+  const formattedNumber: string = randomNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const generatedString = `${formattedNumber} ${stringText}`;
+  return generatedString;
+};
+
 // ------------------------------------------
 
 /**
@@ -57,28 +127,49 @@ const getRandomInt = (min, max): number => {
  * @returns {string} The formatted number of alumni.
  */
 const generateAlumni = (type: 'company' | 'school'): string => {
-  let randomNumber: number = 1;
-  const weightedPick = getRandomInt(1, 8);
-  switch (weightedPick) {
-    case 3:
-    case 4:
-    case 5:
-      randomNumber = getRandomInt(2, 20);
-      break;
-    case 6:
-    case 7:
-      randomNumber = getRandomInt(21, 50);
-      break;
-    case 8:
-      randomNumber = getRandomInt(51, 120);
-      break;
-    default:
-      randomNumber = 1;
-  }
+  const breakCeilingsArray = [
+    { weight: 2, int: 1 },
+    { weight: 5, int: 20 },
+    { weight: 7, int: 50 },
+    { weight: 8, int: 120 },
+  ];
 
-  const alumText = randomNumber === 1 ? 'alum' : 'alumni';
-  const generatedAlumni = `${randomNumber} ${type} ${alumText}`;
+  const generatorOptions = {
+    breakCeilings: breakCeilingsArray,
+    textPluralized: `${type} alumni`,
+    textSingular: `${type} alum`,
+  };
+
+  const generatedAlumni: string = generateWeightedNumber(generatorOptions);
   return generatedAlumni;
+};
+
+/**
+ * @description Generates a random number formatted as a attendees count
+ * (i.e. “543 attendees”). The number of attendees is weighted toward lower numbers
+ * (under 500) and limited to 5,000. The formatted numbers are comma-spliced.
+ *
+ * @kind function
+ * @name generateAttendees
+ *
+ * @returns {string} The formatted number of attendees.
+ */
+const generateAttendees = (): string => {
+  const breakCeilingsArray = [
+    { weight: 5, int: 500 },
+    { weight: 8, int: 1500 },
+    { weight: 9, int: 2500 },
+    { weight: 10, int: 5000 },
+  ];
+
+  const generatorOptions = {
+    breakCeilings: breakCeilingsArray,
+    textPluralized: 'attendees',
+    textSingular: 'attendee',
+  };
+
+  const generatedAttendees: string = generateWeightedNumber(generatorOptions);
+  return generatedAttendees;
 };
 
 /**
@@ -89,45 +180,40 @@ const generateAlumni = (type: 'company' | 'school'): string => {
  * @kind function
  * @name generateConnections
  *
- * @param {string} Alumni type (`normal` or `mutual`)
+ * @param {string} type Alumni type (`normal` or `mutual`).
  *
  * @returns {string} The formatted number of connections.
  */
 const generateConnections = (type: 'mutual' | 'normal' = 'normal'): string => {
-  let randomNumber: number = 1;
-  let weightedPick = getRandomInt(1, 10);
+  let breakCeilingsArray = [
+    { weight: 1, int: 1 },
+    { weight: 3, int: 20 },
+    { weight: 7, int: 45 },
+    { weight: 8, int: 225 },
+    { weight: 9, int: 499 },
+    { weight: 10, int: 500 },
+  ];
+
   if (type === 'mutual') {
-    weightedPick = getRandomInt(1, 8);
-  }
-  switch (weightedPick) {
-    case 2:
-    case 3:
-      randomNumber = getRandomInt(2, 20);
-      break;
-    case 4:
-    case 5:
-    case 6:
-    case 7:
-      randomNumber = getRandomInt(21, 45);
-      break;
-    case 8:
-      randomNumber = getRandomInt(46, 225);
-      break;
-    case 9:
-      randomNumber = getRandomInt(226, 499);
-      break;
-    case 10:
-      randomNumber = 500;
-      break;
-    default:
-      randomNumber = 1;
+    breakCeilingsArray = [
+      { weight: 1, int: 1 },
+      { weight: 3, int: 20 },
+      { weight: 7, int: 45 },
+      { weight: 8, int: 225 },
+    ];
   }
 
-  const labelText = randomNumber === 1 ? 'connection' : 'connections';
-  const labelPrefixText = type === 'mutual' ? ' mutual' : '';
-  const numberSuffix = randomNumber === 500 ? '+' : '';
-  const generatedConnections = `${randomNumber}${numberSuffix}${labelPrefixText} ${labelText}`;
-  return generatedConnections;
+  const labelPrefixText = type === 'mutual' ? 'mutual ' : '';
+  const generatorOptions = {
+    breakCeilings: breakCeilingsArray,
+    textPluralized: `${labelPrefixText}connections`,
+    textSingular: `${labelPrefixText}connection`,
+  };
+
+  let generatedAttendees: string = generateWeightedNumber(generatorOptions);
+  // add the “+” to 500
+  generatedAttendees = generatedAttendees.replace('500', '500+');
+  return generatedAttendees;
 };
 
 /**
@@ -138,9 +224,15 @@ const generateConnections = (type: 'mutual' | 'normal' = 'normal'): string => {
  * @kind function
  * @name generateDate
  *
+ * @param {string} type The requested date format (`long` or `short`).
+ * @param {boolean} withDay Set to `true` to include the day. Default is `false`.
+ *
  * @returns {string} The formatted date as a string.
  */
-const generateDate = (type: 'long' | 'short' = 'short'): string => {
+const generateDate = (
+  type: 'long' | 'short' = 'short',
+  withDay: boolean = false,
+): string => {
   // set the upper bound for the random date
   const daysAhead = 120;
   const currentDate: Date = new Date();
@@ -179,20 +271,68 @@ const generateDate = (type: 'long' | 'short' = 'short'): string => {
     formattedMonths = formattedMonthsShort;
   }
 
+  // day abbreviations lists
+  const formattedDaysLong = [
+    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
+  ];
+
+  const formattedDaysShort = [
+    'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun',
+  ];
+
+  let formattedDays = formattedDaysLong;
+  if (type === 'short') {
+    formattedDays = formattedDaysShort;
+  }
+
   // pick a random date between now and the `daysAhead` upper bound
   const date: Date = randomDate(currentDate, daysAhead);
 
   // format the date for presentation
+  const formattedDay: string = formattedDays[date.getDay()];
   const formattedMonth: string = formattedMonths[date.getMonth()];
   const formattedDate: number = date.getDate();
   const formattedYear: number = date.getFullYear();
 
   let generatedDate: string = `${formattedMonth} ${formattedDate}, ${formattedYear}`;
+  if (withDay) {
+    generatedDate = `${formattedDay}, ${formattedMonth} ${formattedDate}, ${formattedYear}`;
+  }
   if (type === 'short') {
     generatedDate = `${formattedMonth} ${formattedDate}`;
+    if (withDay) {
+      generatedDate = `${formattedDay}, ${formattedMonth} ${formattedDate}`;
+    }
   }
 
   return generatedDate;
+};
+
+/**
+ * @description Generates a formatted, random date between now and `120` days in the future (set
+ * as a constant in the function. Dates are formatted using the abbreviations in the
+ * `formattedMonths` constant (i.e. “Jan 30, 2022”).
+ *
+ * @kind function
+ * @name generateDateTime
+ *
+ * @returns {string} The formatted date as a string.
+ */
+const generateDateTime = (): string => {
+  const dateShortDay = generateDate('short', true);
+
+  // calculate a random time between 7am and 9pm (inclusive)
+  const random30Interval = getRandomInt(0, 28);
+  const initDate = new Date('01/30/20 7:00 AM');
+  const initTimestamp = initDate.getTime();
+  const newTimestamp = initTimestamp + (random30Interval * 30 * 60000);
+  const newDate = new Date(newTimestamp);
+  const timeString = newDate.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+
+  // combine/format the date with the time
+  const generatedDateTime: string = `${dateShortDay}, ${timeString}`;
+
+  return generatedDateTime;
 };
 
 /**
@@ -376,36 +516,25 @@ const generateFilepath = (
  * @kind function
  * @name generateFollowers
  *
- * @returns {string} The formatted number of alumni.
+ * @returns {string} The formatted number of attendees.
  */
 const generateFollowers = (): string => {
-  let randomNumber: number = 1;
-  const weightedPick = getRandomInt(1, 10);
-  switch (weightedPick) {
-    case 3:
-    case 4:
-    case 5:
-      randomNumber = getRandomInt(2, 500);
-      break;
-    case 6:
-    case 7:
-      randomNumber = getRandomInt(501, 1500);
-      break;
-    case 8:
-    case 9:
-      randomNumber = getRandomInt(1501, 32000);
-      break;
-    case 10:
-      randomNumber = getRandomInt(32001, 2100000);
-      break;
-    default:
-      randomNumber = 1;
-  }
+  const breakCeilingsArray = [
+    { weight: 2, int: 1 },
+    { weight: 5, int: 500 },
+    { weight: 7, int: 1500 },
+    { weight: 9, int: 32000 },
+    { weight: 10, int: 2100000 },
+  ];
 
-  const followerText = randomNumber === 1 ? 'follower' : 'followers';
-  const formattedNumber: string = randomNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  const generatedAlumni = `${formattedNumber} ${followerText}`;
-  return generatedAlumni;
+  const generatorOptions = {
+    breakCeilings: breakCeilingsArray,
+    textPluralized: 'followers',
+    textSingular: 'follower',
+  };
+
+  const generatedFollowers: string = generateWeightedNumber(generatorOptions);
+  return generatedFollowers;
 };
 
 /**
@@ -445,6 +574,34 @@ const generateHashtag = (): string => {
 
   const generatedHashtag = `#${hashtag}`;
   return generatedHashtag;
+};
+
+/**
+ * @description Generates a random number formatted as a members count
+ * (i.e. “543 members”). The number of members is weighted toward lower numbers
+ * (500-20,000) and limited to 250,000. The formatted numbers are comma-spliced.
+ *
+ * @kind function
+ * @name generateMembers
+ *
+ * @returns {string} The formatted number of members.
+ */
+const generateMembers = (): string => {
+  const breakCeilingsArray = [
+    { weight: 2, int: 500 },
+    { weight: 8, int: 20000 },
+    { weight: 9, int: 175000 },
+    { weight: 10, int: 250000 },
+  ];
+
+  const generatorOptions = {
+    breakCeilings: breakCeilingsArray,
+    textPluralized: 'members',
+    textSingular: 'member',
+  };
+
+  const generatedMembers: string = generateWeightedNumber(generatorOptions);
+  return generatedMembers;
 };
 
 /**
@@ -540,6 +697,44 @@ const generateProfileHeadline = (): string => {
 };
 
 /**
+ * @description Picks a publishing frequency weighted toward daily and monthly.
+ *
+ * @kind function
+ * @name generatePublishedFrequency
+ *
+ * @returns {string} The formatted date as a string.
+ */
+const generatePublishedFrequency = (): string => {
+  const { uniqueNamesGenerator } = Generator;
+  const frequencies: Array<string> = [
+    'weekly', 'biweekly', 'bimonthly', 'quarterly', 'yearly',
+  ];
+
+  let randomFrequency = 'daily';
+  const weightedPick = getRandomInt(1, 8);
+  switch (weightedPick) {
+    case 3:
+    case 4:
+      randomFrequency = 'monthly';
+      break;
+    case 6:
+    case 7:
+    case 8:
+      randomFrequency = uniqueNamesGenerator({
+        dictionaries: [frequencies],
+        length: 1,
+        style: 'lowerCase',
+      });
+      break;
+    default:
+      randomFrequency = 'daily';
+  }
+
+  const generatedFrequency = `Published ${randomFrequency}`;
+  return generatedFrequency;
+};
+
+/**
  * @description Generate a random timestamp string from minutes to 6 months. The specific time
  * is formatted based on the length of time using the `timeDeclarations` abbreviation strings.
  *
@@ -614,6 +809,12 @@ const generateRandom = (assignment): string => {
     case ASSIGNMENTS.articleTitle.id:
       dictionaries.push(articleTitles);
       break;
+    case ASSIGNMENTS.attendees.id: {
+      const attendeesText = [generateAttendees()];
+      dictionaries.push(attendeesText);
+      style = 'lowerCase';
+      break;
+    }
     case ASSIGNMENTS.avatarCompany.id:
     case ASSIGNMENTS.avatarCompanyMedia.id:
     case ASSIGNMENTS.avatarEvent.id:
@@ -657,6 +858,11 @@ const generateRandom = (assignment): string => {
     case ASSIGNMENTS.dateShort.id: {
       const date = [generateDate('short')];
       dictionaries.push(date);
+      break;
+    }
+    case ASSIGNMENTS.dateTime.id: {
+      const dateTime = [generateDateTime()];
+      dictionaries.push(dateTime);
       break;
     }
     case ASSIGNMENTS.degreeBadge.id:
@@ -712,10 +918,22 @@ const generateRandom = (assignment): string => {
       dictionaries.push(companyMediaNames);
       break;
     }
+    case ASSIGNMENTS.members.id: {
+      const membersText = [generateMembers()];
+      dictionaries.push(membersText);
+      style = 'lowerCase';
+      break;
+    }
     case ASSIGNMENTS.name.id: {
       const nameNames = [];
       names.forEach(name => nameNames.push(name.name));
       dictionaries.push(nameNames);
+      break;
+    }
+    case ASSIGNMENTS.newsletter.id: {
+      const newsletterNames = [];
+      newsletters.forEach(newsletter => newsletterNames.push(newsletter.name));
+      dictionaries.push(newsletterNames);
       break;
     }
     case ASSIGNMENTS.product.id: {
@@ -729,10 +947,9 @@ const generateRandom = (assignment): string => {
       dictionaries.push(profileHeadlineText);
       break;
     }
-    case ASSIGNMENTS.newsletter.id: {
-      const newsletterNames = [];
-      newsletters.forEach(newsletter => newsletterNames.push(newsletter.name));
-      dictionaries.push(newsletterNames);
+    case ASSIGNMENTS.publishedFrequency.id: {
+      const publishedFrequencyText = [generatePublishedFrequency()];
+      dictionaries.push(publishedFrequencyText);
       break;
     }
     case ASSIGNMENTS.school.id: {
