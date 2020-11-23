@@ -128,12 +128,15 @@ const triggerFigmaChangeWatcher = (
  * @returns {null}
  */
 const setRelaunchCommands = (node: SceneNode): void => {
-  const topInstanceNode: InstanceNode = findTopInstance(node);
+  node.setRelaunchData({
+    'quick-randomize-assigned': GUI_CONTENT.relaunch.layer,
+  });
 
-  // currently cannot apply `setRelaunchData` to a node inside of an `InstanceNode`
-  if (!topInstanceNode) {
-    node.setRelaunchData({
-      'quick-randomize-assigned': GUI_CONTENT.relaunch.layer,
+  // apply to instance
+  const topInstanceNode: InstanceNode = findTopInstance(node);
+  if (topInstanceNode) {
+    topInstanceNode.setRelaunchData({
+      'quick-randomize-assigned': GUI_CONTENT.relaunch.component,
     });
   }
 
@@ -1058,12 +1061,22 @@ export default class App {
 
         // replace existing text with proposed text
         manipulateText(textNodes);
+
+        // set the re-launch command
+        textNodes.forEach((node) => {
+          setRelaunchCommands(node);
+        });
       }
 
       // update if shape nodes are available
       if (shapeNodes && (shapeNodes.length > 0)) {
         // update fills on shape layers with proposed images
         await manipulateShapes(shapeNodes);
+
+        // set the re-launch command
+        shapeNodes.forEach((node) => {
+          setRelaunchCommands(node);
+        });
       }
 
       // update the UI to reflect changes
