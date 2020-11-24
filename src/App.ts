@@ -148,6 +148,11 @@ const setRelaunchCommands = (node: SceneNode): void => {
     });
   }
 
+  // add “Open Realish” to page
+  figma.currentPage.setRelaunchData({
+    tools: '',
+  });
+
   return null;
 };
 
