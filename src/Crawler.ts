@@ -182,7 +182,9 @@ export default class Crawler {
    * @returns {Array} All TextNode items in an array.
    */
   filterByTypes(
-    filterTypes: Array<('ELLIPSE' | 'POLYGON' | 'RECTANGLE' | 'STAR' | 'TEXT')>,
+    filterTypes: Array<
+      ('COMPONENT' | 'ELLIPSE' | 'FRAME' | 'INSTANCE' | 'POLYGON' | 'RECTANGLE' | 'STAR' | 'TEXT')
+    >,
   ): Array<any> {
     // start with flattened selection of all nodes, ordered by position on the artboard
     const nodes = this.allSorted();
