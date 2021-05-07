@@ -63,7 +63,7 @@ const getFilteredNodes = (
   const filterTypes: Array<
     ('COMPONENT' | 'ELLIPSE' | 'FRAME' | 'INSTANCE' | 'POLYGON' | 'RECTANGLE' | 'STAR' | 'TEXT')
   > = ['COMPONENT', 'ELLIPSE', 'FRAME', 'INSTANCE', 'POLYGON', 'RECTANGLE', 'STAR', 'TEXT'];
-  const preFilteredNodes: Array<
+  const typeFilteredNodes: Array<
     TextNode
     | EllipseNode
     | PolygonNode
@@ -84,7 +84,7 @@ const getFilteredNodes = (
   const shapeTypes: Array<
     ('ELLIPSE' | 'POLYGON' | 'RECTANGLE' | 'STAR')
   > = ['ELLIPSE', 'POLYGON', 'RECTANGLE', 'STAR'];
-  preFilteredNodes.forEach((node) => {
+  typeFilteredNodes.forEach((node) => {
     if (node.type === 'TEXT' || shapeTypes.includes(node.type)) {
       filteredNodes.push(node);
     } else if (
