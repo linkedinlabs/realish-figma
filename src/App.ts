@@ -338,8 +338,6 @@ export default class App {
       const assignmentData = getNodeAssignmentData(node);
       let assignment = JSON.parse(assignmentData || null) as RealishAssignment;
 
-      // const assignmentData = getNodeAssignmentData(node);
-      // let assignment: string = JSON.parse(assignmentData || null);
       let nodeType: 'shape' | 'text' = 'shape';
       let originalImage: Uint8Array = null;
       let originalText: string = null;
