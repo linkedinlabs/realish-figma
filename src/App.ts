@@ -444,7 +444,12 @@ export default class App {
       let rounded: 'all' | 'none' | 'some' = 'some';
       if (node.type === 'ELLIPSE') {
         rounded = 'all';
-      } else if (node.type === 'RECTANGLE') {
+      } else if (
+        node.type === 'RECTANGLE'
+        || node.type === 'FRAME'
+        || node.type === 'COMPONENT'
+        || node.type === 'INSTANCE'
+      ) {
         if (node.bottomLeftRadius === 0) {
           rounded = 'none';
         } else {
