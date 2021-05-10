@@ -91,8 +91,7 @@ const getFilteredNodes = (
       (node.width === node.height)
       && (Array.isArray(node.fills) && node.fills.length > 0) // sometimes `fills` is a symbol
     ) {
-      const nodeFills: ReadonlyArray<Paint> = node.fills;
-      nodeFills.forEach((nodeFill: Paint) => {
+      node.fills.forEach((nodeFill: Paint) => {
         if (nodeFill.type === 'IMAGE') {
           filteredNodes.push(node);
         }
