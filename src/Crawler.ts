@@ -46,9 +46,6 @@ export default class Crawler {
     initialSelection.forEach((node: any) => {
       if (
         node.type !== CONTAINER_NODE_TYPES.group
-        && node.type !== CONTAINER_NODE_TYPES.frame
-        && node.type !== CONTAINER_NODE_TYPES.component
-        && node.type !== CONTAINER_NODE_TYPES.instance
         && node.visible
         && !node.locked
       ) {
@@ -91,9 +88,6 @@ export default class Crawler {
           ) => {
             if (
               innerLayer.type !== CONTAINER_NODE_TYPES.group
-              && innerLayer.type !== CONTAINER_NODE_TYPES.frame
-              && innerLayer.type !== CONTAINER_NODE_TYPES.component
-              && innerLayer.type !== CONTAINER_NODE_TYPES.instance
               && innerLayer.visible
               && !innerLayer.locked
             ) {
@@ -188,7 +182,9 @@ export default class Crawler {
    * @returns {Array} All TextNode items in an array.
    */
   filterByTypes(
-    filterTypes: Array<('ELLIPSE' | 'POLYGON' | 'RECTANGLE' | 'STAR' | 'TEXT')>,
+    filterTypes: Array<
+      ('COMPONENT' | 'ELLIPSE' | 'FRAME' | 'INSTANCE' | 'POLYGON' | 'RECTANGLE' | 'STAR' | 'TEXT')
+    >,
   ): Array<any> {
     // start with flattened selection of all nodes, ordered by position on the artboard
     const nodes = this.allSorted();

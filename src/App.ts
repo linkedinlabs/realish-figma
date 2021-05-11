@@ -44,7 +44,8 @@ const assemble = (context: any = null) => {
 
 /**
  * @description Takes a `selection` array and removes any node that is not a
- * text node (`TextNode`).
+ * text node (`TextNode`), shape node, or a frame variant that does not have an
+ * image fill already applied.
  *
  * @kind function
  * @name getFilteredNodes
@@ -60,9 +61,9 @@ const getFilteredNodes = (
 
   // retrieve selection of text nodes and filter for unlocked
   const filterTypes: Array<
-    ('ELLIPSE' | 'POLYGON' | 'RECTANGLE' | 'STAR' | 'TEXT')
-  > = ['ELLIPSE', 'POLYGON', 'RECTANGLE', 'STAR', 'TEXT'];
-  const filteredNodes: Array<
+    ('COMPONENT' | 'ELLIPSE' | 'FRAME' | 'INSTANCE' | 'POLYGON' | 'RECTANGLE' | 'STAR' | 'TEXT')
+  > = ['COMPONENT', 'ELLIPSE', 'FRAME', 'INSTANCE', 'POLYGON', 'RECTANGLE', 'STAR', 'TEXT'];
+  const typeFilteredNodes: Array<
     TextNode
     | EllipseNode
     | PolygonNode
@@ -72,6 +73,31 @@ const getFilteredNodes = (
     { for: consolidatedSelection },
   ).filterByTypes(filterTypes);
 
+  const filteredNodes: Array<
+    TextNode
+    | EllipseNode
+    | PolygonNode
+    | RectangleNode
+    | StarNode
+  > = [];
+
+  const shapeTypes: Array<
+    ('ELLIPSE' | 'POLYGON' | 'RECTANGLE' | 'STAR')
+  > = ['ELLIPSE', 'POLYGON', 'RECTANGLE', 'STAR'];
+  typeFilteredNodes.forEach((node) => {
+    if (node.type === 'TEXT' || shapeTypes.includes(node.type)) {
+      filteredNodes.push(node);
+    } else if (
+      (node.width === node.height)
+      && (Array.isArray(node.fills) && node.fills.length > 0) // sometimes `fills` is a symbol
+    ) {
+      node.fills.forEach((nodeFill: Paint) => {
+        if (nodeFill.type === 'IMAGE') {
+          filteredNodes.push(node);
+        }
+      });
+    }
+  });
   return filteredNodes;
 };
 
@@ -338,8 +364,6 @@ export default class App {
       const assignmentData = getNodeAssignmentData(node);
       let assignment = JSON.parse(assignmentData || null) as RealishAssignment;
 
-      // const assignmentData = getNodeAssignmentData(node);
-      // let assignment: string = JSON.parse(assignmentData || null);
       let nodeType: 'shape' | 'text' = 'shape';
       let originalImage: Uint8Array = null;
       let originalText: string = null;
@@ -419,7 +443,12 @@ export default class App {
       let rounded: 'all' | 'none' | 'some' = 'some';
       if (node.type === 'ELLIPSE') {
         rounded = 'all';
-      } else if (node.type === 'RECTANGLE') {
+      } else if (
+        node.type === 'RECTANGLE'
+        || node.type === 'FRAME'
+        || node.type === 'COMPONENT'
+        || node.type === 'INSTANCE'
+      ) {
         if (node.bottomLeftRadius === 0) {
           rounded = 'none';
         } else {
