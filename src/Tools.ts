@@ -241,7 +241,7 @@ const makeNetworkRequest = (options: {
           }
         });
     })
-    .catch(err => console.error(err)); // eslint-disable-line no-console
+    .catch((err) => console.error(err)); // eslint-disable-line no-console
 };
 
 /**
@@ -269,7 +269,7 @@ const updateArray = (
 
   // find the index of a pre-existing `id` match on the array
   const itemIndex: number = updatedArray.findIndex(
-    foundItem => (foundItem[itemKey] === item[itemKey]),
+    (foundItem) => (foundItem[itemKey] === item[itemKey]),
   );
 
   // if a match exists, remove it
@@ -446,7 +446,7 @@ const findTopComponent = (node: any) => {
 const matchMasterPeerNode = (node: any, topNode: InstanceNode) => {
   // finds the `index` of self in the parent’s children list
   const indexAtParent = (childNode: any): number => childNode.parent.children.findIndex(
-    child => child.id === childNode.id,
+    (child) => child.id === childNode.id,
   );
 
   // set some defaults

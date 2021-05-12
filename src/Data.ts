@@ -122,7 +122,7 @@ const generateWeightedNumber = (options: {
  * @kind function
  * @name generateAlumni
  *
- * @param {string} type Alumni type (`school` or `company`)
+ * @param {string} type Alumni type (`school` or `company`).
  *
  * @returns {string} The formatted number of alumni.
  */
@@ -377,7 +377,7 @@ const generateDomain = (): string => {
   }
 
   const companyNames = [];
-  companies.forEach(company => companyNames.push(company.name));
+  companies.forEach((company) => companyNames.push(company.name));
   const randomCompany = uniqueNamesGenerator({
     dictionaries: [companyNames],
     length: 1,
@@ -401,7 +401,7 @@ const generateEmail = (): string => {
 
   // pick a name to work with and make it lowercase
   const nameTextArray: Array<string> = [];
-  names.forEach(name => nameTextArray.push(name.name));
+  names.forEach((name) => nameTextArray.push(name.name));
   let randomName: string = uniqueNamesGenerator({
     dictionaries: [nameTextArray],
     style: 'lowerCase',
@@ -632,7 +632,7 @@ const generateProfileHeadline = (): string => {
   ];
 
   const companyNames: Array<string> = [];
-  companies.forEach(company => companyNames.push(company.name));
+  companies.forEach((company) => companyNames.push(company.name));
   const company = uniqueNamesGenerator({
     dictionaries: [companyNames],
     length: 1,
@@ -850,7 +850,7 @@ const generateRandom = (assignment): string => {
     }
     case ASSIGNMENTS.company.id: {
       const companyNames: Array<string> = [];
-      companies.forEach(company => companyNames.push(company.name));
+      companies.forEach((company) => companyNames.push(company.name));
       dictionaries.push(companyNames);
       break;
     }
@@ -889,7 +889,7 @@ const generateRandom = (assignment): string => {
     }
     case ASSIGNMENTS.event.id: {
       const eventNames = [];
-      events.forEach(event => eventNames.push(event.name));
+      events.forEach((event) => eventNames.push(event.name));
       dictionaries.push(eventNames);
       break;
     }
@@ -906,7 +906,7 @@ const generateRandom = (assignment): string => {
     }
     case ASSIGNMENTS.group.id: {
       const groupNames = [];
-      groups.forEach(group => groupNames.push(group.name));
+      groups.forEach((group) => groupNames.push(group.name));
       dictionaries.push(groupNames);
       break;
     }
@@ -921,7 +921,7 @@ const generateRandom = (assignment): string => {
       break;
     case ASSIGNMENTS.companyMedia.id: {
       const companyMediaNames = [];
-      companiesMedia.forEach(companyMedia => companyMediaNames.push(companyMedia.name));
+      companiesMedia.forEach((companyMedia) => companyMediaNames.push(companyMedia.name));
       dictionaries.push(companyMediaNames);
       break;
     }
@@ -933,19 +933,19 @@ const generateRandom = (assignment): string => {
     }
     case ASSIGNMENTS.name.id: {
       const nameNames = [];
-      names.forEach(name => nameNames.push(name.name));
+      names.forEach((name) => nameNames.push(name.name));
       dictionaries.push(nameNames);
       break;
     }
     case ASSIGNMENTS.newsletter.id: {
       const newsletterNames = [];
-      newsletters.forEach(newsletter => newsletterNames.push(newsletter.name));
+      newsletters.forEach((newsletter) => newsletterNames.push(newsletter.name));
       dictionaries.push(newsletterNames);
       break;
     }
     case ASSIGNMENTS.product.id: {
       const productNames = [];
-      products.forEach(product => productNames.push(product.name));
+      products.forEach((product) => productNames.push(product.name));
       dictionaries.push(productNames);
       break;
     }
@@ -961,13 +961,13 @@ const generateRandom = (assignment): string => {
     }
     case ASSIGNMENTS.school.id: {
       const schoolNames = [];
-      schools.forEach(school => schoolNames.push(school.name));
+      schools.forEach((school) => schoolNames.push(school.name));
       dictionaries.push(schoolNames);
       break;
     }
     case ASSIGNMENTS.service.id: {
       const serviceNames = [];
-      services.forEach(service => serviceNames.push(service.name));
+      services.forEach((service) => serviceNames.push(service.name));
       dictionaries.push(serviceNames);
       break;
     }

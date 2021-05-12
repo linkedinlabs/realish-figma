@@ -189,7 +189,7 @@ const makeImageRequest = async (requestUrl) => {
     const sandboxImgElement: HTMLImageElement = (<HTMLImageElement> document.getElementById('image-sandbox'));
 
     if (sandboxImgElement) {
-      const imageLoaded = imageElement => imageElement.complete;
+      const imageLoaded = (imageElement) => imageElement.complete;
 
       sandboxImgElement.crossOrigin = 'anonymous';
       sandboxImgElement.src = requestUrl.route;

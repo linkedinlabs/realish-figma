@@ -547,7 +547,7 @@ export default class App {
 
       const index = 0;
       const filteredNodesToUpdate: Array<any> = filteredNodes.filter(
-        node => node.id === id,
+        (node) => node.id === id,
       );
       const filteredNodeToUpdate = filteredNodesToUpdate[index];
 
@@ -1089,7 +1089,7 @@ export default class App {
 
         // load typefaces
         if (languageTypefaces) {
-          languageTypefaces.forEach(languageTypeface => typefaces.push(languageTypeface));
+          languageTypefaces.forEach((languageTypeface) => typefaces.push(languageTypeface));
         }
         await loadTypefaces(typefaces, messenger);
 
