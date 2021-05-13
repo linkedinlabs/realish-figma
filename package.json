@@ -36,6 +36,7 @@
     "@figma/plugin-typings": "^1.23.0",
     "@types/node": "^14.6.4",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
+    "@typescript-eslint/parser": "^4.23.0",
     "bourbon": "^7.0.0",
     "css-loader": "^5.2.4",
     "dotenv-webpack": "^7.0.2",
@@ -61,7 +62,6 @@
     "webpack-cli": "^4.7.0"
   },
   "dependencies": {
-    "@typescript-eslint/parser": "^4.23.0",
     "unique-names-generator": "^4.1.1"
   },
   "author": "Grant Blakeman <gblakeman@linkedin.com>"

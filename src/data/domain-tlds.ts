@@ -1,5 +1,5 @@
 /**
- * @description Domain TLDs.
+ * Domain TLDs.
  *
  * @kind constant
  * @name domainTLDs

@@ -1,14 +1,12 @@
 import { CONTAINER_NODE_TYPES } from './constants';
 
 /**
- * @description A class to handle traversing an array of selected items and return useful items
+ * A class to handle traversing an array of selected items and return useful items
  * (child nodes, first in selection, node position, dimensions and position of node gaps
  * and overlapping node negative space).
  *
  * @class
  * @name Crawler
- *
- * @constructor
  *
  * @property selectionArray The array of selected items.
  */
@@ -19,7 +17,7 @@ export default class Crawler {
   }
 
   /**
-   * @description Returns the first item in the array.
+   * Returns the first item in the array.
    *
    * @kind function
    * @name first
@@ -30,7 +28,7 @@ export default class Crawler {
   }
 
   /**
-   * @description Looks into the selection array for any groups and pulls out individual nodes,
+   * Looks into the selection array for any groups and pulls out individual nodes,
    * effectively flattening the selection.
    *
    * @kind function
@@ -65,7 +63,7 @@ export default class Crawler {
         }
 
         /**
-         * @description Iterates through `innerLayers`, adding normal nodes to the `flatSelection`
+         * Iterates through `innerLayers`, adding normal nodes to the `flatSelection`
          * array, while adding any additional children nodes into the `innerLayers` array.
          *
          * @kind function
@@ -126,7 +124,7 @@ export default class Crawler {
   }
 
   /**
-   * @description Looks into the selection array for any groups and pulls out individual nodes,
+   * Looks into the selection array for any groups and pulls out individual nodes,
    * effectively flattening the selection.
    *
    * @kind function
@@ -154,7 +152,7 @@ export default class Crawler {
   }
 
   /**
-   * @description Looks into the selection array for any groups and pulls out
+   * Looks into the selection array for any groups and pulls out
    * individual TextNode nodes.
    *
    * @kind function
@@ -171,13 +169,13 @@ export default class Crawler {
   }
 
   /**
-   * @description Looks into the selection array for any groups and pulls out
+   * Looks into the selection array for any groups and pulls out
    * individual nodes based on the supplied type(s).
    *
    * @kind function
    * @name filterByTypes
+   *
    * @param {Array} filterTypes Array of type constants to filter for (inclusive).
-   * in the selection.
    *
    * @returns {Array} All TextNode items in an array.
    */

@@ -1,5 +1,5 @@
 /**
- * @description Profile degree badges.
+ * Profile degree badges.
  *
  * @kind constant
  * @name degreeBadges

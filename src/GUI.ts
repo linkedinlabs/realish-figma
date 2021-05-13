@@ -1,5 +1,5 @@
 /**
- * @description A set of functions to operate the plugin GUI.
+ * A set of functions to operate the plugin GUI.
  */
 import './assets/css/main.scss';
 import { pollWithPromise } from './Tools';
@@ -7,7 +7,7 @@ import { ASSIGNMENTS } from './constants';
 import './vendor/figma-select-menu';
 
 /**
- * @description Sends a message and applicable payload to the main thread.
+ * Sends a message and applicable payload to the main thread.
  *
  * @kind function
  * @name sendMsgToMain
@@ -32,7 +32,7 @@ const sendMsgToMain = (
 };
 
 /**
- * @description Posts a message to the main thread with `loaded` set to `true`. Used in the
+ * Posts a message to the main thread with `loaded` set to `true`. Used in the
  * main thread to indicate the GUI is listening.
  *
  * @kind function
@@ -48,7 +48,7 @@ const sendLoadedMsg = (): void => {
 };
 
 /**
- * @description Manipulates the webview DOM to set the visual button state.
+ * Manipulates the webview DOM to set the visual button state.
  *
  * @kind function
  * @name setButtonState
@@ -87,7 +87,7 @@ const setButtonState = (
 
 /* eslint-disable max-len */
 // /**
-//  * @description Compiles the plugin options form elements in the webview DOM into an object
+//  * Compiles the plugin options form elements in the webview DOM into an object
 //  * formatted for consumption in the main thread.
 //  *
 //  * @kind function
@@ -116,7 +116,7 @@ const setButtonState = (
 /* eslint-enable max-len */
 
 /**
- * @description Watch UI clicks for actions to pass on to the main plugin thread.
+ * Watch UI clicks for actions to pass on to the main plugin thread.
  *
  * @kind function
  * @name watchActions
@@ -158,7 +158,7 @@ const watchActions = (): void => {
 };
 
 /**
- * @description Requests an image (based on URL), loads it to a holder in the DOM
+ * Requests an image (based on URL), loads it to a holder in the DOM
  * and then reads the image into a generated canvas element. The image data is
  * pulled from the canvas element using `getImageData` and the result is passed
  * back to the main thread.
@@ -225,7 +225,7 @@ const makeImageRequest = async (requestUrl) => {
 };
 
 /**
- * @description Watch UI clicks for changes to pass on to the main plugin thread.
+ * Watch UI clicks for changes to pass on to the main plugin thread.
  *
  * @kind function
  * @name watchLayer
@@ -287,7 +287,7 @@ const watchLayer = (layerElement: HTMLElement): void => {
 /* process Messages from the plugin */
 
 /**
- * @description Clones a template html element and then updates the clone’s contents to match
+ * Clones a template html element and then updates the clone’s contents to match
  * the supplied options for each layer in the supplied array.
  *
  * @kind function
@@ -441,7 +441,7 @@ const updateSelectedLayers = (layers: Array<{
 };
 
 /**
- * @description Watches for incoming messages from the plugin’s main thread and dispatches
+ * Watches for incoming messages from the plugin’s main thread and dispatches
  * them to the appropriate GUI actions.
  *
  * @kind function
@@ -478,6 +478,8 @@ const watchIncomingMessages = (): void => {
 
     return null;
   };
+
+  return null;
 };
 
 // init GUI

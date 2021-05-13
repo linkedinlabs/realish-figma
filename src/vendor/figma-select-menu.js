@@ -1,5 +1,5 @@
 /**
- * @description Simulates Figma’s <select> menu operation. Original provided by Figma.
+ * Simulates Figma’s <select> menu operation. Original provided by Figma.
  * [More info]{@link https://thomas-lowry.github.io/figma-plugin-ds/#select-menu}
  * Heavily tweaked and updated.
  */

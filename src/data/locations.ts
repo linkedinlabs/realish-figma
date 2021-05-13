@@ -1,5 +1,5 @@
 /**
- * @description Locations.
+ * Locations.
  *
  * @kind constant
  * @name locations

@@ -1,5 +1,5 @@
 /**
- * @description Groups.
+ * Groups.
  *
  * @kind constant
  * @name groups

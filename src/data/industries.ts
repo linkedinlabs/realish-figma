@@ -1,5 +1,5 @@
 /**
- * @description Industries.
+ * Industries.
  *
  * @kind constant
  * @name industries

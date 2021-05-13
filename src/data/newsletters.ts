@@ -1,5 +1,5 @@
 /**
- * @description Newsletter names.
+ * Newsletter names.
  *
  * @kind constant
  * @name newsletters

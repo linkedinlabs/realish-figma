@@ -1,7 +1,7 @@
 /**
- * @description There is currently a bug in the `unique-names-generator` package that prevents
+ * There is currently a bug in the `unique-names-generator` package that prevents
  * countries from beings used in the base package, so the list is replicated here.
- * [Source]{@link https://raw.githubusercontent.com/andreasonny83/unique-names-generator/master/src/dictionaries/countries.ts}
+ * [Source]{@link https://raw.githubusercontent.com/andreasonny83/unique-names-generator/master/src/dictionaries/countries.ts}.
  *
  * @kind constant
  * @name countries

@@ -1,5 +1,5 @@
 /**
- * @description School names.
+ * School names.
  *
  * @kind constant
  * @name schools

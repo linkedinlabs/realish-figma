@@ -1,5 +1,5 @@
 /**
- * @description Company names.
+ * Company names.
  *
  * @kind constant
  * @name companies
