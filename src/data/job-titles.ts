@@ -1,5 +1,5 @@
 /**
- * @description Job titles.
+ * Job titles.
  *
  * @kind constant
  * @name jobTitles

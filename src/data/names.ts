@@ -1,5 +1,5 @@
 /**
- * @description People names.
+ * People names.
  *
  * @kind constant
  * @name names

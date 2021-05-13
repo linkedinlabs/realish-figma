@@ -1,5 +1,5 @@
 /**
- * @description Events.
+ * Events.
  *
  * @kind constant
  * @name events

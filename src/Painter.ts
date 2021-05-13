@@ -3,7 +3,7 @@ import { asyncImageRequest, dataNamespace } from './Tools';
 import { DATA_KEYS } from './constants';
 
 /**
- * @description Makes an async call to the plugin UI thread to load a remote image,
+ * Makes an async call to the plugin UI thread to load a remote image,
  * retrieve the image data, and load it into a Figma `Image` object.
  *
  * @kind function
@@ -28,12 +28,10 @@ const loadRemoteImage = async (remoteUrl) => {
 };
 
 /**
- * @description A class to add elements directly onto Figma file frames.
+ * A class to add elements directly onto Figma file frames.
  *
  * @class
  * @name Painter
- *
- * @constructor
  *
  * @property node The TextNode in the Figma file that we want to modify.
  * @property sessionKey The current session identifier.
@@ -53,7 +51,7 @@ export default class Painter {
   }
 
   /**
-   * @description Locates proposed text in a text node’s Settings object and updates
+   * Locates proposed text in a text node’s Settings object and updates
    * the node’s characters.
    *
    * @kind function
@@ -119,7 +117,7 @@ export default class Painter {
   }
 
   /**
-   * @description Locates proposed content in a shape node’s Settings object and updates
+   * Locates proposed content in a shape node’s Settings object and updates
    * the node’s fill.
    *
    * @kind function

@@ -1,5 +1,5 @@
 /**
- * @description Services.
+ * Services.
  *
  * @kind constant
  * @name services

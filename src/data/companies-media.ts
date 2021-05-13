@@ -1,5 +1,5 @@
 /**
- * @description Companies (Media).
+ * Companies (Media).
  *
  * @kind constant
  * @name companiesMedia

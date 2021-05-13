@@ -1,5 +1,5 @@
 /**
- * @description Products.
+ * Products.
  *
  * @kind constant
  * @name products

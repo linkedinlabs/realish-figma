@@ -20,7 +20,7 @@ import {
 } from './constants';
 
 /**
- * @description A shared helper function to set up in-UI messages and the logger.
+ * A shared helper function to set up in-UI messages and the logger.
  *
  * @kind function
  * @name assemble
@@ -43,7 +43,7 @@ const assemble = (context: any = null) => {
 };
 
 /**
- * @description Takes a `selection` array and removes any node that is not a
+ * Takes a `selection` array and removes any node that is not a
  * text node (`TextNode`), shape node, or a frame variant that does not have an
  * image fill already applied.
  *
@@ -102,7 +102,7 @@ const getFilteredNodes = (
 };
 
 /**
- * @description Triggers Figma’s change watcher by randomly re-naming a node and then returning
+ * Triggers Figma’s change watcher by randomly re-naming a node and then returning
  * it to it’s original name. This is used in the context of applying new data to a main
  * component that needs to be re-published in a library. Data updates do not currently
  * trigger Figma’s awareness of changes within the component.
@@ -143,7 +143,7 @@ const triggerFigmaChangeWatcher = (
 };
 
 /**
- * @description Invokes Figma’s `setRelaunchData` on the passed node and (if applicable),
+ * Invokes Figma’s `setRelaunchData` on the passed node and (if applicable),
  * the container component node.
  *
  * @kind function
@@ -183,7 +183,7 @@ const setRelaunchCommands = (node: SceneNode): void => {
 };
 
 /**
- * @description Retrieves all of the typefaces (`FontName`) from a selection of text nodes
+ * Retrieves all of the typefaces (`FontName`) from a selection of text nodes
  * and returns them as a unique array (without repeats).
  *
  * @kind function
@@ -268,12 +268,10 @@ const extractImage = async (
 };
 
 /**
- * @description A class to handle core app logic and dispatch work to other classes.
+ * A class to handle core app logic and dispatch work to other classes.
  *
  * @class
  * @name App
- *
- * @constructor
  *
  * @property shouldTerminate A boolean that tells us whether or not the GUI should remain open
  * at the end of the plugin’s current task.
@@ -292,14 +290,18 @@ export default class App {
   }
 
   /**
-   * @description Displays the plugin GUI within Figma.
+   * Displays the plugin GUI within Figma.
    *
    * @kind function
    * @name showGUI
    *
    * @param {Object} options Can include `size` calling one of the UI sizes defined
-   * in GUI_SETTINGS  and/or an initialized instance of the Messenger class for
+   * in GUI_SETTINGS and/or an initialized instance of the Messenger class for
    * logging (`messenger`). Both are optional.
+   * @param {string} options.size An optional string calling one of the UI sizes
+   * defined in GUI_SETTINGS (currently `default` or `info`).
+   * @param {Object} options.messenger An optional initialized instance of the Messenger class.
+   * @param {Function} options.messenger.log The log function from the Messenger class.
    *
    * @returns {null}
    */
@@ -326,7 +328,7 @@ export default class App {
   }
 
   /**
-   * @description Triggers a UI refresh and then displays the plugin UI.
+   * Triggers a UI refresh and then displays the plugin UI.
    *
    * @kind function
    * @name showToolbar
@@ -341,7 +343,7 @@ export default class App {
   }
 
   /**
-   * @description Triggers a UI refresh with the current selection.
+   * Triggers a UI refresh with the current selection.
    *
    * @kind function
    * @name refreshGUI
@@ -493,7 +495,7 @@ export default class App {
   }
 
   /**
-   * @description The core action of the app. Retrieve a node (`SceneNode`) by `id` and lock it
+   * The core action of the app. Retrieve a node (`SceneNode`) by `id` and lock it
    * (`lock-toggle`), assign it to a specific type (`reassign`), propose new randomized content
    * (`remix`), or restore the proposed content to the node’s original content (`restore`).
    *
@@ -506,6 +508,8 @@ export default class App {
    * @param {string} payload The `id` of the node to act on and, optionally, the data type to
    * assign the layer to (`assignment`). The `assignment` should match an `id` in the
    * `ASSIGNMENTS` constant.
+   * @param {string} payload.id The `id` of the node to act on.
+   * @param {string} payload.assignment An optional Realish assignment type.
    * @param {string} sessionKey A rotating key used during the single run of the plugin.
    *
    * @returns {null} Shows a Toast in the UI if nothing is selected.
@@ -523,7 +527,7 @@ export default class App {
     const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
 
     /**
-     * @description Filters the available `selection` and finds a text node (`TextNode`)
+     * Filters the available `selection` and finds a text node (`TextNode`)
      * matching the `id` provided in the `payload`.
      *
      * @kind function
@@ -547,7 +551,7 @@ export default class App {
 
       const index = 0;
       const filteredNodesToUpdate: Array<any> = filteredNodes.filter(
-        node => node.id === id,
+        (node) => node.id === id,
       );
       const filteredNodeToUpdate = filteredNodesToUpdate[index];
 
@@ -555,7 +559,7 @@ export default class App {
     };
 
     /**
-     * @description Assigns or re-assigns a new data assignment type to supplied
+     * Assigns or re-assigns a new data assignment type to supplied
      * node (`TextNode | EllipseNode | PolygonNode | RectangleNode | StarNode`).
      *
      * @kind function
@@ -607,7 +611,7 @@ export default class App {
     };
 
     /**
-     * @description Sets a new `proposedText` content in a node’s data based on assignment.
+     * Sets a new `proposedText` content in a node’s data based on assignment.
      *
      * @kind function
      * @name remixProposedContent
@@ -637,7 +641,7 @@ export default class App {
     };
 
     /**
-     * @description Sets a node’s `proposedText` to it’s current content.
+     * Sets a node’s `proposedText` to it’s current content.
      *
      * @kind function
      * @name restoreContent
@@ -666,7 +670,7 @@ export default class App {
     };
 
     /**
-     * @description Locks or unlocks the supplied node for the plugin (not at the Figma level).
+     * Locks or unlocks the supplied node for the plugin (not at the Figma level).
      *
      * @kind function
      * @name toggleNodeLock
@@ -740,7 +744,7 @@ export default class App {
   }
 
   /**
-   * @description Sets new `proposedText` on currently selected (and unlocked)
+   * Sets new `proposedText` on currently selected (and unlocked)
    * text nodes (`TextNode`).
    *
    * @kind function
@@ -782,7 +786,7 @@ export default class App {
   }
 
   /**
-   * @description Sets new random content based on a supplied assignment on currently-selected
+   * Sets new random content based on a supplied assignment on currently-selected
    * (and unlocked) nodes. A node’s existing `assignment` is ignored. If a node does not already
    * have an assignment, it is assigned the supplied type.
    *
@@ -857,7 +861,7 @@ export default class App {
   }
 
   /**
-   * @description Assigns (or re-assigns) the current selection with the supplied
+   * Assigns (or re-assigns) the current selection with the supplied
    * `assignment` type.
    *
    * @kind function
@@ -998,7 +1002,7 @@ export default class App {
   }
 
   /**
-   * @description Iterates over the current selection, committing each node’s `proposedText`
+   * Iterates over the current selection, committing each node’s `proposedText`
    * to `chracters` and updating the node.
    *
    * @kind function
@@ -1019,7 +1023,7 @@ export default class App {
     > = getFilteredNodes(selection);
 
     /**
-     * @description Applies a `Painter` instance to each node in an array, updating the text.
+     * Applies a `Painter` instance to each node in an array, updating the text.
      *
      * @kind function
      * @name manipulateText
@@ -1040,7 +1044,7 @@ export default class App {
     };
 
     /**
-     * @description Applies a `Painter` instance to each node in an array, updating the shape node.
+     * Applies a `Painter` instance to each node in an array, updating the shape node.
      * Nodes should be typed as: `EllipseNode | PolygonNode | RectangleNode | StarNode`.
      *
      * @kind function
@@ -1089,7 +1093,7 @@ export default class App {
 
         // load typefaces
         if (languageTypefaces) {
-          languageTypefaces.forEach(languageTypeface => typefaces.push(languageTypeface));
+          languageTypefaces.forEach((languageTypeface) => typefaces.push(languageTypeface));
         }
         await loadTypefaces(typefaces, messenger);
 
@@ -1139,7 +1143,7 @@ export default class App {
   }
 
   /**
-   * @description Resets the plugin GUI back to the original state or closes it entirely,
+   * Resets the plugin GUI back to the original state or closes it entirely,
    * terminating the plugin.
    *
    * @kind function

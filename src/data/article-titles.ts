@@ -1,5 +1,5 @@
 /**
- * @description Article titles.
+ * Article titles.
  *
  * @kind constant
  * @name articleTitles

@@ -1,5 +1,5 @@
 /**
- * @description Hashtag content.
+ * Hashtag content.
  *
  * @kind constant
  * @name hashtags
