@@ -203,14 +203,18 @@ export default class Crawler {
       (node) => filterTypes.includes(node.type),
     );
 
-    // iterate through components to find additional type-matched nodes
-    const componentNodes: Array<ComponentNode | InstanceNode> = nodes.filter(
+    // iterate through components/frames to find additional type-matched nodes
+    const groupedNodes: Array<ComponentNode | InstanceNode> = nodes.filter(
       (node) => (
-        (node.type === 'COMPONENT' || node.type === 'INSTANCE') && node.visible && !node.locked
+        (
+          node.type === 'COMPONENT'
+          || node.type === 'FRAME'
+          || node.type === 'INSTANCE'
+        ) && node.visible && !node.locked
       ),
     );
-    if (componentNodes) {
-      componentNodes.forEach((componentNode: ComponentNode | InstanceNode) => {
+    if (groupedNodes) {
+      groupedNodes.forEach((componentNode: ComponentNode | InstanceNode) => {
         // find type-matched node inside components
         const innerTextNodesUntyped: any = componentNode.findAll(
           (node: any) => filterTypes.includes(node.type),
