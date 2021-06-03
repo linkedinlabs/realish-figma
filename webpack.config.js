@@ -48,6 +48,7 @@ module.exports = (env, argv) => ({
       filename: 'webview.html',
       inlineSource: '.(js)$',
       chunks: ['ui'],
+      cache: false,
     }),
     new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
   ],
