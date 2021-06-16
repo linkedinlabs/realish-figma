@@ -45,7 +45,8 @@ const assemble = (context: any = null) => {
 /**
  * Takes a `selection` array and removes any node that is not a
  * text node (`TextNode`), shape node, or a frame variant that does not have an
- * image fill already applied.
+ * image fill already applied. Excludes shapes smaller than 32 pts to avoid muddying
+ * the UI with nodes used in icons.
  *
  * @kind function
  * @name getFilteredNodes
@@ -85,10 +86,16 @@ const getFilteredNodes = (
     ('ELLIPSE' | 'POLYGON' | 'RECTANGLE' | 'STAR')
   > = ['ELLIPSE', 'POLYGON', 'RECTANGLE', 'STAR'];
   typeFilteredNodes.forEach((node) => {
-    if (node.type === 'TEXT' || shapeTypes.includes(node.type)) {
+    if (node.type === 'TEXT') {
+      filteredNodes.push(node);
+    } else if (
+      shapeTypes.includes(node.type)
+      && (node.width >= 32 && node.height >= 32) // filter size to exclude icon bits
+    ) {
       filteredNodes.push(node);
     } else if (
       (node.width === node.height)
+      && (node.width >= 32 && node.height >= 32) // filter size to exclude icon bits
       && (Array.isArray(node.fills) && node.fills.length > 0) // sometimes `fills` is a symbol
     ) {
       node.fills.forEach((nodeFill: Paint) => {
