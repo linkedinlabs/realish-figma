@@ -41,6 +41,19 @@ declare global {
     | 'service'
     | 'timestamp';
 
+  type RealishFilteredShapeNodes =
+    EllipseNode
+    | PolygonNode
+    | RectangleNode
+    | StarNode
+    | ComponentNode
+    | InstanceNode
+    | FrameNode;
+
+  type RealishFilteredNodes =
+    TextNode
+    | RealishFilteredShapeNodes;
+
   // Vendor Declarations
   const selectMenu: window.selectMenu
 

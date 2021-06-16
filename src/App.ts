@@ -57,30 +57,18 @@ const assemble = (context: any = null) => {
  */
 const getFilteredNodes = (
   selection: Array<any>,
-): Array<TextNode | EllipseNode | PolygonNode | RectangleNode | StarNode> => {
+): Array<RealishFilteredNodes> => {
   const consolidatedSelection: Array<SceneNode | PageNode> = selection;
 
   // retrieve selection of text nodes and filter for unlocked
   const filterTypes: Array<
     ('COMPONENT' | 'ELLIPSE' | 'FRAME' | 'INSTANCE' | 'POLYGON' | 'RECTANGLE' | 'STAR' | 'TEXT')
   > = ['COMPONENT', 'ELLIPSE', 'FRAME', 'INSTANCE', 'POLYGON', 'RECTANGLE', 'STAR', 'TEXT'];
-  const typeFilteredNodes: Array<
-    TextNode
-    | EllipseNode
-    | PolygonNode
-    | RectangleNode
-    | StarNode
-  > = new Crawler(
+  const typeFilteredNodes: Array<RealishFilteredNodes> = new Crawler(
     { for: consolidatedSelection },
   ).filterByTypes(filterTypes);
 
-  const filteredNodes: Array<
-    TextNode
-    | EllipseNode
-    | PolygonNode
-    | RectangleNode
-    | StarNode
-  > = [];
+  const filteredNodes: Array<RealishFilteredNodes> = [];
 
   const shapeTypes: Array<
     ('ELLIPSE' | 'POLYGON' | 'RECTANGLE' | 'STAR')
@@ -89,7 +77,7 @@ const getFilteredNodes = (
     if (node.type === 'TEXT') {
       filteredNodes.push(node);
     } else if (
-      shapeTypes.includes(node.type)
+      shapeTypes.includes(node.type as 'ELLIPSE' | 'POLYGON' | 'RECTANGLE' | 'STAR')
       && (node.width >= 32 && node.height >= 32) // filter size to exclude icon bits
     ) {
       filteredNodes.push(node);
@@ -122,12 +110,7 @@ const getFilteredNodes = (
  * @returns {null}
  */
 const triggerFigmaChangeWatcher = (
-  node:
-    TextNode
-    | EllipseNode
-    | PolygonNode
-    | RectangleNode
-    | StarNode,
+  node: RealishFilteredNodes,
 ): void => {
   // rename the layer, and then rename it back, to trigger Figma's changes watcher
   // this is used to allow main components to be republished with changes
@@ -241,10 +224,7 @@ const readTypefaces = (textNodes: Array<TextNode>) => {
 };
 
 const extractImage = async (
-  node: EllipseNode
-    | PolygonNode
-    | RectangleNode
-    | StarNode,
+  node: RealishFilteredShapeNodes,
 ) => {
   let image: Image = null;
   const fills: Array<Paint> = node.fills as Array<Paint>;
@@ -359,12 +339,7 @@ export default class App {
    */
   static async refreshGUI(sessionKey: number) {
     const { messenger, selection } = assemble(figma);
-    const nodes: Array<
-      TextNode
-      | EllipseNode
-      | PolygonNode
-      | RectangleNode
-      | StarNode> = getFilteredNodes(selection);
+    const nodes: Array<RealishFilteredNodes> = getFilteredNodes(selection);
     const nodesCount = nodes.length;
 
     // set array of data with information from each node
@@ -540,21 +515,10 @@ export default class App {
      * @kind function
      * @name retrieveNode
      *
-     * @returns {Object} The node (`TextNode | EllipseNode | PolygonNode | RectangleNode
-     * | StarNode`) retrieved.
+     * @returns {Object} The node (`RealishFilteredNodes`) retrieved.
      */
-    const retrieveNode = ():
-      TextNode
-      | EllipseNode
-      | PolygonNode
-      | RectangleNode
-      | StarNode => {
-      const filteredNodes: Array<
-        TextNode
-        | EllipseNode
-        | PolygonNode
-        | RectangleNode
-        | StarNode> = getFilteredNodes(selection);
+    const retrieveNode = (): RealishFilteredNodes => {
+      const filteredNodes: Array<RealishFilteredNodes> = getFilteredNodes(selection);
 
       const index = 0;
       const filteredNodesToUpdate: Array<any> = filteredNodes.filter(
@@ -566,8 +530,7 @@ export default class App {
     };
 
     /**
-     * Assigns or re-assigns a new data assignment type to supplied
-     * node (`TextNode | EllipseNode | PolygonNode | RectangleNode | StarNode`).
+     * Assigns or re-assigns a new data assignment type to supplied node (`RealishFilteredNodes`).
      *
      * @kind function
      * @name reassignNode
@@ -575,12 +538,7 @@ export default class App {
      * @param {string} nodeToReassign The node to modify.
      */
     const reassignNode = (
-      nodeToReassign:
-        TextNode
-        | EllipseNode
-        | PolygonNode
-        | RectangleNode
-        | StarNode,
+      nodeToReassign: RealishFilteredNodes,
     ): void => {
       const { assignment } = payload;
       let nodeType: 'shape' | 'text' = 'shape';
@@ -626,12 +584,7 @@ export default class App {
      * @param {string} nodeToRemix The node to modify.
      */
     const remixProposedContent = (
-      nodeToRemix:
-        TextNode
-        | EllipseNode
-        | PolygonNode
-        | RectangleNode
-        | StarNode,
+      nodeToRemix: RealishFilteredNodes,
     ): void => {
       // new randomization based on assignment
       const data = new Data({ for: nodeToRemix });
@@ -653,16 +606,10 @@ export default class App {
      * @kind function
      * @name restoreContent
      *
-     * @param {string} nodeToRestore The node (`TextNode | EllipseNode | PolygonNode
-     * | RectangleNode | StarNode`) to modify.
+     * @param {string} nodeToRestore The node (`RealishFilteredNodes`) to modify.
      */
     const restoreContent = (
-      nodeToRestore:
-        TextNode
-        | EllipseNode
-        | PolygonNode
-        | RectangleNode
-        | StarNode,
+      nodeToRestore: RealishFilteredNodes,
     ): void => {
       // set to the current (original) content (or `null` for shapes)
       const proposedText = nodeToRestore.type === 'TEXT' ? nodeToRestore.characters : 'original';
@@ -686,12 +633,7 @@ export default class App {
      * @param {boolean} locked Current locked (`true`) status of the node. Unlocked is `false`.
      */
     const toggleNodeLock = (
-      nodeToSecure:
-        TextNode
-        | EllipseNode
-        | PolygonNode
-        | RectangleNode
-        | StarNode,
+      nodeToSecure: RealishFilteredNodes,
       locked: boolean,
     ): void => {
       // commit the new assignment
@@ -763,20 +705,11 @@ export default class App {
    */
   static remixAll(sessionKey: number): void {
     const { messenger, selection } = assemble(figma);
-    const nodes: Array<
-      TextNode
-      | EllipseNode
-      | PolygonNode
-      | RectangleNode
-      | StarNode> = getFilteredNodes(selection);
+    const nodes: Array<RealishFilteredNodes> = getFilteredNodes(selection);
 
     // iterate through each selected layer and apply the `remix` action
     nodes.forEach((
-      node: TextNode
-        | EllipseNode
-        | PolygonNode
-        | RectangleNode
-        | StarNode,
+      node: RealishFilteredNodes,
     ) => App.actOnNode('remix', { id: node.id }, sessionKey));
 
     // reset the working state
@@ -808,19 +741,10 @@ export default class App {
   async quickRandomize(assignment: string, sessionKey: number) {
     const { messenger, selection } = assemble(figma);
     const textProposedKey: string = `${DATA_KEYS.textProposed}-${sessionKey}`;
-    const nodes: Array<
-      TextNode
-      | EllipseNode
-      | PolygonNode
-      | RectangleNode
-      | StarNode> = getFilteredNodes(selection);
+    const nodes: Array<RealishFilteredNodes> = getFilteredNodes(selection);
 
     // iterate through each selected layer and apply the `remix` action
-    await asyncForEach(nodes, async (node: TextNode
-      | EllipseNode
-      | PolygonNode
-      | RectangleNode
-      | StarNode) => {
+    await asyncForEach(nodes, async (node: RealishFilteredNodes) => {
       const lockedData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
       const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
       let nodeType: 'shape' | 'text' = 'shape';
@@ -880,19 +804,10 @@ export default class App {
    */
   quickAssign(assignment: string): void {
     const { messenger, selection } = assemble(figma);
-    const nodes: Array<
-      TextNode
-      | EllipseNode
-      | PolygonNode
-      | RectangleNode
-      | StarNode> = getFilteredNodes(selection);
+    const nodes: Array<RealishFilteredNodes> = getFilteredNodes(selection);
 
     // iterate through each selected layer and apply the `remix` action
-    nodes.forEach((node: TextNode
-      | EllipseNode
-      | PolygonNode
-      | RectangleNode
-      | StarNode) => {
+    nodes.forEach((node: RealishFilteredNodes) => {
       const lockedData = node.getSharedPluginData(dataNamespace(), DATA_KEYS.locked);
       const locked: boolean = lockedData ? JSON.parse(lockedData) : false;
       let nodeType: 'shape' | 'text' = 'shape';
@@ -1021,13 +936,7 @@ export default class App {
    */
   async commitContent(sessionKey: number) {
     const { messenger, selection } = assemble(figma);
-    const nodes: Array<
-      TextNode
-      | EllipseNode
-      | PolygonNode
-      | RectangleNode
-      | StarNode
-    > = getFilteredNodes(selection);
+    const nodes: Array<RealishFilteredNodes> = getFilteredNodes(selection);
 
     /**
      * Applies a `Painter` instance to each node in an array, updating the text.
@@ -1052,13 +961,13 @@ export default class App {
 
     /**
      * Applies a `Painter` instance to each node in an array, updating the shape node.
-     * Nodes should be typed as: `EllipseNode | PolygonNode | RectangleNode | StarNode`.
+     * Nodes should be typed as: `RealishFilteredShapeNodes`.
      *
      * @kind function
      * @name manipulateShapes
      *
      * @param {Array} nodesToPaint The array of shape nodes
-     * (`EllipseNode | PolygonNode | RectangleNode | StarNode`) to modify.
+     * (`RealishFilteredShapeNodes`) to modify.
      */
     const manipulateShapes = async (nodesToPaint) => {
       messenger.log('Begin manipulating shape nodes');
@@ -1079,12 +988,9 @@ export default class App {
     const textNodes: Array<TextNode> = nodes.filter(
       (node): node is TextNode => node.type === 'TEXT',
     );
-    const shapeNodes: Array<
-      EllipseNode
-      | PolygonNode
-      | RectangleNode
-      | StarNode
-    > = nodes.filter((node): node is EllipseNode | PolygonNode | RectangleNode | StarNode => node.type !== 'TEXT');
+    const shapeNodes: Array<RealishFilteredShapeNodes> = nodes.filter(
+      (node): node is RealishFilteredShapeNodes => node.type !== 'TEXT',
+    );
     const missingTypefaces: Array<TextNode> = textNodes.filter(
       (node: TextNode) => node.hasMissingFont,
     );
