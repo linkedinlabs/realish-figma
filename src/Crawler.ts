@@ -184,22 +184,11 @@ export default class Crawler {
       ('COMPONENT' | 'ELLIPSE' | 'FRAME' | 'INSTANCE' | 'POLYGON' | 'RECTANGLE' | 'STAR' | 'TEXT')
     >,
   ): Array<any> {
-    // set local type
-    type TypesToWatch =
-      ComponentNode
-      | EllipseNode
-      | FrameNode
-      | InstanceNode
-      | PolygonNode
-      | RectangleNode
-      | StarNode
-      | TextNode;
-
     // start with flattened selection of all nodes, ordered by position on the artboard
     const nodes = this.allSorted();
 
     // filter and retain immediate type-matched nodes
-    const filteredNodes: Array<TypesToWatch> = nodes.filter(
+    const filteredNodes: Array<RealishFilteredShapeNodes> = nodes.filter(
       (node) => filterTypes.includes(node.type),
     );
 
@@ -219,7 +208,7 @@ export default class Crawler {
         const innerTextNodesUntyped: any = componentNode.findAll(
           (node: any) => filterTypes.includes(node.type),
         );
-        const innerTextNodes: Array<TypesToWatch> = innerTextNodesUntyped.filter(
+        const innerTextNodes: Array<RealishFilteredShapeNodes> = innerTextNodesUntyped.filter(
           (node) => filterTypes.includes(node.type),
         );
 

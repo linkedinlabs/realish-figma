@@ -42,17 +42,17 @@ declare global {
     | 'timestamp';
 
   type RealishFilteredShapeNodes =
-    EllipseNode
+    ComponentNode
+    | EllipseNode
+    | FrameNode
+    | InstanceNode
     | PolygonNode
     | RectangleNode
-    | StarNode
-    | ComponentNode
-    | InstanceNode
-    | FrameNode;
+    | StarNode;
 
   type RealishFilteredNodes =
-    TextNode
-    | RealishFilteredShapeNodes;
+    RealishFilteredShapeNodes
+    | TextNode;
 
   // Vendor Declarations
   const selectMenu: window.selectMenu
