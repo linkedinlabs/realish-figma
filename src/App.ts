@@ -74,19 +74,23 @@ const getFilteredNodes = (
     ('ELLIPSE' | 'POLYGON' | 'RECTANGLE' | 'STAR')
   > = ['ELLIPSE', 'POLYGON', 'RECTANGLE', 'STAR'];
   typeFilteredNodes.forEach((node) => {
-    if (node.type === 'TEXT') {
+    const isNodeAShape: boolean = shapeTypes.includes(
+      node.type as 'ELLIPSE' | 'POLYGON' | 'RECTANGLE' | 'STAR',
+    );
+    // check for Fills; `isArray` check because `fills` can also be a symbol
+    const isNodeWithFills: boolean = Array.isArray(node.fills) && (node.fills.length > 0);
+    // filter size to exclude icon bits and match to avatars (square/circle)
+    const isNodeBigEnough: boolean = (node.width >= 32)
+      && (node.height >= 32) && (node.width === node.height);
+    const isValidShapeNode: boolean = isNodeAShape && isNodeBigEnough;
+    const isValidFillsNode: boolean = isNodeWithFills && isNodeBigEnough;
+
+    if (node.type === 'TEXT' || isValidShapeNode) {
       filteredNodes.push(node);
-    } else if (
-      shapeTypes.includes(node.type as 'ELLIPSE' | 'POLYGON' | 'RECTANGLE' | 'STAR')
-      && (node.width >= 32 && node.height >= 32) // filter size to exclude icon bits
-    ) {
-      filteredNodes.push(node);
-    } else if (
-      (node.width === node.height)
-      && (node.width >= 32 && node.height >= 32) // filter size to exclude icon bits
-      && (Array.isArray(node.fills) && node.fills.length > 0) // sometimes `fills` is a symbol
-    ) {
-      node.fills.forEach((nodeFill: Paint) => {
+    } else if (isValidFillsNode) {
+      // array check to satisfy Typescript (`node.fills` can be either an array or a symbol)
+      const nodeFills: Array<Paint> = Array.isArray(node.fills) ? node.fills : null;
+      nodeFills.forEach((nodeFill: Paint) => {
         if (nodeFill.type === 'IMAGE') {
           filteredNodes.push(node);
         }
