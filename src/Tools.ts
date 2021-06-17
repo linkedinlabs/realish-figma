@@ -487,7 +487,7 @@ const matchMasterPeerNode = (node: any, topNode: InstanceNode) => {
     childIndicesReversed.forEach((childIndex, index) => {
       selectedChild = children[childIndex];
       if ((childIndicesReversed.length - 1) > index) {
-        if (selectedChild.children) {
+        if (selectedChild?.children) {
           children = selectedChild.children;
         }
       }

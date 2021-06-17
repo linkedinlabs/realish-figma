@@ -33,16 +33,11 @@ const loadRemoteImage = async (remoteUrl) => {
  * @class
  * @name Painter
  *
- * @property node The TextNode in the Figma file that we want to modify.
+ * @property node The node in the Figma file that we want to modify.
  * @property sessionKey The current session identifier.
  */
 export default class Painter {
-  node: TextNode
-    | EllipseNode
-    | PolygonNode
-    | RectangleNode
-    | StarNode;
-
+  node: RealishFilteredNodes;
   sessionKey: number;
 
   constructor({ node, sessionKey }) {
@@ -169,10 +164,7 @@ export default class Painter {
     }
 
     // update the node’s fill with the proposed image
-    const shapeNode: EllipseNode
-      | PolygonNode
-      | RectangleNode
-      | StarNode = this.node as EllipseNode | PolygonNode | RectangleNode | StarNode;
+    const shapeNode: RealishFilteredShapeNodes = this.node as RealishFilteredShapeNodes;
 
     // set the proposed image URL
     let remoteUrl: string = null;
