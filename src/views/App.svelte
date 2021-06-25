@@ -1,9 +1,9 @@
 <script>
   // import { afterUpdate, beforeUpdate } from 'svelte';
   import FontPreload from './FontPreload';
-  // import BlankState from './BlankState';
+  import BlankState from './BlankState';
 
-  // export let items;
+  export let items;
   // export let newSessionKey = null;
 
   let bodyHeight = 0;
@@ -20,7 +20,15 @@
 <svelte:options accessors={true}/>
 
 <!-- core layout -->
-<div bind:offsetHeight={bodyHeight}>
+<div
+  class="container padding"
+  bind:offsetHeight={bodyHeight}
+>
   <FontPreload/>
-  <h1>hello</h1>
+
+  {#if items && items.length}
+    <h1>items go here</h1>
+  {:else}
+    <BlankState/>
+  {/if}
 </div>
