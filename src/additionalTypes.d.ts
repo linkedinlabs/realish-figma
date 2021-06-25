@@ -55,7 +55,11 @@ declare global {
     | TextNode;
 
   // Vendor Declarations
-  const selectMenu: window.selectMenu
+  
+  // for attaching Svelte to window global
+  interface Window {
+    app: Function;
+  }
 
   // Figma’s typings in npm package @figma/plugin-typings
 } // declare global
