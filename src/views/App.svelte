@@ -2,6 +2,7 @@
   // import { afterUpdate, beforeUpdate } from 'svelte';
   import FontPreload from './FontPreload';
   import BlankState from './BlankState';
+  import ItemsList from './ItemsList';
 
   export let items;
   // export let newSessionKey = null;
@@ -25,9 +26,8 @@
   bind:offsetHeight={bodyHeight}
 >
   <FontPreload/>
-
   {#if items && items.length}
-    <h1>items go here</h1>
+    <ItemsList items={items}/>
   {:else}
     <BlankState/>
   {/if}

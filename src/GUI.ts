@@ -11,6 +11,7 @@ const appProps: {
   // isMercadoMode: boolean,
   // isUserInput: boolean,
   // items: Array<PluginViewObject>,
+  items: any,
   // specPages: Array<{name: string, id: string}>,
   // lockedAnnotations: boolean,
   // userInputValue: string,
@@ -20,7 +21,7 @@ const appProps: {
   // isInternal: isInternal(),
   // isMercadoMode: false,
   // isUserInput: false,
-  // items: null,
+  items: null,
   // specPages: [],
   // lockedAnnotations: true,
   // userInputValue: null,
@@ -164,15 +165,18 @@ const watchIncomingMessages = (): void => {
   ) => {
     const { pluginMessage } = event.data;
 
-    switch (pluginMessage.action) {
-      case 'imageRequest':
-        makeImageRequest(pluginMessage.payload);
-        break;
-      case 'refreshState':
-        console.log('update app here with new items'); // eslint-disable-line no-console
-        break;
-      default:
-        return null;
+    if (pluginMessage?.action) {
+      switch (pluginMessage.action) {
+        case 'imageRequest':
+          makeImageRequest(pluginMessage.payload);
+          break;
+        case 'refreshState':
+          app.items = pluginMessage.payload;
+          console.log(pluginMessage.payload);
+          break;
+        default:
+          return null;
+      }
     }
 
     return null;
