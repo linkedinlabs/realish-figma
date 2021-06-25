@@ -62,6 +62,8 @@
     "webpack-cli": "^4.7.0"
   },
   "dependencies": {
+    "svelte": "^3.38.3",
+    "svelte-loader": "^3.1.2",
     "unique-names-generator": "^4.1.1"
   },
   "author": "Grant Blakeman <gblakeman@linkedin.com>"
