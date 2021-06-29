@@ -2,10 +2,6 @@
   import RealishLogo from '../assets/images/RealishLogo';
 </script>
 
-<h2>
-  Selected layers
-</h2>
-
 <aside class="blank-state" id="blank">
   <span class="mark">
     <RealishLogo/>

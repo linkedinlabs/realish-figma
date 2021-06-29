@@ -1,7 +1,7 @@
 <script>
   // import { afterUpdate, beforeUpdate } from 'svelte';
   import FontPreload from './FontPreload';
-  import Imagesandbox from './Imagesandbox';
+  import ImageSandbox from './ImageSandbox';
   import BlankState from './BlankState';
   import ItemsList from './ItemsList';
   import FooterBar from './FooterBar';
