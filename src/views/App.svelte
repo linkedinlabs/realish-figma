@@ -1,6 +1,7 @@
 <script>
   // import { afterUpdate, beforeUpdate } from 'svelte';
   import FontPreload from './FontPreload';
+  import Imagesandbox from './Imagesandbox';
   import BlankState from './BlankState';
   import ItemsList from './ItemsList';
   import FooterBar from './FooterBar';
@@ -27,6 +28,12 @@
   bind:offsetHeight={bodyHeight}
 >
   <FontPreload/>
+  <ImageSandbox/>
+
+  <h2>
+    Selected layers
+  </h2>
+
   {#if items && items.length}
     <ItemsList items={items}/>
     <FooterBar />
