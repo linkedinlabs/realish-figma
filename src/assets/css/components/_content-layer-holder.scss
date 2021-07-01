@@ -55,6 +55,9 @@
     background-size: cover;
     border: 1px solid $wl-accent-tertiary;
   }
+
+  &.rounded-none .shape { border-radius: 0; }
+  &.rounded-all .shape { border-radius: 100%; }
 }
 
 @mixin shape-widget(
