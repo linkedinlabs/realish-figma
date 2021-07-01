@@ -15,7 +15,11 @@ const getAssignmentsSelect = (type = 'text') => {
 
   // iterate ASSIGNMENTS and pull out the corresponding types
   Object.keys(ASSIGNMENTS).forEach((key) => {
-    if (ASSIGNMENTS[key].nodeType === type) {
+    if (
+      (ASSIGNMENTS[key].nodeType === type)
+      && (ASSIGNMENTS[key].id !== 'product')
+      && (ASSIGNMENTS[key].id !== 'service')
+    ) {
       const selectEntry = {
         value: ASSIGNMENTS[key].id,
         text: ASSIGNMENTS[key].text,

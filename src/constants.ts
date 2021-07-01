@@ -82,12 +82,12 @@ const ASSIGNMENTS = {
   location: { id: 'location', text: 'Location', nodeType: 'text' },
   members: { id: 'members', text: 'Members', nodeType: 'text' },
   name: { id: 'name', text: 'Name', nodeType: 'text' },
-  // product: { id: 'product', text: 'Product', nodeType: 'text' },
+  product: { id: 'product', text: 'Product', nodeType: 'text' },
   profileHeadline: { id: 'profile-headline', text: 'Profile Headline', nodeType: 'text' },
   publishedFrequency: { id: 'published-frequency', text: 'Published Frequency', nodeType: 'text' },
   newsletter: { id: 'newsletter', text: 'Newsletter', nodeType: 'text' },
   school: { id: 'school', text: 'School', nodeType: 'text' },
-  // service: { id: 'service', text: 'Service', nodeType: 'text' },
+  service: { id: 'service', text: 'Service', nodeType: 'text' },
   timestamp: { id: 'timestamp', text: 'Timestamp', nodeType: 'text' },
 };
 
