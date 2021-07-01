@@ -4,19 +4,17 @@
   export let items;
 </script>
 
-<section class="items-list-holder">
-  <ul class="items-list" id="layer-list">
-    {#each items as item, i (item.id)}
-      <Item
-        assignment={item.assignment}
-        isImage={item.nodeType === 'shape'}
-        isLocked={item.locked}
-        itemId={item.id}
-        originalText={item.originalText}
-        proposedText={item.proposedText}
-        rounded={item.rounded}
-        item={item}
-      />
-    {/each}
-  </ul>
-</section>
+<ul class="items-list" id="layer-list">
+  {#each items as item, i (item.id)}
+    <Item
+      assignment={item.assignment}
+      isImage={item.nodeType === 'shape'}
+      isLocked={item.locked}
+      itemId={item.id}
+      originalText={item.originalText}
+      proposedText={item.proposedText}
+      rounded={item.rounded}
+      item={item}
+    />
+  {/each}
+</ul>

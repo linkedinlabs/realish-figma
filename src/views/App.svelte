@@ -30,14 +30,16 @@
   <FontPreload/>
   <ImageSandbox/>
 
-  <h2>
-    Selected layers
-  </h2>
+  <section class="options" id="action-options">
+    <h2>
+      Selected layers
+    </h2>
 
-  {#if items && items.length}
-    <ItemsList items={items}/>
-    <FooterBar />
-  {:else}
-    <BlankState/>
-  {/if}
+    {#if items && items.length}
+      <ItemsList items={items}/>
+      <FooterBar />
+    {:else}
+      <BlankState/>
+    {/if}
+  </section>
 </div>
