@@ -4,6 +4,7 @@
   import ButtonRestore from './forms-controls/ButtonRestore';
   import FormUnit from './forms-controls/FormUnit';
   import { shapeAssignmentsSelect, textAssignmentsSelect } from './stores';
+  import { sendMsgToMain } from '../Tools';
   import { ASSIGNMENTS } from '../constants';
 
   export let assignment = ASSIGNMENTS.unassigned.id;
@@ -14,28 +15,6 @@
   export let originalText = null;
   export let proposedText = null;
   export let rounded = 'none';
-
-  /**
-   * Sends a message and applicable payload to the main thread.
-   *
-   * @kind function
-   * @name sendMsgToMain
-   *
-   * @param {string} action A string representing the action for the main thread to take.
-   * @param {Object} payload Any additional parameters/data to pass to the main thread.
-   *
-   * @returns {null}
-   */
-  const sendMsgToMain = (action, payload) => {
-    parent.postMessage({
-      pluginMessage: {
-        action,
-        payload,
-      },
-    }, '*');
-
-    return null;
-  };
 
   const layerType = (currentIsImage) => (currentIsImage ? 'shape' : 'text');
 

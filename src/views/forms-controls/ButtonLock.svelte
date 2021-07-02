@@ -1,14 +1,15 @@
 <script>
   import { createEventDispatcher } from 'svelte';
 
+  export let action = 'clicked';
   export let disabled = false;
   export let isLocked = false;
 
   const dispatch = createEventDispatcher();
 
-  const handleClick = () => {
+  const handleClick = (currentAction) => {
     isLocked = !isLocked;
-    dispatch('handleUpdate');
+    dispatch('handleAction', currentAction);
   };
 </script>
 
@@ -17,7 +18,7 @@
 </style>
 
 <button
-  on:click={() => handleClick()}
+  on:click={() => handleClick(action)}
   class={`item-toggle action-lock-toggle${isLocked ? ' locked' : ''}`}
   disabled={disabled}
 >

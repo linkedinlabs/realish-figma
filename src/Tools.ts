@@ -597,6 +597,31 @@ const loadTypefaces = async (
 };
 
 /**
+ * Sends a message and applicable payload to the main thread from the UI thread.
+ *
+ * @kind function
+ * @name sendMsgToMain
+ *
+ * @param {string} action A string representing the action for the main thread to take.
+ * @param {Object} payload Any additional parameters/data to pass to the main thread.
+ *
+ * @returns {null}
+ */
+const sendMsgToMain = (
+  action: string,
+  payload: any,
+): void => {
+  parent.postMessage({
+    pluginMessage: {
+      action,
+      payload,
+    },
+  }, '*');
+
+  return null;
+};
+
+/**
  * Resizes the plugin iframe GUI within the Figma app.
  *
  * @kind function
@@ -691,5 +716,6 @@ export {
   matchMasterPeerNode,
   pollWithPromise,
   resizeGUI,
+  sendMsgToMain,
   updateArray,
 };
