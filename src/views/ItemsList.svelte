@@ -11,6 +11,7 @@
       isImage={item.nodeType === 'shape'}
       isLocked={item.locked}
       itemId={item.id}
+      originalImage={item.originalImage}
       originalText={item.originalText}
       proposedText={item.proposedText}
       rounded={item.rounded}

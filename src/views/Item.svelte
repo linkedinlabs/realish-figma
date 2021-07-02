@@ -4,24 +4,58 @@
   import ButtonRestore from './forms-controls/ButtonRestore';
   import FormUnit from './forms-controls/FormUnit';
   import { shapeAssignmentsSelect, textAssignmentsSelect } from './stores';
+  import { ASSIGNMENTS } from '../constants';
 
-  export let assignment = 'unassigned';
+  export let assignment = ASSIGNMENTS.unassigned.id;
   export let isImage = false;
   export let isLocked = true;
   export let itemId = null;
+  export let originalImage = null;
   export let originalText = null;
   export let proposedText = null;
   export let rounded = 'none';
 
-  const layerType = (currentIsImage) => isImage ? 'shape' : 'text';
+  const layerType = (currentIsImage) => (currentIsImage ? 'shape' : 'text');
+
+  const imageUrlFromPath = (imagePath) => {
+    let fullUrl = null;
+    const serverLocation = process.env.MEDIA_URL ? process.env.MEDIA_URL : 'https://somewhere.com';
+    fullUrl = `${serverLocation}${imagePath}`;
+    return fullUrl;
+  };
+
+  const imageUrlFromBlob = (imageBlob) => {
+    const blobUrl = URL.createObjectURL(
+      new Blob([imageBlob]), // eslint-disable-line no-undef
+    );
+    return blobUrl;
+  };
+
+  const setProposedImage = (
+    currentProposedText,
+    currentOriginalText,
+    currentOriginalImage,
+  ) => {
+    let image = null;
+    if (currentProposedText === currentOriginalText) {
+      image = imageUrlFromBlob(currentOriginalImage);
+    } else {
+      image = imageUrlFromPath(currentProposedText);
+    }
+
+    return image;
+  };
 </script>
 
 <li class={`${layerType(isImage)}-layer-holder locked`}>
   {#if isImage}
     <!-- proposed content widget -->
     <span class={`shape-widget new-shape rounded-${rounded}`}>
-      <span class="shape">
-        {proposedText}
+      <span
+        class="shape"
+        style="background-image: url('{assignment !== ASSIGNMENTS.unassigned.id ? setProposedImage(proposedText, originalText, originalImage) : ''}');"
+      >
+        &nbsp;
       </span>
     </span>
 
@@ -32,8 +66,11 @@
           <span class="inline-control reset-control">
             <ButtonRestore disabled={originalText === proposedText}/>
           </span>
-          <span class="shape">
-            {originalText}
+          <span
+            class="shape"
+            style="background-image: url({imageUrlFromBlob(originalImage, assignment)});"
+          >
+            &nbsp;
           </span>
         </span>
 
