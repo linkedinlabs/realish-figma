@@ -63,7 +63,7 @@
 
     // update for faux select
     if (valueToCompare) {
-      selected = options.filter(option => option.value === valueToCompare)[index];
+      selected = options.filter((option) => option.value === valueToCompare)[index];
     } else {
       selected = options[index];
     }
