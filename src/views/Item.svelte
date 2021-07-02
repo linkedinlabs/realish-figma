@@ -52,6 +52,12 @@
     const payload = { id: actionItemId };
     sendMsgToMain(action, payload);
   };
+
+  const updateAssignment = (currentAssignment, actionItemId) => {
+    const action = 'reassign';
+    const payload = { id: actionItemId, assignment: currentAssignment };
+    sendMsgToMain(action, payload);
+  };
 </script>
 
 <li class={`${layerType(isImage)}-layer-holder${isLocked ? ' locked' : ''}`}>
@@ -94,6 +100,7 @@
           nameId={`${itemId}-assignment-type`}
           placeholder="Leave empty to use browser default"
           selectWatchChange={true}
+          on:saveSignal={() => updateAssignment(assignment, itemId)}
           bind:value={assignment}
         />
       </span>
@@ -142,6 +149,7 @@
         nameId={`${itemId}-assignment-type`}
         placeholder="Leave empty to use browser default"
         selectWatchChange={true}
+        on:saveSignal={() => updateAssignment(assignment, itemId)}
         bind:value={assignment}
       />
     </span>

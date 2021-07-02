@@ -1,11 +1,7 @@
 <script>
   // this component is a svelte rebuild of the vendor/figma-select-menu.js script
   // used in other LinkedIn Figma plugins
-  import {
-    afterUpdate,
-    beforeUpdate,
-    createEventDispatcher,
-  } from 'svelte';
+  import { afterUpdate, createEventDispatcher } from 'svelte';
 
   export let className = null;
   export let disabled = false;
@@ -19,6 +15,9 @@
       disabled: false,
     },
   ];
+
+  // track value diff
+  let originalValue = value;
 
   // state
   let isMenuOpen = false;
@@ -72,7 +71,7 @@
     value = selected.value;
 
     // send save signal if watching
-    if (watchChange) {
+    if (watchChange && (value !== originalValue)) {
       dispatch('saveSignal');
     }
     return selected;
@@ -242,13 +241,16 @@
     menuListElement.style.top = `${menuPosition}px`;
   };
 
-  beforeUpdate(async () => {
-    setSelected();
-  });
+  // set initial selection
+  setSelected();
 
   afterUpdate(() => {
     if (isMenuOpen) {
       setMenuPosition();
+    }
+
+    if (value !== originalValue) {
+      originalValue = value;
     }
   });
 </script>

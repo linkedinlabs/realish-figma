@@ -19,6 +19,8 @@ const getAssignmentsSelect = (type = 'text') => {
       (ASSIGNMENTS[key].nodeType === type)
       && (ASSIGNMENTS[key].id !== 'product')
       && (ASSIGNMENTS[key].id !== 'service')
+      && (ASSIGNMENTS[key].id !== 'avatar-product')
+      && (ASSIGNMENTS[key].id !== 'avatar-service')
     ) {
       const selectEntry = {
         value: ASSIGNMENTS[key].id,
