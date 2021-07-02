@@ -6,57 +6,16 @@ import { pollWithPromise } from './Tools';
 import App from './views/App.svelte'; // eslint-disable-line import/extensions
 
 const appProps: {
-  // isInfoPanel: boolean,
-  // isInternal: boolean,
-  // isMercadoMode: boolean,
-  // isUserInput: boolean,
   // items: Array<PluginViewObject>,
   items: any,
-  // specPages: Array<{name: string, id: string}>,
-  // lockedAnnotations: boolean,
-  // userInputValue: string,
-  // viewContext: PluginViewTypes,
 } = {
-  // isInfoPanel: false,
-  // isInternal: isInternal(),
-  // isMercadoMode: false,
-  // isUserInput: false,
   items: null,
-  // specPages: [],
-  // lockedAnnotations: true,
-  // userInputValue: null,
-  // viewContext: null,
 };
 
 const app = new App({
   target: document.body,
   props: appProps,
 });
-
-/**
- * Sends a message and applicable payload to the main thread.
- *
- * @kind function
- * @name sendMsgToMain
- *
- * @param {string} action A string representing the action for the main thread to take.
- * @param {Object} payload Any additional parameters/data to pass to the main thread.
- *
- * @returns {null}
- */
-const sendMsgToMain = (
-  action: string,
-  payload: any,
-): void => {
-  parent.postMessage({
-    pluginMessage: {
-      action,
-      payload,
-    },
-  }, '*');
-
-  return null;
-};
 
 /**
  * Posts a message to the main thread with `loaded` set to `true`. Used in the
@@ -172,7 +131,6 @@ const watchIncomingMessages = (): void => {
           break;
         case 'refreshState':
           app.items = pluginMessage.payload;
-          console.log(pluginMessage.payload);
           break;
         default:
           return null;
