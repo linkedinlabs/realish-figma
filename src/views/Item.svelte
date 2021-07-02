@@ -102,7 +102,7 @@
         <span class="inline-control remix-control">
           <ButtonRemix
             action="remix"
-            disabled={assignment === 'unassigned'}
+            disabled={(assignment === 'unassigned') || isLocked}
             on:handleAction={(customEvent) => runAction(customEvent.detail, itemId)}
           />
         </span>
@@ -110,7 +110,7 @@
         <!-- locking control -->
         <span class="locking-control">
           <ButtonLock
-            action="lock"
+            action="lock-toggle"
             isLocked={isLocked}
             on:handleAction={(customEvent) => runAction(customEvent.detail, itemId)}
           />
@@ -155,7 +155,7 @@
         <span class="inline-control remix-control">
           <ButtonRemix
             action="remix"
-            disabled={assignment === 'unassigned'}
+            disabled={(assignment === 'unassigned') || isLocked}
             on:handleAction={(customEvent) => runAction(customEvent.detail, itemId)}
           />
         </span>
@@ -164,7 +164,9 @@
       <!-- locking control -->
       <span class="locking-control">
         <ButtonLock
+          action="lock-toggle"
           isLocked={isLocked}
+          on:handleAction={(customEvent) => runAction(customEvent.detail, itemId)}
         />
       </span>
     </span>
