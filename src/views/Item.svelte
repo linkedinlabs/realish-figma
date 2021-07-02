@@ -97,6 +97,7 @@
           kind="inputSelect"
           options={isImage ? $shapeAssignmentsSelect : $textAssignmentsSelect}
           labelText="Assigned text type"
+          isDisabled={isLocked}
           nameId={`${itemId}-assignment-type`}
           placeholder="Leave empty to use browser default"
           selectWatchChange={true}
@@ -146,6 +147,7 @@
         kind="inputSelect"
         options={isImage ? $shapeAssignmentsSelect : $textAssignmentsSelect}
         labelText="Assigned text type"
+        isDisabled={isLocked}
         nameId={`${itemId}-assignment-type`}
         placeholder="Leave empty to use browser default"
         selectWatchChange={true}
