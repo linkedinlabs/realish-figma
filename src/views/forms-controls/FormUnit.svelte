@@ -1,5 +1,5 @@
 <script>
-  import { afterUpdate, createEventDispatcher } from 'svelte';
+  import { afterUpdate } from 'svelte';
 
   import FigmaInput from './FigmaInput';
   import FigmaSelectMenu from './FigmaSelectMenu';
@@ -22,10 +22,7 @@
   export let options = [];
   export let focused = false;
 
-  const dispatch = createEventDispatcher();
   let originalValue = value;
-
-  const handleDelete = () => dispatch('deleteSignal');
 
   afterUpdate(() => {
     if (value !== originalValue) {
