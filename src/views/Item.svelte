@@ -1,7 +1,6 @@
 <script>
   import ButtonLock from './forms-controls/ButtonLock';
-  import ButtonRemix from './forms-controls/ButtonRemix';
-  import ButtonRestore from './forms-controls/ButtonRestore';
+  import ButtonIcon from './forms-controls/ButtonIcon';
   import FormUnit from './forms-controls/FormUnit';
   import { shapeAssignmentsSelect, textAssignmentsSelect } from './stores';
   import { sendMsgToMain } from '../Tools';
@@ -77,8 +76,10 @@
         <!-- original shape widget -->
         <span class={`shape-widget original-shape rounded-${rounded}`}>
           <span class="inline-control reset-control">
-            <ButtonRestore
+            <ButtonIcon
               action="restore"
+              icon="restore"
+              label="Reset to original image"
               disabled={originalText === proposedText}
               on:handleAction={(customEvent) => runAction(customEvent.detail, itemId)}
             />
@@ -108,8 +109,10 @@
 
       <span class="row">
         <span class="inline-control remix-control">
-          <ButtonRemix
+          <ButtonIcon
             action="remix"
+            icon="remix"
+            label="Remix image"
             disabled={(assignment === 'unassigned') || isLocked}
             on:handleAction={(customEvent) => runAction(customEvent.detail, itemId)}
           />
@@ -133,8 +136,10 @@
           {originalText}
         </span>
         <span class="inline-control reset-control">
-          <ButtonRestore
+          <ButtonIcon
             action="restore"
+            icon="restore"
+            label="Reset to original text"
             disabled={originalText === proposedText}
             on:handleAction={(customEvent) => runAction(customEvent.detail, itemId)}
           />
@@ -163,8 +168,10 @@
           {proposedText}
         </span>
         <span class="inline-control remix-control">
-          <ButtonRemix
+          <ButtonIcon
             action="remix"
+            icon="remix"
+            label="Remix text"
             disabled={(assignment === 'unassigned') || isLocked}
             on:handleAction={(customEvent) => runAction(customEvent.detail, itemId)}
           />
