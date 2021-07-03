@@ -28,7 +28,9 @@
 
   const dispatch = createEventDispatcher();
 
-  // ui
+  // ui helpers
+  let fullHeight = 0;
+  let menuHeight = 0;
   let fauxSelectorElement = null;
   let selectorContainerElement = null;
   let scrollY = null;
@@ -213,32 +215,59 @@
   };
 
   const setMenuPosition = () => {
+    // locate the menu elements
     const menuListElement = selectorContainerElement.querySelector('.styled-select__list');
-    const activeItemElement = menuListElement.querySelector('.styled-select__list-item--active');
+    const selectedItemElement = menuListElement.querySelector('.styled-select__list-item--active');
 
+    // set some defaults
     let menuPosition = 0;
+    let menuScrollY = 0;
+    let offsetDiff = 0;
 
-    if (activeItemElement) {
-      // reset the menu for calculations
-      menuListElement.style.top = '0px';
+    if (selectedItemElement) {
+      // check to see if the menu is taller than the viewport
+      let isMenuTaller = false;
+      if (menuHeight > fullHeight) {
+        isMenuTaller = true;
+      }
 
+      // run some calculations up front
+      const selectorOffset = fauxSelectorElement.getBoundingClientRect().top;
       const menuOffset = menuListElement.getBoundingClientRect().top;
-      const itemOffset = activeItemElement.getBoundingClientRect().top;
+      const itemOffset = selectedItemElement.getBoundingClientRect().top;
+      const itemHeight = selectedItemElement.clientHeight;
 
-      // calculate distance between menu top and item top
-      const offsetDiff = itemOffset - menuOffset;
+      if (isMenuTaller) {
+        // resize menu to fit in viewport
+        menuListElement.style.height = fullHeight - 8;
 
-      // if moving the menu up will take it off the screen, use a
-      // pre-baked position; otherwise move the menu up
-      if ((menuOffset - offsetDiff) < 0) {
-        menuPosition = -4;
+        // position menu
+        menuPosition = -selectorOffset + 4;
+
+        // set scroll position
+        menuScrollY = (itemOffset - menuOffset) - selectorOffset;
       } else {
-        menuPosition = -(offsetDiff);
+        // calculate selected item offset
+        offsetDiff = itemOffset - menuOffset;
+
+        // if position selected item underneath cursor will move the menu out of
+        // the viewport, move it to the top of the viewport.
+        // otherwise, move it so that the selected item is underneat the cursor.
+        if ((menuOffset - offsetDiff) < itemHeight) {
+          // move to top of viewport
+          menuPosition = -selectorOffset + 4;
+        } else {
+          // move underneath cursor
+          menuPosition = -(offsetDiff);
+        }
       }
     }
 
     // set the menu position
-    menuListElement.style.top = `${menuPosition}px`;
+    menuListElement.style.top = menuPosition;
+
+    // set the menu scroll position
+    menuListElement.scroll(0, menuScrollY);
   };
 
   // set initial selection
@@ -259,8 +288,14 @@
   /* components/figma-select-menu */
 </style>
 
-<svelte:window on:keydown={watchKeys} bind:scrollY={scrollY}/>
-<svelte:body on:click={handleClickOutside}/>
+<svelte:window
+  on:keydown={watchKeys}
+  bind:scrollY={scrollY}
+  bind:innerHeight={fullHeight}
+/>
+<svelte:body
+  on:click={handleClickOutside}
+/>
 
 <span
   class={className}
@@ -280,29 +315,32 @@
       </span>
       <span class="styled-select__icon"></span>
     </button>
-    <ul
-      class={`styled-select__list${isMenuOpen ? ' styled-select__list--active' : ''}`}
-      style="top: 0px"
-    >
-      {#each options as option (option.value)}
-        {#if (option.value && !option.value.includes('divider--'))}
-          <li
-            class={`styled-select__list-item${isSelected(option.value, selected, value) ? ' styled-select__list-item--active' : ''}${option.disabled ? ' styled-select__list-item--disabled' : ''}`}
-            data-value={option.value}
-            on:click={() => handleItemClick(option.value)}
-          >
-            <span class="styled-select__list-item-icon"></span>
-            <span class={`styled-select__list-item-text${option.value === 'blank--value' ? ' is-blank' : ''}${option.disabled ? ' styled-select__list-item-text--disabled' : ''}`}>
-              {option.text}
-            </span>
-          </li>
-        {:else if option.value.includes('divider--')}
-          <div class="styled-select__divider">
-            <span class="styled-select__divider-line"></span>
-          </div>
-        {/if}
-      {/each}
-    </ul>
+    {#if isMenuOpen}
+      <ul
+        class={`styled-select__list${isMenuOpen ? ' styled-select__list--active' : ''}`}
+        style=""
+        bind:clientHeight={menuHeight}
+      >
+        {#each options as option (option.value)}
+          {#if (option.value && !option.value.includes('divider--'))}
+            <li
+              class={`styled-select__list-item${isSelected(option.value, selected, value) ? ' styled-select__list-item--active' : ''}${option.disabled ? ' styled-select__list-item--disabled' : ''}`}
+              data-value={option.value}
+              on:click={() => handleItemClick(option.value)}
+            >
+              <span class="styled-select__list-item-icon"></span>
+              <span class={`styled-select__list-item-text${option.value === 'blank--value' ? ' is-blank' : ''}${option.disabled ? ' styled-select__list-item-text--disabled' : ''}`}>
+                {option.text}
+              </span>
+            </li>
+          {:else if option.value.includes('divider--')}
+            <div class="styled-select__divider">
+              <span class="styled-select__divider-line"></span>
+            </div>
+          {/if}
+        {/each}
+      </ul>
+    {/if}
   </div>
   <select
     class="styled-select select-menu"
