@@ -107,5 +107,6 @@ module.exports = (env, argv) => [{
       cache: false,
     }),
     new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
+    new webpack.HotModuleReplacementPlugin(),
   ],
 }];
