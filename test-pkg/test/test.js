@@ -1,11 +1,14 @@
 const { expect } = require('chai');
+const { stub } = require('sinon');
 const index = require('../dist/index.js');
 
-require('mocha-sinon');
-
 describe('hello world test', () => {
-  beforeEach('initiate console', function () {
-    this.sinon.stub(console, 'log');
+  beforeEach(() => {
+    stub(console, 'log');
+  });
+
+  afterEach(() => {
+    console.log.restore(); // eslint-disable-line no-console
   });
 
   it('should call console.log', () => {
