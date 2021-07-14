@@ -12,7 +12,7 @@
   "keywords": [
     "figma"
   ],
-  "author": "Grant Blakeman <gblakeman@linkedin.com>",
+  "author": "Design Productivity <design@linkedin.com>",
   "license": "BSD-2-Clause",
   "devDependencies": {
     "@figma/plugin-typings": "^1.26.0",
