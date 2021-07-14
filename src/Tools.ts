@@ -604,8 +604,6 @@ const loadTypefaces = async (
  *
  * @param {string} action A string representing the action for the main thread to take.
  * @param {Object} payload Any additional parameters/data to pass to the main thread.
- *
- * @returns {null}
  */
 const sendMsgToMain = (
   action: string,
@@ -617,8 +615,6 @@ const sendMsgToMain = (
       payload,
     },
   }, '*');
-
-  return null;
 };
 
 /**
@@ -629,8 +625,6 @@ const sendMsgToMain = (
  * @param {string} type A string representing the `type` of GUI to load.
  * @param {Object} ui An instance of `figma.ui` with the GUI pre-loaded.
  * @param {Function} ui.resize An instance of `figma.ui.resize` function.
- *
- * @returns {null}
  */
 const resizeGUI = (
   type: string,
@@ -640,8 +634,6 @@ const resizeGUI = (
     GUI_SETTINGS[type].width,
     GUI_SETTINGS[type].height,
   );
-
-  return null;
 };
 
 /**
