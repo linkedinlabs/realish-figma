@@ -4,9 +4,8 @@
   import { sendMsgToMain } from '../Tools';
 
   const runAction = (actionToRun) => {
-    const action = actionToRun;
     const payload = null;
-    sendMsgToMain(action, payload);
+    sendMsgToMain(actionToRun, payload);
   };
 </script>
 
