@@ -55,6 +55,9 @@
     background-size: cover;
     border: 1px solid $wl-accent-tertiary;
   }
+
+  &.rounded-none .shape { border-radius: 0; }
+  &.rounded-all .shape { border-radius: 100%; }
 }
 
 @mixin shape-widget(
@@ -124,9 +127,6 @@
 
   .locking-control {
     span {
-      &.unlocked { display: inline-block; }
-      &.locked { display: none; }
-
       svg {
         path {
           fill: $wl-action-tertiary;
@@ -149,9 +149,6 @@
 
     .locking-control {
       span {
-        &.unlocked { display: none; }
-        &.locked { display: inline-block; }
-
         svg {
           path {
             fill: $wl-action-secondary-accent;
