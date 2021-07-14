@@ -75,8 +75,11 @@ module.exports = (env, argv) => [{
         use: {
           loader: 'svelte-loader',
           options: {
-            emitCss: true,
-            hotReload: false,
+            compilerOptions: {
+              dev: argv.mode === 'development',
+            },
+            emitCss: argv.mode === 'production',
+            hotReload: argv.mode === 'development',
           },
         },
       },
