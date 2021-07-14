@@ -1,5 +1,4 @@
 <script>
-  // import { afterUpdate, beforeUpdate } from 'svelte';
   import FontPreload from './FontPreload';
   import ImageSandbox from './ImageSandbox';
   import BlankState from './BlankState';
@@ -7,16 +6,8 @@
   import FooterBar from './FooterBar';
 
   export let items;
-  // export let newSessionKey = null;
 
   let bodyHeight = 0;
-  // let wasBodyHeight = 0;
-
-  // beforeUpdate(() => {
-  // });
-
-  // afterUpdate(() => {
-  // });
 </script>
 
 <!-- compile options -->
