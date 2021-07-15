@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const { stub } = require('sinon');
-const index = require('../dist/index.js');
+const index = require('../dist/index');
 
 describe('hello world test', () => {
   beforeEach(() => {
