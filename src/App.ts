@@ -83,7 +83,7 @@ const getFilteredNodes = (
     const isNodeBigEnough: boolean = (node.width >= 32)
       && (node.height >= 32) && (node.width === node.height);
     const isValidShapeNode: boolean = isNodeAShape && isNodeBigEnough;
-    const isValidFillsNode: boolean = isNodeWithFills && isNodeBigEnough;
+    const isValidFillsNode: boolean = isNodeWithFills;
 
     if (node.type === 'TEXT' || isValidShapeNode) {
       filteredNodes.push(node);
